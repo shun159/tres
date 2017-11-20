@@ -20,7 +20,7 @@ defmodule Tres.MessageHelper do
       end
 
       defp send_flow_mod_modify(datapath_id, options) do
-        command = Tres.Utils.flow_command(options, :modify)
+        command = Tres.Utils.flow_command(:modify, options)
         flow_mod = %Openflow.FlowMod{
           cookie:   options[:cookie] || 0,
           table_id: options[:table_id] || 0,
@@ -36,7 +36,7 @@ defmodule Tres.MessageHelper do
       end
 
       defp send_flow_mod_delete(datapath_id, options) do
-        command = Tres.Utils.flow_command(options, :delete)
+        command = Tres.Utils.flow_command(:delete, options)
         flow_mod = %Openflow.FlowMod{
           cookie:   options[:cookie] || 0,
           cookie_mask: options[:cookie_mask] || 0,

@@ -5,7 +5,7 @@ defmodule Openflow.Action.PushVlan do
 
   def ofpat, do: 17
 
-  def new(ethertype) do
+  def new(ethertype \\ 0x8100) do
     %PushVlan{ethertype: ethertype}
   end
 

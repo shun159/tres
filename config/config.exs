@@ -4,7 +4,7 @@ use Mix.Config
 
 config :tres,
   protocol:        :tcp,
-  port:            6633,
+  port:            6653,
   max_connections: 10,
   num_acceptors:   10,
   callback_module: Tres.ExampleHandler,

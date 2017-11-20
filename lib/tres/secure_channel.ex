@@ -18,7 +18,7 @@ defmodule Tres.SecureChannel do
   @hello_handshake_timeout    1000
   @features_handshake_timeout 1000
   @ping_timeout               5000
-  @transaction_timeout        5000
+  # @transaction_timeout        5000
 
   @ping_interval 5000
   @ping_fail_max_count 10
@@ -193,12 +193,16 @@ defmodule Tres.SecureChannel do
   end
 
   defp handle_message(_in_xact = true, message, state_data) do
-    [{:xact_entry, _xid, prev_message, _orig}|_] = XACT_KV.get(state_data.xact_kv_ref, message.xid)
-    new_message = Openflow.append_body(prev_message, message)
-    XACT_KV.update(state_data.xact_kv_ref, message.xid, new_message)
+    case XACT_KV.get(state_data.xact_kv_ref, message.xid) do
+      [{:xact_entry, _xid, prev_message, _orig}|_] ->
+        new_message = Openflow.append_body(prev_message, message)
+        XACT_KV.update(state_data.xact_kv_ref, message.xid, new_message)
+      _ ->
+        XACT_KV.delete(state_data.xact_kv_ref, message.xid)
+    end
   end
-  defp handle_message(_in_xact = false, message, %SecureChannelState{handler_pid: handler_pid}) do
-    send(handler_pid, message)
+  defp handle_message(_in_xact = false, message, state_data) do
+    send(state_data.handler_pid, message)
   end
 
   # WATING state

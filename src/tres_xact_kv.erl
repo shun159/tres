@@ -47,7 +47,7 @@ is_exists(Tid, Xid) ->
 %% Private functions
 
 ms_for_exists(Xid) ->
-    ets:fun2ms(fun(#?ENTRY{xid = TXid}) when TXid < Xid -> true end).
+    ets:fun2ms(fun(#?ENTRY{xid = TXid}) when TXid == Xid -> true end).
 
 ms_for_get(Xid) ->
     ets:fun2ms(fun(#?ENTRY{xid = TXid} = E) when TXid == Xid -> E end).
@@ -56,6 +56,6 @@ ms_for_update(Xid, Msg) ->
     ets:fun2ms(fun(#?ENTRY{xid = TXid} = E) when TXid == Xid -> E#?ENTRY{pending = Msg} end).
 
 ms_for_handle_error(Tid, Xid, Error) ->
-    [Orig|_] = get(Tid, Xid),
+    [#?ENTRY{orig = Orig}|_] = get(Tid, Xid),
     Error1 = maps:merge(Error, #{data => Orig}),
     ets:fun2ms(fun(#?ENTRY{xid = TXid} = E) when TXid == Xid -> E#?ENTRY{pending = Error1} end).
