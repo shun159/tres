@@ -16,13 +16,13 @@ defmodule Openflow.Multipart.Flow.Request do
 
   def ofp_type, do: 18
 
-  def new(options) do
+  def new(options \\ []) do
     table_id = Keyword.get(options, :table_id, :all)
     out_port = Keyword.get(options, :out_port, :any)
     out_group = Keyword.get(options, :out_group, :any)
     cookie = Keyword.get(options, :cookie, 0)
     cookie_mask = Keyword.get(options, :cookie, 0)
-    match = Keyword.get(options, :match, [])
+    match = Keyword.get(options, :match, Openflow.Match.new)
     %Request{table_id: table_id,
              out_port: out_port,
              out_group: out_group,

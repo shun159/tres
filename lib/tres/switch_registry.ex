@@ -24,6 +24,12 @@ defmodule Tres.SwitchRegistry do
     send_message(message, {dpid, 0})
   end
 
+  def monitor(datapath_id) do
+    datapath_id
+    |> lookup_pid
+    |> Process.monitor
+  end
+
   # private function
 
   defp dispatch(entries, message) do

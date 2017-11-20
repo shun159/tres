@@ -3,6 +3,7 @@ defmodule Openflow.Multipart.Queue.Reply do
     version:      4,
     xid:          0,
     datapath_id:  nil, # virtual field
+    aux_id:       nil,
     flags:        [],
     queues:       []
   )
@@ -18,6 +19,16 @@ defmodule Openflow.Multipart.Queue.Reply do
   def read(<<queues_bin::bytes>>) do
     queues = Openflow.Multipart.Queue.read(queues_bin)
     %Reply{queues: queues}
+  end
+
+  def append_body(%Reply{queues: queues} = message, %Reply{flags: [:more], queues: continue}) do
+    %{message|queues: [continue|queues]}
+  end
+  def append_body(%Reply{queues: queues} = message, %Reply{flags: [], queues: continue}) do
+    new_queues = [continue|queues]
+    |> Enum.reverse
+    |> List.flatten
+    %{message|queues: new_queues}
   end
 end
 

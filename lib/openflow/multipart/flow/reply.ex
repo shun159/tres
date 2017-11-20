@@ -3,6 +3,7 @@ defmodule Openflow.Multipart.Flow.Reply do
     version:      4,
     xid:          0,
     datapath_id:  nil, # virtual field
+    aux_id:       nil,
     flags:        [],
     flows:        []
   )
@@ -18,6 +19,16 @@ defmodule Openflow.Multipart.Flow.Reply do
   def read(<<flows_bin::bytes>>) do
     flows = Openflow.Multipart.FlowStats.read(flows_bin)
     %Reply{flows: flows}
+  end
+
+  def append_body(%Reply{flows: flows} = message, %Reply{flags: [:more], flows: continue}) do
+    %{message|flows: [continue|flows]}
+  end
+  def append_body(%Reply{flows: flows} = message, %Reply{flags: [], flows: continue}) do
+    new_flows = [continue|flows]
+    |> Enum.reverse
+    |> List.flatten
+    %{message|flows: new_flows}
   end
 end
 

@@ -25,7 +25,7 @@ defmodule Openflow.Action.SetField do
   end
 
   def read(<<25::16, _length::16, match_field_bin::bytes>>) do
-    <<_class::16, _field::7, _hm::1, flen::8, _rest::bytes>>= match_field_bin
+    <<_class::16, _field::7, _hm::1, flen::8, _rest::bytes>> = match_field_bin
     match_len = 4 + 4 + flen
     match_bin = <<1::16, match_len::16, match_field_bin::bytes>>
     {[field|_], _rest} = Openflow.Match.read(match_bin)

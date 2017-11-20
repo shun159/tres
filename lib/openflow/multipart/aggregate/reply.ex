@@ -3,6 +3,7 @@ defmodule Openflow.Multipart.Aggregate.Reply do
     version:      4,
     xid:          0,
     datapath_id:  nil, # virtual field
+    aux_id:       nil,
     flags:        [],
     packet_count: 0,
     byte_count:   0,

@@ -20,30 +20,18 @@ defmodule Openflow.Action.NxLearn2 do
   alias __MODULE__
 
   def new(options) do
-    idle = Keyword.get(options, :idle_timeout, 0)
-    hard = Keyword.get(options, :hard_timeout, 0)
-    prio = Keyword.get(options, :priority, 0)
-    cookie = Keyword.get(options, :cookie, 0)
-    flags = Keyword.get(options, :flags, [])
-    table_id = Keyword.get(options, :table_id, 0)
-    fin_idle = Keyword.get(options, :fin_idle_timeout, 0)
-    fin_hard = Keyword.get(options, :fin_hard_timeout, 0)
-    flow_specs = Keyword.get(options, :flow_specs, [])
-    limit = Keyword.get(options, :limit, 0)
-    result_dst_offset = Keyword.get(options, :result_dst_offset, 0)
-    result_dst = Keyword.get(options, :result_dst)
-    %NxLearn2{idle_timeout: idle,
-              hard_timeout: hard,
-              priority: prio,
-              cookie: cookie,
-              flags: flags,
-              table_id: table_id,
-              fin_idle_timeout: fin_idle,
-              fin_hard_timeout: fin_hard,
-              limit: limit,
-              result_dst_offset: result_dst_offset,
-              result_dst: result_dst,
-              flow_specs: flow_specs}
+    %NxLearn2{idle_timeout:      options[:idle_timeout]      || 0,
+              hard_timeout:      options[:hard_timeout]      || 0,
+              priority:          options[:priority]          || 0,
+              cookie:            options[:cookie]            || 0,
+              flags:             options[:flags]             || [],
+              table_id:          options[:table_id]          || 0xff,
+              fin_idle_timeout:  options[:fin_idle_timeout]  || 0,
+              fin_hard_timeout:  options[:fin_hard_timeout]  || 0,
+              limit:             options[:limit]             || 0,
+              result_dst_offset: options[:result_dst_offset] || 0,
+              result_dst:        options[:result_dst],
+              flow_specs:        options[:flow_specs]        || []}
   end
 
   def to_binary(%NxLearn2{idle_timeout: idle,

@@ -19,22 +19,17 @@ defmodule Openflow.Action.NxBundleLoad do
   alias __MODULE__
 
   def new(options) do
-    hash_field = Keyword.get(options, :hash_field, :eth_src)
-    basis = Keyword.get(options, :basis, 0)
-    alg = Keyword.get(options, :algorithm, :active_backup)
-    slaves = Keyword.get(options, :slaves, [])
-    dst_field = Keyword.get(options, :dst_field)
+    dst_field = options[:dst_field]
     default_n_bits = Openflow.Match.Field.n_bits_of(dst_field)
-    n_bits = Keyword.get(options, :n_bits, default_n_bits)
-    ofs = Keyword.get(options, :offset, 0)
-    %NxBundleLoad{algorithm: alg,
-                  hash_field: hash_field,
-                  basis: basis,
-                  n_slaves: length(slaves),
-                  slaves: slaves,
-                  offset: ofs,
-                  n_bits: n_bits,
-                  dst_field: dst_field}
+    slaves = options[:slaves] || []
+    %NxBundleLoad{algorithm:  options[:algorithm]  || :active_backup,
+                  hash_field: options[:hash_field] || :eth_src,
+                  basis:      options[:basis]      || 0,
+                  n_slaves:   length(slaves),
+                  slaves:     slaves,
+                  offset:     options[:offset] || 0,
+                  n_bits:     options[:n_bits] || default_n_bits,
+                  dst_field:  options[:dst_field]}
   end
 
   def to_binary(%NxBundleLoad{algorithm: alg,

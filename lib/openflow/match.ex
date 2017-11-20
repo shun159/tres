@@ -18,7 +18,7 @@ defmodule Openflow.Match do
 
   def read(binary) do
     <<1::16, no_pad_len::16, binary1::binary>> = binary
-    padding_length = @match_size - rem(no_pad_len, 8)
+    padding_length = Openflow.Utils.pad_length(no_pad_len, 8)
     match_field_len = no_pad_len - @header_size
     <<match_fields::size(match_field_len)-binary, _::size(padding_length)-unit(8), rest::bitstring>> = binary1
     {decode_fields(match_fields, []), rest}
@@ -58,7 +58,7 @@ defmodule Openflow.Match do
 
   def header_size(<<_oxm_class_int::16, _oxm_field_int::7, _oxm_has_mask::1, _oxm_length::8, _::bytes>>),
     do: 4
-    def header_size(<<0xffff::16, _oxm_field_int::7, _oxm_has_mask::1, _oxm_length::8, _exp_int::32, _::bytes>>),
+  def header_size(<<0xffff::16, _oxm_field_int::7, _oxm_has_mask::1, _oxm_length::8, _exp_int::32, _::bytes>>),
     do: 8
 
   # private functions

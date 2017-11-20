@@ -17,24 +17,15 @@ defmodule Openflow.Action.NxLearn do
   alias __MODULE__
 
   def new(options) do
-    idle = Keyword.get(options, :idle_timeout, 0)
-    hard = Keyword.get(options, :hard_timeout, 0)
-    prio = Keyword.get(options, :priority, 0)
-    cookie = Keyword.get(options, :cookie, 0)
-    flags = Keyword.get(options, :flags, [])
-    table_id = Keyword.get(options, :table_id, 0)
-    fin_idle = Keyword.get(options, :fin_idle_timeout, 0)
-    fin_hard = Keyword.get(options, :fin_hard_timeout, 0)
-    flow_specs = Keyword.get(options, :flow_specs, [])
-    %NxLearn{idle_timeout: idle,
-             hard_timeout: hard,
-             priority: prio,
-             cookie: cookie,
-             flags: flags,
-             table_id: table_id,
-             fin_idle_timeout: fin_idle,
-             fin_hard_timeout: fin_hard,
-             flow_specs: flow_specs}
+    %NxLearn{idle_timeout:     options[:idle_timeout]     || 0,
+             hard_timeout:     options[:hard_timeout]     || 0,
+             priority:         options[:priority]         || 0,
+             cookie:           options[:cookie]           || 0,
+             flags:            options[:flags]            || [],
+             table_id:         options[:table_id]         || 0xff,
+             fin_idle_timeout: options[:fin_idle_timeout] || 0,
+             fin_hard_timeout: options[:fin_hard_timeout] || 0,
+             flow_specs:       options[:flow_specs]       || []}
   end
 
   def to_binary(%NxLearn{idle_timeout: idle,
@@ -52,7 +43,7 @@ defmodule Openflow.Action.NxLearn do
       prio::16, cookie::64, flags_int::16, table_id::8,
       0::size(1)-unit(8), fin_idle::16, fin_hard::16,
       flow_specs_bin::bitstring>>
-  exp_body_size =  byte_size(exp_body)
+    exp_body_size =  byte_size(exp_body)
     padding_length = Openflow.Utils.padding(4 + exp_body_size, 8)
     length = 4 + exp_body_size + padding_length
     <<0xffff::16, length::16, exp_body::bytes, 0::size(padding_length)-unit(8)>>

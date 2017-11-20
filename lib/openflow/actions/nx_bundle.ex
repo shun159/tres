@@ -14,15 +14,12 @@ defmodule Openflow.Action.NxBundle do
   alias __MODULE__
 
   def new(options) do
-    hash_field = Keyword.get(options, :hash_field, :eth_src)
-    basis = Keyword.get(options, :basis, 0)
-    alg = Keyword.get(options, :algorithm, :active_backup)
-    slaves = Keyword.get(options, :slaves, [])
-    %NxBundle{algorithm: alg,
-              hash_field: hash_field,
-              basis: basis,
-              n_slaves: length(slaves),
-              slaves: slaves}
+    slaves = options[:slaves] || []
+    %NxBundle{algorithm:  options[:algorithm]  || :active_backup,
+              hash_field: options[:hash_field] || :eth_src,
+              basis:      options[:basis]      || 0,
+              n_slaves:   length(slaves),
+              slaves:     slaves}
   end
 
   def to_binary(%NxBundle{algorithm: alg,

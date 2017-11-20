@@ -18,24 +18,14 @@ defmodule Openflow.Action.NxConntrack do
   alias __MODULE__
 
   def new(options \\ []) do
-    flags = Keyword.get(options, :flags, [])
-    zone_src = Keyword.get(options, :zone_src)
-    zone_ofs = Keyword.get(options, :zone_offset)
-    zone_n_bits = Keyword.get(options, :zone_n_bits)
-    zone_imm = Keyword.get(options, :zone_imm, 0)
-    recirc_table = Keyword.get(options, :recirc_table, 255)
-    alg = Keyword.get(options, :alg, 0)
-    exec = Keyword.get(options, :exec, [])
-    %NxConntrack{
-      flags:        flags,
-      zone_src:     zone_src,
-      zone_imm:     zone_imm,
-      zone_offset:  zone_ofs,
-      zone_n_bits:  zone_n_bits,
-      recirc_table: recirc_table,
-      alg:          alg,
-      exec:         exec
-    }
+    %NxConntrack{flags:        options[:flags] || [],
+                 zone_src:     options[:zone_src],
+                 zone_imm:     options[:zone_imm] || 0,
+                 zone_offset:  options[:zone_offset],
+                 zone_n_bits:  options[:zone_n_bits],
+                 recirc_table: options[:recirc_table] || 255,
+                 alg:          options[:alg]  || 0,
+                 exec:         options[:exec] || []}
   end
 
   def to_binary(%NxConntrack{

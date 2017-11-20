@@ -11,13 +11,11 @@ defmodule Openflow.Action.NxFlowSpecOutput do
   alias __MODULE__
 
   def new(options) do
-    src = Keyword.get(options, :src)
-    src_ofs = Keyword.get(options, :src_offset, 0)
-    default_n_bits = Openflow.Match.Field.n_bits_of(src)
-    n_bits = Keyword.get(options, :n_bits, default_n_bits)
-    %NxFlowSpecOutput{n_bits: n_bits,
-                      src: src,
-                      src_offset: src_ofs}
+    src = options[:src]
+    n_bits = options[:n_bits] || Openflow.Match.Field.n_bits_of(src)
+    %NxFlowSpecOutput{n_bits:     n_bits,
+                      src:        src,
+                      src_offset: options[:src_offset] || 0}
   end
 
   def to_binary(%NxFlowSpecOutput{n_bits: n_bits,

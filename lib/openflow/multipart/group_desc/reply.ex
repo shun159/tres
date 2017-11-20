@@ -19,6 +19,16 @@ defmodule Openflow.Multipart.GroupDesc.Reply do
     groups = Openflow.Multipart.GroupDescStats.read(groups_bin)
     %Reply{groups: groups}
   end
+
+  def append_body(%Reply{groups: groups} = message, %Reply{flags: [:more], groups: continue}) do
+    %{message|groups: [continue|groups]}
+  end
+  def append_body(%Reply{groups: groups} = message, %Reply{flags: [], groups: continue}) do
+    new_groups = [continue|groups]
+    |> Enum.reverse
+    |> List.flatten
+    %{message|groups: new_groups}
+  end
 end
 
 defmodule Openflow.Multipart.GroupDescStats do

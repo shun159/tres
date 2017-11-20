@@ -11,10 +11,9 @@ defmodule Openflow.Action.NxConjunction do
   alias __MODULE__
 
   def new(options) do
-    clause = Keyword.get(options, :clause, 0)
-    n_clauses = Keyword.get(options, :n_clauses, 0)
-    id = Keyword.get(options, :id, 0)
-    %NxConjunction{clause: clause, n_clauses: n_clauses, id: id}
+    %NxConjunction{clause:    options[:clause] || 0,
+                   n_clauses: options[:n_clauses] || 0,
+                   id:        options[:id] || 0}
   end
 
   def to_binary(%NxConjunction{clause: clause, n_clauses: n_clauses, id: id}) do

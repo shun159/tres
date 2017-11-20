@@ -11,10 +11,9 @@ defmodule Openflow.Action.NxController do
   alias __MODULE__
 
   def new(options) do
-    max_len = Keyword.get(options, :max_len, :no_buffer)
-    controller_id = Keyword.get(options, :id, 0)
-    reason = Keyword.get(options, :reason, :action)
-    %NxController{max_len: max_len, id: controller_id, reason: reason}
+    %NxController{max_len: options[:max_len] || :no_buffer,
+                  id:      options[:id]      || 0,
+                  reason:  options[:reason]  || :action}
   end
 
   def to_binary(%NxController{max_len: max_len, id: controller_id, reason: reason}) do

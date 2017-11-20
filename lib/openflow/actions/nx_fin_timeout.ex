@@ -10,9 +10,8 @@ defmodule Openflow.Action.NxFinTimeout do
   alias __MODULE__
 
   def new(options) do
-    fin_idle = Keyword.get(options, :idle_timeout, 0)
-    fin_hard = Keyword.get(options, :hard_timeout, 0)
-    %NxFinTimeout{idle_timeout: fin_idle, hard_timeout: fin_hard}
+    %NxFinTimeout{idle_timeout: options[:idle_timeout] || 0,
+                  hard_timeout: options[:hard_timeout] || 0}
   end
 
   def to_binary(%NxFinTimeout{idle_timeout: fin_idle, hard_timeout: fin_hard}) do

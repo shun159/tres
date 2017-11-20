@@ -275,6 +275,17 @@ defmodule Openflow.Match.Field do
   def vendor_of(:nsh_c3),     do: :nicira_ext_match
   def vendor_of(:nsh_c4),     do: :nicira_ext_match
 
+  # HP Ext Match
+  def vendor_of(:hp_udp_src_port_range), do: :hp_ext_match
+  def vendor_of(:hp_udp_dst_port_range), do: :hp_ext_match
+  def vendor_of(:hp_tcp_src_port_range), do: :hp_ext_match
+  def vendor_of(:hp_tcp_dst_port_range), do: :hp_ext_match
+  def vendor_of(:hp_tcp_flags), do: :hp_ext_match
+  def vendor_of(:hp_custom_1),  do: :hp_ext_match
+  def vendor_of(:hp_custom_2),  do: :hp_ext_match
+  def vendor_of(:hp_custom_3),  do: :hp_ext_match
+  def vendor_of(:hp_custom_4),  do: :hp_ext_match
+
   # ONF Ext Match
   def vendor_of(:onf_tcp_flags),     do: :onf_ext_match
   def vendor_of(:onf_actset_output), do: :onf_ext_match
@@ -517,6 +528,17 @@ defmodule Openflow.Match.Field do
   def format_of(:nsh_c2),     do: {:be32, :decimal}
   def format_of(:nsh_c3),     do: {:be32, :decimal}
   def format_of(:nsh_c4),     do: {:be32, :decimal}
+
+  # HP Ext Match
+  def format_of(:hp_udp_src_port_range), do: {:be32, :decimal}
+  def format_of(:hp_udp_dst_port_range), do: {:be32, :decimal}
+  def format_of(:hp_tcp_src_port_range), do: {:be32, :decimal}
+  def format_of(:hp_tcp_dst_port_range), do: {:be32, :decimal}
+  def format_of(:hp_tcp_flags),          do: {:be16, :tcp_flags}
+  def format_of(:hp_custom_1),           do: {:dynamic, :bytes}
+  def format_of(:hp_custom_2),           do: {:dynamic, :bytes}
+  def format_of(:hp_custom_3),           do: {:dynamic, :bytes}
+  def format_of(:hp_custom_4),           do: {:dynamic, :bytes}
 
   # ONF Ext Match
   def format_of(:onf_tcp_flags),     do: {:be16, :tcp_flags}

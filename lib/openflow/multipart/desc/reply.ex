@@ -3,6 +3,7 @@ defmodule Openflow.Multipart.Desc.Reply do
     version:        4,
     xid:            0,
     datapath_id:  nil, # virtual field
+    aux_id:       nil,
     flags:        [],
     mfr_desc:     "",
     hw_desc:      "",

@@ -3,6 +3,7 @@ defmodule Openflow.Multipart.Meter.Reply do
     version:      4,
     xid:          0,
     datapath_id:  nil, # virtual field
+    aux_id:       nil,
     flags:        [],
     meters:       []
   )
@@ -14,6 +15,16 @@ defmodule Openflow.Multipart.Meter.Reply do
   def read(<<meters_bin::bytes>>) do
     meters = Openflow.Multipart.Meter.read(meters_bin)
     %Reply{meters: meters}
+  end
+
+  def append_body(%Reply{meters: meters} = message, %Reply{flags: [:more], meters: continue}) do
+    %{message|meters: [continue|meters]}
+  end
+  def append_body(%Reply{meters: meters} = message, %Reply{flags: [], meters: continue}) do
+    new_meters = [continue|meters]
+    |> Enum.reverse
+    |> List.flatten
+    %{message|meters: new_meters}
   end
 end
 

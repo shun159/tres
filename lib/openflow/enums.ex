@@ -316,8 +316,9 @@ defmodule Openflow.Enums do
     ],
 
     experimenter_oxm_vendors: [
-      nicira_ext_match:    0x00002320,
-      onf_ext_match:       0x4f4e4600
+      nicira_ext_match: 0x00002320,
+      hp_ext_match:     0x00002428,
+      onf_ext_match:    0x4f4e4600
     ],
 
     match_type: [
@@ -616,6 +617,24 @@ defmodule Openflow.Enums do
       nsh_c2:     7,
       nsh_c3:     8,
       nsh_c4:     9
+    ],
+
+    hp_ext_match: [
+      hp_udp_src_port_range: 0,
+      hp_udp_dst_port_range: 1,
+      hp_tcp_src_port_range: 2,
+      hp_tcp_dst_port_range: 3,
+      hp_tcp_flags:          4,
+      hp_custom_1:           5,
+      hp_custom_2:           6,
+      hp_custom_3:           7,
+      hp_custom_4:           8
+    ],
+
+    hp_custom_match_type: [
+      l2_start: 1,
+      l3_start: 2,
+      l4_start: 3
     ],
 
     onf_ext_match: [

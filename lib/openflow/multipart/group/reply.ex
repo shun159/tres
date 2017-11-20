@@ -3,6 +3,7 @@ defmodule Openflow.Multipart.Group.Reply do
     version:      4,
     xid:          0,
     datapath_id:  nil, # virtual field
+    aux_id:       nil,
     flags:        [],
     groups:       []
   )
@@ -18,6 +19,16 @@ defmodule Openflow.Multipart.Group.Reply do
   def read(<<groups_bin::bytes>>) do
     groups = Openflow.Multipart.Group.read(groups_bin)
     %Reply{groups: groups}
+  end
+
+  def append_body(%Reply{groups: groups} = message, %Reply{flags: [:more], groups: continue}) do
+    %{message|groups: [continue|groups]}
+  end
+  def append_body(%Reply{groups: groups} = message, %Reply{flags: [], groups: continue}) do
+    new_groups = [continue|groups]
+    |> Enum.reverse
+    |> List.flatten
+    %{message|groups: new_groups}
   end
 end
 

@@ -3,6 +3,7 @@ defmodule Openflow.Multipart.PortStats.Reply do
     version:      4,
     xid:          0,
     datapath_id:  nil, # virtual field
+    aux_id:       nil,
     flags:        [],
     ports:        []
   )
@@ -18,6 +19,16 @@ defmodule Openflow.Multipart.PortStats.Reply do
   def read(<<ports_bin::bytes>>) do
     ports = Openflow.Multipart.PortStats.read(ports_bin)
     %Reply{ports: ports}
+  end
+
+  def append_body(%Reply{ports: ports} = message, %Reply{flags: [:more], ports: continue}) do
+    %{message|ports: [continue|ports]}
+  end
+  def append_body(%Reply{ports: ports} = message, %Reply{flags: [], ports: continue}) do
+    new_ports = [continue|ports]
+    |> Enum.reverse
+    |> List.flatten
+    %{message|ports: new_ports}
   end
 end
 

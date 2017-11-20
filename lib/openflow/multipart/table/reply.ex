@@ -3,6 +3,7 @@ defmodule Openflow.Multipart.Table.Reply do
     version:      4,
     xid:          0,
     datapath_id:  nil, # virtual field
+    aux_id:       nil,
     flags:        [],
     tables:       []
   )
@@ -14,6 +15,16 @@ defmodule Openflow.Multipart.Table.Reply do
   def read(<<tables_bin::bytes>>) do
     tables = Openflow.Multipart.TableStats.read(tables_bin)
     %Reply{tables: tables}
+  end
+
+  def append_body(%Reply{tables: tables} = message, %Reply{flags: [:more], tables: continue}) do
+    %{message|tables: [continue|tables]}
+  end
+  def append_body(%Reply{tables: tables} = message, %Reply{flags: [], tables: continue}) do
+    new_tables = [continue|tables]
+    |> Enum.reverse
+    |> List.flatten
+    %{message|tables: new_tables}
   end
 end
 

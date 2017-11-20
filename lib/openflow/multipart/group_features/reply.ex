@@ -3,6 +3,7 @@ defmodule Openflow.Multipart.GroupFeatures.Reply do
     version:      4,
     xid:          0,
     datapath_id:  nil, # virtual field
+    aux_id:       nil,
     flags:        [],
     types:        0,
     capabilities: [],

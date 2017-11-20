@@ -26,6 +26,10 @@ defmodule Openflow do
     end
   end
 
+  def to_binary(messages) when is_list(messages) do
+    binaries = for message <- messages, do: to_binary(message)
+    Enum.join(binaries, "")
+  end
   def to_binary(%{__struct__: encoder, version: version, xid: xid} = msg) do
     case encoder.to_binary(msg) do
       body_bin when is_binary(body_bin) ->
@@ -33,6 +37,16 @@ defmodule Openflow do
         <<version::8, (encoder.ofp_type)::8, length::16, xid::32, body_bin::bytes>>
       {:error, reason} ->
         {:error, reason}
+    end
+  end
+
+  def append_body(nil, message), do: message
+  def append_body(message, continue) do
+    mod = message.__struct__
+    if function_exported?(mod, :append_body, 2) do
+      mod.append_body(message, continue)
+    else
+      message
     end
   end
 
