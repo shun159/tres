@@ -31,6 +31,10 @@ defmodule Flay do
     send_message(Desc.Request.new, state.datapath_id)
     {:noreply, %{state|reply_to: from}}
   end
+  def handle_call(:flow_stats, from, state) do
+    send_message(Flow.Request.new, state.datapath_id)
+    {:noreply, %{state|reply_to: from}}
+  end
 
   def handle_cast({:register_pid, tester_pid}, state) do
     {:noreply, %{state|tester_pid: tester_pid}}
@@ -39,6 +43,10 @@ defmodule Flay do
     send_flow_mod_add(state.datapath_id, flow_opts)
     flow_opts_to_ofp_print(flow_opts)
     {:noreply, %{state|tester_pid: tester_pid}}
+  end
+  def handle_cast(:flow_del, state) do
+    send_flow_mod_delete(state.datapath_id, match: Match.new)
+    {:noreply, state}
   end
 
   def handle_info(%ErrorMsg{} = error, state) do
@@ -57,9 +65,13 @@ defmodule Flay do
     GenServer.reply(state.reply_to, desc)
     {:noreply, %{state|reply_to: nil}}
   end
+  def handle_info(%Flow.Reply{} = desc, state) do
+    GenServer.reply(state.reply_to, desc)
+    {:noreply, %{state|reply_to: nil}}
+  end
   # `Catch all` function is required.
   def handle_info(info, state) do
-    :ok = warn("[#{__MODULE__}] unhandled message #{inspect(info)}")
+    # :ok = warn("[#{__MODULE__}] unhandled message #{inspect(info)}")
     {:noreply, state}
   end
 

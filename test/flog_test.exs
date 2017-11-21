@@ -35,7 +35,7 @@ defmodule FlogTest do
   Code.load_file("test/pf.ex")
 
   # GIVEN
-  setup_all do
+  setup do
     setup_applications()
     wait_for_connected()
     ports = get_ports_desc()
@@ -51,6 +51,11 @@ defmodule FlogTest do
       cookie: cookie,
       timeout: timeout
     ]
+
+    on_exit fn ->
+      print_flows()
+      GenServer.cast(Flay, :flow_del)
+    end
     {:ok, options}
   end
 
@@ -635,5 +640,12 @@ defmodule FlogTest do
   defp get_ports_desc do
     port_desc = GenServer.call(Flay, :port_desc_stats, 5000)
     port_desc.ports
+  end
+
+  defp print_flows do
+    flow_stats = GenServer.call(Flay, :flow_stats, 5000)
+    for flow <- flow_stats.flows do
+      IO.inspect(flow)
+    end
   end
 end
