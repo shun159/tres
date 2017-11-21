@@ -9,14 +9,28 @@ defmodule Pf do
     ]
   end
 
-  def start_link(ifname, pid) do
-    ifname = String.to_charlist(ifname)
-    GenServer.start_link(__MODULE__, [ifname, pid])
+  def inject!(pid, packet) do
+    GenServer.cast(pid, {:inject, packet})
   end
 
-  def init([ifname, pid]) do
-    {:ok, pid} = :epcap.start_link(interface: ifname, chroot: 'priv/tmp', inject: true)
-    %State{pcap_ref: pid, ifname: ifname, tester_pid: pid}
+  def start_link(ifname) do
+    ifname = String.to_charlist(ifname)
+    GenServer.start_link(__MODULE__, [ifname, self()])
+  end
+
+  def init([ifname, tester_pid]) do
+    {:ok, epcap_pid} =
+      :epcap.start_link(
+        interface: ifname,
+        promiscuous: true,
+        inject: true
+      )
+    state = %State{
+      pcap_ref: epcap_pid,
+      ifname: ifname,
+      tester_pid: tester_pid
+    }
+    {:ok, state}
   end
 
   def handle_cast({:inject, packet}, state) do
@@ -31,7 +45,8 @@ defmodule Pf do
   end
 
   def handle_info({:packet, _dlt, _time, _len, data}, state) do
-    send(state.tester_pid, data)
+    pkt = :pkt.decapsulate(data)
+    send(state.tester_pid, {pkt, self()})
     {:noreply, state}
   end
   def handle_info(_info, state) do

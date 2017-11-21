@@ -32,6 +32,9 @@ defmodule Flay do
     {:noreply, %{state|reply_to: from}}
   end
 
+  def handle_cast({:register_pid, tester_pid}, state) do
+    {:noreply, %{state|tester_pid: tester_pid}}
+  end
   def handle_cast({:flow_install, flow_opts, tester_pid}, state) do
     send_flow_mod_add(state.datapath_id, flow_opts)
     flow_opts_to_ofp_print(flow_opts)
@@ -40,6 +43,10 @@ defmodule Flay do
 
   def handle_info(%ErrorMsg{} = error, state) do
     send(state.tester_pid, error)
+    {:noreply, state}
+  end
+  def handle_info(%PacketIn{} = pktin, state) do
+    send(state.tester_pid, pktin)
     {:noreply, state}
   end
   def handle_info(%PortDesc.Reply{} = desc, state) do
