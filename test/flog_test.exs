@@ -14,6 +14,11 @@ defmodule FlogTest do
   @mac             "010203040506"
   @auth_ipv4_address {192,168,5,4}
   @captive_ipv4_address {192,168,5,5}
+  @client_ip {192,168,5,10}
+  @client_farm_ip {192,168,255,1}
+  @gateway_ip {192,168,5,4}
+  @farm_gw_ip {192,168,255,254}
+  @farm_gw_mac "00000000000f"
   @trusted_macs    [
     "0800274d3297",
     "0800274d3298",
@@ -532,6 +537,69 @@ defmodule FlogTest do
         [cookie:   0x2000000000000001,
          table_id: 0,
          priority: 50,
+         match: match,
+         instructions: ins]
+      :ok = GenServer.cast(Flay, {:flow_install, options, self()})
+      refute_received %Openflow.ErrorMsg{}, 1000
+    end
+  end
+
+  describe("switch:register_farm_nat_rule:" <>
+    "dl_src={src_mac},arp,arp_spa={src_ip},arp_tpa={dst_ip}," <>
+    "actions=set_field:{farm_vmac}->eth_dst,set_field:{src_fip}->arp_spa," <>
+    "set_field:{dst_fip}->arp_tpa,output:{vlan_trunk_port}") do
+    test "Install Flow", state do
+      match = Openflow.Match.new(
+        eth_src: @mac,
+        eth_type: 0x0806,
+        arp_spa:  @client_ip,
+        arp_tpa:  @gateway_ip
+      )
+      actions = [
+        Openflow.Action.SetField.new({:eth_dst, @farm_gw_mac}),
+        Openflow.Action.SetField.new({:arp_spa, @client_farm_ip}),
+        Openflow.Action.SetField.new({:arp_tpa, @farm_gw_ip}),
+        Openflow.Action.PushVlan.new,
+        Openflow.Action.SetField.new({:vlan_vid, @user_vid}),
+        Openflow.Action.Output.new(state.vlan_trunk.number),
+      ]
+      ins = [Openflow.Instruction.ApplyActions.new(actions)]
+      options =
+        [cookie:   0x3000000000000001,
+         table_id: 1,
+         priority: 30,
+         idle_timeout: 60,
+         match: match,
+         instructions: ins]
+      :ok = GenServer.cast(Flay, {:flow_install, options, self()})
+      refute_received %Openflow.ErrorMsg{}, 1000
+    end
+  end
+
+  describe("switch:register_farm_nat_rule:" <>
+    "dl_src={src_mac},ip,nw_src={src_ip},nw_dst={dst_ip}," <>
+    "actions=push_vlan:0x8100,set_field:{vlan}->vlan_vid,set_field:{farm_vmac}->eth_dst," <>
+    "set_field:{src_fip}->nw_src,output:{vlan_trunk_port}") do
+    test "Install Flow", state do
+      match = Openflow.Match.new(
+        eth_src: @mac,
+        eth_type: 0x0800,
+        ipv4_src: @client_ip,
+        ipv4_dst: {8,8,8,8}
+      )
+      actions = [
+        Openflow.Action.SetField.new({:eth_dst, @farm_gw_mac}),
+        Openflow.Action.PushVlan.new,
+        Openflow.Action.SetField.new({:vlan_vid, @user_vid}),
+        Openflow.Action.SetField.new({:ipv4_src, @client_farm_ip}),
+        Openflow.Action.Output.new(state.vlan_trunk.number),
+      ]
+      ins = [Openflow.Instruction.ApplyActions.new(actions)]
+      options =
+        [cookie:   0x3000000000000001,
+         table_id: 1,
+         priority: 30,
+         idle_timeout: 60,
          match: match,
          instructions: ins]
       :ok = GenServer.cast(Flay, {:flow_install, options, self()})
