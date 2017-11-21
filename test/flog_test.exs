@@ -35,7 +35,7 @@ defmodule FlogTest do
   Code.load_file("test/pf.ex")
 
   # GIVEN
-  setup do
+  setup_all do
     setup_applications()
     wait_for_connected()
     ports = get_ports_desc()
@@ -53,8 +53,7 @@ defmodule FlogTest do
     ]
 
     on_exit fn ->
-      print_flows()
-      GenServer.cast(Flay, :flow_del)
+      GenServer.cast(Flay, :restore_flow_profile)
     end
     {:ok, options}
   end

@@ -3,7 +3,7 @@ defmodule Openflow.Instruction.Experimenter do
 
   alias __MODULE__
 
-  def new(exp_id, data) do
+  def new(exp_id, data \\ "") do
     %Experimenter{exp_id: exp_id, data: data}
   end
 

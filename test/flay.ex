@@ -9,7 +9,8 @@ defmodule Flay do
       datapath_id: nil,
       tester_pid:  nil,
       conn_ref:    nil,
-      reply_to:    nil
+      reply_to:    nil,
+      default_profile: nil,
     ]
   end
 
@@ -19,6 +20,8 @@ defmodule Flay do
 
   def init(args) do
     state = init_controller(args)
+    TableFeatures.Request.new
+    |> send_message(state.datapath_id)
     init_bridge(state.datapath_id)
     {:ok, state}
   end
@@ -48,6 +51,10 @@ defmodule Flay do
     send_flow_mod_delete(state.datapath_id, match: Match.new)
     {:noreply, state}
   end
+  def handle_cast(:restore_flow_profile, state) do
+    send_message(state.default_profile, state.datapath_id)
+    {:noreply, state}
+  end
 
   def handle_info(%ErrorMsg{} = error, state) do
     send(state.tester_pid, error)
@@ -56,6 +63,9 @@ defmodule Flay do
   def handle_info(%PacketIn{} = pktin, state) do
     send(state.tester_pid, pktin)
     {:noreply, state}
+  end
+  def handle_info(%TableFeatures.Reply{} = table, state) do
+    {:noreply, %{state|default_profile: table}}
   end
   def handle_info(%PortDesc.Reply{} = desc, state) do
     GenServer.reply(state.reply_to, desc)
@@ -70,8 +80,8 @@ defmodule Flay do
     {:noreply, %{state|reply_to: nil}}
   end
   # `Catch all` function is required.
-  def handle_info(_info, state) do
-    # :ok = warn("[#{__MODULE__}] unhandled message #{inspect(info)}")
+  def handle_info(info, state) do
+    :ok = warn("[#{__MODULE__}] unhandled message #{inspect(info)}")
     {:noreply, state}
   end
 
@@ -119,6 +129,54 @@ defmodule Flay do
   end
 
   defp init_bridge(datapath_id) do
+    tables = [
+      TableFeatures.Body.new(
+        table_id:      0,
+        max_entries: 2000,
+        instructions: [
+          Openflow.Instruction.ApplyActions,
+          Openflow.Instruction.GotoTable
+        ],
+        next_tables: [1],
+        apply_actions: [
+          Openflow.Action.Output,
+          Openflow.Action.PushVlan,
+          Openflow.Action.PopVlan,
+          Openflow.Action.SetField
+        ],
+        match: [
+          :in_port, :eth_src, :eth_dst, :eth_type, :vlan_vid,
+          :ip_proto, :ipv4_src, :ipv4_dst, :tcp_dst,:udp_dst
+        ],
+        apply_setfield: [
+          :eth_src, :eth_dst, :vlan_vid
+        ]
+      ),
+      TableFeatures.Body.new(
+        table_id:      0,
+        max_entries: 2000,
+        instructions: [
+          Openflow.Instruction.ApplyActions
+        ],
+        next_tables: [],
+        apply_actions: [
+          Openflow.Action.Output,
+          Openflow.Action.PushVlan,
+          Openflow.Action.PopVlan,
+          Openflow.Action.SetField
+        ],
+        match: [
+          :in_port, :eth_src, :eth_dst, :eth_type, :vlan_vid,
+          :ip_proto, :ipv4_src, :ipv4_dst, :tcp_dst,:udp_dst
+        ],
+        apply_setfield: [
+          :eth_src, :eth_dst, :vlan_vid, :ipv4_src, :ipv4_dst,
+          :arp_spa, :arp_tpa, :arp_tha
+        ]
+      ),
+    ]
+    TableFeatures.Request.new(tables)
+    |> send_message(datapath_id)
     send_flow_mod_delete(datapath_id, table_id: :all)
   end
 end

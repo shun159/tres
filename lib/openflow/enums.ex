@@ -1047,6 +1047,25 @@ defmodule Openflow.Enums do
       add:    0,
       delete: 1,
       clear:  2
+    ],
+
+    table_feature_prop_type: [
+      instructions:         0,
+      instructions_miss:    1,
+      next_tables:          2,
+      next_tables_miss:     3,
+      write_actions:        4,
+      write_actions_miss:   5,
+      apply_actions:        6,
+      apply_actions_miss:   7,
+      match:                8,
+      wildcards:           10,
+      write_setfield:      12,
+      write_setfield_miss: 13,
+      apply_setfield:      14,
+      apply_setfield_miss: 15,
+      experimenter:      0xfffe,
+      experimenter_miss: 0xffff
     ]
   ]
 

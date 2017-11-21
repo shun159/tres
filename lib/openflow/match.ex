@@ -33,27 +33,54 @@ defmodule Openflow.Match do
   end
 
   def codec_header(oxm_field) when is_atom(oxm_field) do
+    oxm_field = case has_mask(oxm_field) do
+                  1 ->
+                    string = to_string(oxm_field)
+                    "masked_" <> field = string
+                    String.to_atom(field)
+                  0 ->
+                    oxm_field
+                end
     case Openflow.Match.Field.vendor_of(oxm_field) do
       oxm_class when oxm_class in [:nxm_0, :nxm_1, :openflow_basic, :packet_register] ->
         oxm_class_int = Openflow.Enums.to_int(oxm_class, :oxm_class)
         oxm_field_int = Openflow.Enums.to_int(oxm_field, oxm_class)
         oxm_length = div(Openflow.Match.Field.n_bits_of(oxm_field), 8)
-        <<oxm_class_int::16, oxm_field_int::7, 0::1, oxm_length::8>>
-      experimenter when experimenter in [:nicira_ext_match, :onf_ext_match] ->
+        has_mask = has_mask(oxm_field)
+        <<oxm_class_int::16, oxm_field_int::7, has_mask::1, oxm_length::8>>
+      experimenter when experimenter in [:nicira_ext_match, :onf_ext_match, :hp_ext_match] ->
         oxm_class_int = 0xffff
         experimenter_int = Openflow.Enums.to_int(experimenter, :experimenter_oxm_vendors)
         oxm_field_int = Openflow.Enums.to_int(oxm_field, experimenter)
         oxm_length = div(Openflow.Match.Field.n_bits_of(oxm_field) + 4, 8)
-        <<oxm_class_int::16, oxm_field_int::7, 0::1, oxm_length::8, experimenter_int::32>>
+        has_mask = has_mask(oxm_field)
+        <<oxm_class_int::16, oxm_field_int::7, has_mask::1, oxm_length::8, experimenter_int::32>>
     end
   end
-  def codec_header(<<oxm_class_int::16, oxm_field_int::7, _oxm_has_mask::1, _oxm_length::8>>) do
+  def codec_header(<<oxm_class_int::16, oxm_field_int::7, oxm_has_mask::1, _oxm_length::8>>) do
     oxm_class = Openflow.Enums.to_atom(oxm_class_int, :oxm_class)
-    Openflow.Enums.to_atom(oxm_field_int, oxm_class)
+    case oxm_has_mask do
+      0 -> Openflow.Enums.to_atom(oxm_field_int, oxm_class)
+      1 ->
+        field_str =
+          oxm_field_int
+          |> Openflow.Enums.to_atom(oxm_class)
+          |> to_string
+        String.to_atom("masked_" <> field_str)
+    end
   end
-  def codec_header(<<0xffff::16, oxm_field_int::7, _oxm_has_mask::1, _oxm_length::8, experimenter_int::32>>) do
+  def codec_header(<<0xffff::16, oxm_field_int::7, oxm_has_mask::1, _oxm_length::8, experimenter_int::32>>) do
     experimenter = Openflow.Enums.to_atom(experimenter_int, :experimenter_oxm_vendors)
     Openflow.Enums.to_atom(oxm_field_int, experimenter)
+    case oxm_has_mask do
+      0 -> Openflow.Enums.to_atom(oxm_field_int, experimenter)
+      1 ->
+        field_str =
+          oxm_field_int
+          |> Openflow.Enums.to_atom(experimenter)
+          |> to_string
+        String.to_atom("masked_" <> field_str)
+    end
   end
 
   def header_size(<<_oxm_class_int::16, _oxm_field_int::7, _oxm_has_mask::1, _oxm_length::8, _::bytes>>),
@@ -150,5 +177,17 @@ defmodule Openflow.Match do
     value_bin = Openflow.Match.Field.codec(value, field_name)
     match_class = Openflow.Match.Field.vendor_of(field_name)
     %{class: match_class, field: field_name, has_mask: false, value: value_bin}
+  end
+
+  defp has_mask(oxm_field) when is_atom(oxm_field) do
+    has_mask? =
+      oxm_field
+      |> to_string
+      |> String.match?(~r/^masked_/)
+    if has_mask? do
+      1
+    else
+      0
+    end
   end
 end
