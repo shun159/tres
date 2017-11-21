@@ -67,7 +67,7 @@ defmodule FlogTest do
         priority: 0
       ]
       :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-      refute_received %Openflow.ErrorMsg{}, 1000
+      refute_receive %Openflow.ErrorMsg{}, 1000
     end
   end
 
@@ -90,7 +90,7 @@ defmodule FlogTest do
          match: match,
          instructions: [ins]]
       :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-      refute_received %Openflow.ErrorMsg{}, 1000
+      refute_receive %Openflow.ErrorMsg{}, 1000
     end
   end
 
@@ -105,7 +105,7 @@ defmodule FlogTest do
            priority: 201,
            match: match]
         :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-        refute_received %Openflow.ErrorMsg{}, 1000
+        refute_receive %Openflow.ErrorMsg{}, 1000
       end
     end
   end
@@ -123,7 +123,7 @@ defmodule FlogTest do
          match: match,
          instructions: [ins]]
       :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-      refute_received %Openflow.ErrorMsg{}, 1000
+      refute_receive %Openflow.ErrorMsg{}, 1000
     end
   end
 
@@ -140,7 +140,7 @@ defmodule FlogTest do
          match: match,
          instructions: [ins]]
       :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-      refute_received %Openflow.ErrorMsg{}, 1000
+      refute_receive %Openflow.ErrorMsg{}, 1000
     end
   end
 
@@ -154,7 +154,7 @@ defmodule FlogTest do
          priority: 11,
          match: match]
       :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-      refute_received %Openflow.ErrorMsg{}, 1000
+      refute_receive %Openflow.ErrorMsg{}, 1000
     end
   end
 
@@ -183,7 +183,7 @@ defmodule FlogTest do
          match: match,
          instructions: [ins]]
       :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-      refute_received %Openflow.ErrorMsg{}, 1000
+      refute_receive %Openflow.ErrorMsg{}, 1000
     end
   end
 
@@ -212,7 +212,7 @@ defmodule FlogTest do
          match: match,
          instructions: [ins]]
       :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-      refute_received %Openflow.ErrorMsg{}, 1000
+      refute_receive %Openflow.ErrorMsg{}, 1000
     end
   end
 
@@ -241,7 +241,7 @@ defmodule FlogTest do
          match: match,
          instructions: [ins]]
       :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-      refute_received %Openflow.ErrorMsg{}, 1000
+      refute_receive %Openflow.ErrorMsg{}, 1000
     end
   end
 
@@ -263,7 +263,7 @@ defmodule FlogTest do
          hard_timeout: state.timeout,
          match: match]
       :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-      refute_received %Openflow.ErrorMsg{}, 1000
+      refute_receive %Openflow.ErrorMsg{}, 1000
     end
   end
 
@@ -294,7 +294,7 @@ defmodule FlogTest do
            match: match,
            instructions: [ins]]
         :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-        refute_received %Openflow.ErrorMsg{}, 1000
+        refute_receive %Openflow.ErrorMsg{}, 1000
       end
     end
   end
@@ -315,7 +315,7 @@ defmodule FlogTest do
            hard_timeout: state.timeout,
            match: match]
         :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-        refute_received %Openflow.ErrorMsg{}, 1000
+        refute_receive %Openflow.ErrorMsg{}, 1000
       end
     end
   end
@@ -341,7 +341,7 @@ defmodule FlogTest do
          match: match,
          instructions: [ins]]
       :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-      refute_received %Openflow.ErrorMsg{}, 1000
+      refute_receive %Openflow.ErrorMsg{}, 1000
     end
   end
 
@@ -369,7 +369,7 @@ defmodule FlogTest do
          match: match,
          instructions: [ins]]
       :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-      refute_received %Openflow.ErrorMsg{}, 1000
+      refute_receive %Openflow.ErrorMsg{}, 1000
     end
   end
 
@@ -397,7 +397,7 @@ defmodule FlogTest do
          match: match,
          instructions: [ins]]
       :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-      refute_received %Openflow.ErrorMsg{}, 1000
+      refute_receive %Openflow.ErrorMsg{}, 1000
     end
   end
 
@@ -424,7 +424,7 @@ defmodule FlogTest do
          match: match,
          instructions: ins]
       :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-      refute_received %Openflow.ErrorMsg{}, 1000
+      refute_receive %Openflow.ErrorMsg{}, 1000
     end
   end
 
@@ -442,7 +442,7 @@ defmodule FlogTest do
          hard_timeout: state.timeout,
          match: match]
       :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-      refute_received %Openflow.ErrorMsg{}, 1000
+      refute_receive %Openflow.ErrorMsg{}, 1000
     end
   end
 
@@ -463,7 +463,7 @@ defmodule FlogTest do
          match: match,
          instructions: ins]
       :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-      refute_received %Openflow.ErrorMsg{}, 1000
+      refute_receive %Openflow.ErrorMsg{}, 1000
     end
   end
 
@@ -486,7 +486,7 @@ defmodule FlogTest do
          match: match,
          instructions: ins]
       :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-      refute_received %Openflow.ErrorMsg{}, 1000
+      refute_receive %Openflow.ErrorMsg{}, 1000
     end
   end
 
@@ -507,7 +507,7 @@ defmodule FlogTest do
          match: match,
          instructions: ins]
       :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-      refute_received %Openflow.ErrorMsg{}, 1000
+      refute_receive %Openflow.ErrorMsg{}, 1000
     end
   end
 
@@ -528,7 +528,7 @@ defmodule FlogTest do
          match: match,
          instructions: ins]
       :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-      refute_received %Openflow.ErrorMsg{}, 1000
+      refute_receive %Openflow.ErrorMsg{}, 1000
     end
   end
 
@@ -545,7 +545,7 @@ defmodule FlogTest do
          match: match,
          instructions: ins]
       :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-      refute_received %Openflow.ErrorMsg{}, 1000
+      refute_receive %Openflow.ErrorMsg{}, 1000
     end
   end
 
@@ -577,7 +577,7 @@ defmodule FlogTest do
          match: match,
          instructions: ins]
       :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-      refute_received %Openflow.ErrorMsg{}, 1000
+      refute_receive %Openflow.ErrorMsg{}, 1000
     end
   end
 
@@ -608,7 +608,7 @@ defmodule FlogTest do
          match: match,
          instructions: ins]
       :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-      refute_received %Openflow.ErrorMsg{}, 1000
+      refute_receive %Openflow.ErrorMsg{}, 1000
     end
   end
 
