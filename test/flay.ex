@@ -70,7 +70,7 @@ defmodule Flay do
     {:noreply, %{state|reply_to: nil}}
   end
   # `Catch all` function is required.
-  def handle_info(info, state) do
+  def handle_info(_info, state) do
     # :ok = warn("[#{__MODULE__}] unhandled message #{inspect(info)}")
     {:noreply, state}
   end
@@ -83,11 +83,10 @@ defmodule Flay do
     |> Openflow.to_binary
     |> binary_to_space_delimited_hex
     |> ofp_print_cmd
-    |> IO.inspect
+    |> Logger.info
   end
 
   defp ofp_print_cmd(print_args) do
-    IO.inspect("\n")
     {result, _code} = System.cmd("ovs-ofctl", ["ofp-print", "#{print_args}"])
     result
   end
