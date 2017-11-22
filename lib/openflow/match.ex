@@ -32,28 +32,28 @@ defmodule Openflow.Match do
     <<type_int::16, length::16, fields_bin::bytes, 0::size(padding)-unit(8)>>
   end
 
-  def codec_header(oxm_field) when is_atom(oxm_field) do
-    oxm_field = case has_mask(oxm_field) do
+  def codec_header(oxm_field0) when is_atom(oxm_field0) do
+    oxm_field = case has_mask(oxm_field0) do
                   1 ->
-                    string = to_string(oxm_field)
+                    string = to_string(oxm_field0)
                     "masked_" <> field = string
                     String.to_atom(field)
                   0 ->
-                    oxm_field
+                    oxm_field0
                 end
     case Openflow.Match.Field.vendor_of(oxm_field) do
       oxm_class when oxm_class in [:nxm_0, :nxm_1, :openflow_basic, :packet_register] ->
         oxm_class_int = Openflow.Enums.to_int(oxm_class, :oxm_class)
         oxm_field_int = Openflow.Enums.to_int(oxm_field, oxm_class)
         oxm_length = div(Openflow.Match.Field.n_bits_of(oxm_field), 8)
-        has_mask = has_mask(oxm_field)
+        has_mask = has_mask(oxm_field0)
         <<oxm_class_int::16, oxm_field_int::7, has_mask::1, oxm_length::8>>
       experimenter when experimenter in [:nicira_ext_match, :onf_ext_match, :hp_ext_match] ->
         oxm_class_int = 0xffff
         experimenter_int = Openflow.Enums.to_int(experimenter, :experimenter_oxm_vendors)
         oxm_field_int = Openflow.Enums.to_int(oxm_field, experimenter)
         oxm_length = div(Openflow.Match.Field.n_bits_of(oxm_field) + 4, 8)
-        has_mask = has_mask(oxm_field)
+        has_mask = has_mask(oxm_field0)
         <<oxm_class_int::16, oxm_field_int::7, has_mask::1, oxm_length::8, experimenter_int::32>>
     end
   end
@@ -179,7 +179,7 @@ defmodule Openflow.Match do
     %{class: match_class, field: field_name, has_mask: false, value: value_bin}
   end
 
-  defp has_mask(oxm_field) when is_atom(oxm_field) do
+  def has_mask(oxm_field) when is_atom(oxm_field) do
     has_mask? =
       oxm_field
       |> to_string

@@ -132,9 +132,90 @@ defmodule Flay do
     tables = [
       TableFeatures.Body.new(
         table_id:      0,
-        name: "Custom L2 Src",
-        max_entries: 8192,
-        config: [:table_miss_mask]
+        name: "classifier",
+        max_entries: 50,
+        config: [:table_miss_mask],
+        match: [
+          :in_port,
+          :eth_type,
+          :eth_src,
+          :masked_eth_dst,
+          :ip_proto,
+          :vlan_vid,
+          :ipv4_src,
+          :udp_dst,
+          :tcp_dst
+        ],
+        wildcards: [
+          :in_port,
+          :eth_src
+          :eth_type,
+          :masked_eth_dst,
+          :vlan_vid,
+          :ip_proto,
+          :ipv4_src,
+          :udp_dst,
+          :tcp_dst,
+        ],
+        instructions: [
+          Openflow.Instruction.GotoTable,
+          Openflow.Instruction.ApplyActions
+        ],
+        apply_actions: [
+          Openflow.Action.Output,
+          Openflow.Action.PushVlan,
+          Openflow.Action.PopVlan,
+          Openflow.Action.SetField
+        ],
+        apply_setfield: [
+          :eth_dst,
+          :vlan_vid
+        ],
+        next_tables: [
+          1,
+        ],
+      ),
+      TableFeatures.Body.new(
+        table_id:      1,
+        name: "admission_control",
+        max_entries: 50,
+        config: [:table_miss_mask],
+        match: [
+          :in_port,
+          :eth_type,
+          :eth_src,
+          :vlan_vid,
+          :masked_eth_dst,
+          :ip_proto,
+          :udp_dst,
+          :tcp_dst,
+        ],
+        wildcards: [
+          :in_port,
+          :eth_type,
+          :eth_src,
+          :masked_eth_dst,
+          :vlan_vid,
+          :ip_proto,
+          :udp_dst,
+          :tcp_dst,
+        ],
+        instructions: [
+          Openflow.Instruction.GotoTable,
+          Openflow.Instruction.ApplyActions
+        ],
+        apply_actions: [
+          Openflow.Action.Output,
+          Openflow.Action.PushVlan,
+          Openflow.Action.PopVlan,
+          Openflow.Action.SetField
+        ],
+        apply_setfield: [
+          :eth_dst,
+          :vlan_vid,
+          :ipv4_src,
+          :ipv4_dst
+        ],
       )
     ]
     TableFeatures.Request.new(tables)

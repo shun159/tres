@@ -2,9 +2,9 @@ defmodule FlogTest do
   use ExUnit.Case, async: false
   use Bitwise
 
-  @vlan_trunk_port      "veth0" # FIXME:
-  @access_port          "veth3" # FIXME:
-  @vxlan_port           "veth4" # FIXME:
+  @vlan_trunk_port      "1" # FIXME:
+  @access_port          "2" # FIXME:
+  @vxlan_port           "5" # FIXME:
   @bootnet_vid     0x1000 ||| 5
   @user_vid        0x1000 ||| 123
   @vlan_present    {0x1000, 0x1000}
