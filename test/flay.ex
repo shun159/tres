@@ -132,48 +132,10 @@ defmodule Flay do
     tables = [
       TableFeatures.Body.new(
         table_id:      0,
-        max_entries: 2000,
-        instructions: [
-          Openflow.Instruction.ApplyActions,
-          Openflow.Instruction.GotoTable
-        ],
-        next_tables: [1],
-        apply_actions: [
-          Openflow.Action.Output,
-          Openflow.Action.PushVlan,
-          Openflow.Action.PopVlan,
-          Openflow.Action.SetField
-        ],
-        match: [
-          :in_port, :eth_src, :eth_dst, :eth_type, :vlan_vid,
-          :ip_proto, :ipv4_src, :ipv4_dst, :tcp_dst,:udp_dst
-        ],
-        apply_setfield: [
-          :eth_src, :eth_dst, :vlan_vid
-        ]
-      ),
-      TableFeatures.Body.new(
-        table_id:      0,
-        max_entries: 2000,
-        instructions: [
-          Openflow.Instruction.ApplyActions
-        ],
-        next_tables: [],
-        apply_actions: [
-          Openflow.Action.Output,
-          Openflow.Action.PushVlan,
-          Openflow.Action.PopVlan,
-          Openflow.Action.SetField
-        ],
-        match: [
-          :in_port, :eth_src, :eth_dst, :eth_type, :vlan_vid,
-          :ip_proto, :ipv4_src, :ipv4_dst, :tcp_dst,:udp_dst
-        ],
-        apply_setfield: [
-          :eth_src, :eth_dst, :vlan_vid, :ipv4_src, :ipv4_dst,
-          :arp_spa, :arp_tpa, :arp_tha
-        ]
-      ),
+        name: "Custom L2 Src",
+        max_entries: 8192,
+        config: [:table_miss_mask]
+      )
     ]
     TableFeatures.Request.new(tables)
     |> send_message(datapath_id)

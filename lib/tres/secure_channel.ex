@@ -4,6 +4,7 @@ defmodule Tres.SecureChannel do
   import Logger
 
   alias :tres_xact_kv, as: XACT_KV
+  alias :queue,        as: Queue
   alias Tres.SecureChannelState
   alias Tres.SwitchRegistry
   alias Tres.MessageHandlerSup
@@ -171,7 +172,14 @@ defmodule Tres.SecureChannel do
         XACT_KV.delete(state_data.xact_kv_ref, message.xid)
       end
     end
-    :keep_state_and_data
+    {next_actions, action_queue} =
+      case Queue.out(state_data.action_queue) do
+        {:empty, action_queue} ->
+          {[], action_queue}
+        {{:value, next_action}, action_queue} ->
+          {[{:next_event, :internal, next_action}], action_queue}
+      end
+    {:keep_state, %{state_data|action_queue: action_queue}, next_actions}
   end
   defp handle_CONNECTED(:internal, {:openflow, message}, state_data) do
     %SecureChannelState{datapath_id: dpid, aux_id: aux_id} = state_data
@@ -181,7 +189,7 @@ defmodule Tres.SecureChannel do
     |> handle_message(new_message, state_data)
     :keep_state_and_data
   end
-  defp handle_CONNECTED(:cast, {:send_message, message}, state_data) do
+  defp handle_CONNECTED(:internal, {:send_message, message}, state_data) do
     xid = SecureChannelState.increment_transaction_id(state_data.xid)
     messages = [
       %{message|xid: xid},
@@ -190,6 +198,19 @@ defmodule Tres.SecureChannel do
     XACT_KV.insert(state_data.xact_kv_ref, xid, message)
     send_message(messages, state_data)
     :keep_state_and_data
+  end
+  defp handle_CONNECTED(:cast, {:send_message, message} = action, state_data) do
+    if Queue.is_empty(state_data.action_queue) do
+      xid = SecureChannelState.increment_transaction_id(state_data.xid)
+      messages = [
+        %{message|xid: xid},
+        %{Openflow.Barrier.Request.new|xid: xid}
+      ]
+      XACT_KV.insert(state_data.xact_kv_ref, xid, message)
+      send_message(messages, state_data)
+    end
+    action_queue = Queue.in(action, state_data.action_queue)
+    {:keep_state, %{state_data|action_queue: action_queue}}
   end
 
   defp handle_message(_in_xact = true, message, state_data) do

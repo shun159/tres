@@ -17,7 +17,8 @@ defmodule Tres.SecureChannelState do
     ping_timer_ref:       nil,
     ping_fail_count:      0,
     last_received:        0,
-    xact_kv_ref:          nil
+    xact_kv_ref:          nil,
+    action_queue:         :queue.new
   )
 
   alias __MODULE__
