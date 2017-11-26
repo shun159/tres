@@ -1,7 +1,10 @@
 %{"binpp": {:git, "https://github.com/jtendo/binpp.git", "64bd68d215d1a6cd35871e7c134d7fe2e46214ea", [branch: "master"]},
+  "eovsdb": {:git, "https://github.com/shun159/eovsdb.git", "1ff1572708d72fd25631c681f2102407903252a3", [branch: "master"]},
   "epcap": {:git, "https://github.com/msantos/epcap.git", "9566f0420a4dcf1292c1a1afd9339c35dbdfd041", [branch: "master"]},
   "flow": {:hex, :flow, "0.12.0", "32c5a5f3ff6693e004b6c17a8c64dce2f8cdaf9564912d79427176013a586ab6", [], [{:gen_stage, "~> 0.12.0", [hex: :gen_stage, repo: "hexpm", optional: false]}], "hexpm"},
   "gen_stage": {:hex, :gen_stage, "0.12.2", "e0e347cbb1ceb5f4e68a526aec4d64b54ad721f0a8b30aa9d28e0ad749419cbb", [:mix], [], "hexpm"},
   "gen_state_machine": {:hex, :gen_state_machine, "2.0.1", "85efd5a0376929c3a4246dd943e17564a2908c7ddd7acd242d84594e785d83f8", [], [], "hexpm"},
+  "jsone": {:git, "https://github.com/sile/jsone.git", "eecc9666c7165e1870b78a7a762549ae8d1c391b", [tag: "1.2.1"]},
   "pkt": {:git, "https://github.com/msantos/pkt.git", "3afb1967f34324c1dec5035a6e36232da815c2e6", [ref: "3afb196"]},
-  "ranch": {:hex, :ranch, "1.4.0", "10272f95da79340fa7e8774ba7930b901713d272905d0012b06ca6d994f8826b", [:rebar3], [], "hexpm"}}
+  "ranch": {:hex, :ranch, "1.4.0", "10272f95da79340fa7e8774ba7930b901713d272905d0012b06ca6d994f8826b", [:rebar3], [], "hexpm"},
+  "uuid": {:git, "https://github.com/avtobiff/erlang-uuid.git", "585c2474afb4a597ae8c8bf6d21e5a9c73f18e0b", [tag: "v0.5.0"]}}
