@@ -60,6 +60,8 @@ defmodule LearningSwitch.Ofctl do
   # private functions
 
   defp init_datapath(datapath_id) do
+    SetConfig.new(miss_send_len: :no_buffer)
+    |> send_message(datapath_id)
     init_flow_tables(datapath_id)
   end
 
