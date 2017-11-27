@@ -624,6 +624,7 @@ defmodule FlogTest do
     Application.start(:pkt)
     Application.start(:epcap)
     Application.start(:ranch)
+    Application.start(:eovsdb)
     Application.start(:tres)
   end
 
