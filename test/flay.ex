@@ -20,8 +20,6 @@ defmodule Flay do
 
   def init(args) do
     state = init_controller(args)
-    TableFeatures.Request.new
-    |> send_message(state.datapath_id)
     init_bridge(state.datapath_id)
     {:ok, state}
   end
@@ -148,7 +146,7 @@ defmodule Flay do
         ],
         wildcards: [
           :in_port,
-          :eth_src
+          :eth_src,
           :eth_type,
           :masked_eth_dst,
           :vlan_vid,
