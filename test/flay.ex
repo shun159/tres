@@ -21,6 +21,7 @@ defmodule Flay do
   def init(args) do
     state = init_controller(args)
     init_bridge(state.datapath_id)
+    GenServer.cast(Flay, :desc_stats)
     {:ok, state}
   end
 
@@ -28,15 +29,15 @@ defmodule Flay do
     send_message(PortDesc.Request.new, state.datapath_id)
     {:noreply, %{state|reply_to: from}}
   end
-  def handle_call(:desc_stats, from, state) do
-    send_message(Desc.Request.new, state.datapath_id)
-    {:noreply, %{state|reply_to: from}}
-  end
   def handle_call(:flow_stats, from, state) do
     send_message(Flow.Request.new, state.datapath_id)
     {:noreply, %{state|reply_to: from}}
   end
 
+  def handle_cast(:desc_stats, state) do
+    send_message(Desc.Request.new, state.datapath_id)
+    {:noreply, state}
+  end
   def handle_cast({:register_pid, tester_pid}, state) do
     {:noreply, %{state|tester_pid: tester_pid}}
   end
@@ -47,10 +48,6 @@ defmodule Flay do
   end
   def handle_cast(:flow_del, state) do
     send_flow_mod_delete(state.datapath_id, match: Match.new)
-    {:noreply, state}
-  end
-  def handle_cast(:restore_flow_profile, state) do
-    send_message(state.default_profile, state.datapath_id)
     {:noreply, state}
   end
 
@@ -70,8 +67,8 @@ defmodule Flay do
     {:noreply, %{state|reply_to: nil}}
   end
   def handle_info(%Desc.Reply{} = desc, state) do
-    GenServer.reply(state.reply_to, desc)
-    {:noreply, %{state|reply_to: nil}}
+    IO.inspect(desc)
+    {:noreply, state}
   end
   def handle_info(%Flow.Reply{} = desc, state) do
     GenServer.reply(state.reply_to, desc)

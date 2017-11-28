@@ -1,6 +1,12 @@
 defmodule Pf do
   use GenServer
 
+  import Record
+  # Extract Erlang record for msantos/pkt
+  for {name, schema} <- extract_all(from_lib: "pkt/include/pkt.hrl") do
+    defrecord(name, schema)
+  end
+
   defmodule State do
     defstruct [
       ifname:     nil,
@@ -9,8 +15,12 @@ defmodule Pf do
     ]
   end
 
-  def inject!(pid, packet) do
-    GenServer.cast(pid, {:inject, packet})
+  def inject!(pid, packet, payload \\ "") do
+    GenServer.cast(pid, {:inject, {packet, payload}})
+  end
+
+  def stop(pid) do
+    GenServer.cast(pid, :stop)
   end
 
   def start_link(ifname) do
@@ -19,22 +29,23 @@ defmodule Pf do
   end
 
   def init([ifname, tester_pid]) do
-    {:ok, epcap_pid} =
-      :epcap.start_link(
-        interface: ifname,
-        promiscuous: true,
-        inject: true
-      )
-    state = %State{
-      pcap_ref: epcap_pid,
-      ifname: ifname,
-      tester_pid: tester_pid
-    }
-    {:ok, state}
+    {:ok, init_pf(ifname, tester_pid)}
   end
 
-  def handle_cast({:inject, packet}, state) do
-    :epcap.send(state.pcap_ref, packet)
+  def handle_cast({:inject, {headers, payload}}, state) do
+    headers_bin = for header <- headers do
+      case header do
+        ether() -> :pkt.ether(header)
+        {:"802.1q", _, _, _, _} = vlan -> :pkt_802_1q.codec(vlan)
+        arp()   -> :pkt.arp(header)
+        ipv4()  -> :pkt.ipv4(header)
+        lldp()  -> :pkt.lldp(header)
+        udp()   -> :pkt.udp(header)
+        tcp()   -> :pkt.tcp(header)
+      end
+    end
+    binary = Enum.join(headers_bin, "")
+    :epcap.send(state.pcap_ref, <<binary::bytes, payload::bytes>>)
     {:noreply, state}
   end
   def handle_cast(:stop, state) do
@@ -46,10 +57,17 @@ defmodule Pf do
 
   def handle_info({:packet, _dlt, _time, _len, data}, state) do
     pkt = :pkt.decapsulate(data)
-    send(state.tester_pid, {pkt, self()})
+    send(state.tester_pid, {to_string(state.ifname), pkt})
     {:noreply, state}
   end
   def handle_info(_info, state) do
     {:noreply, state}
+  end
+
+  # private functions
+
+  defp init_pf(ifname, tester_pid) do
+    {:ok, epcap_pid} = :epcap.start_link(interface: ifname, promiscuous: true, inject: true)
+    %State{pcap_ref: epcap_pid, ifname: ifname, tester_pid: tester_pid}
   end
 end
