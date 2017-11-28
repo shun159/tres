@@ -6,11 +6,9 @@ defmodule FlogTest do
 
   @vlan_trunk_port      "veth0" # FIXME:
   @access_port          "veth3" # FIXME:
-  @vxlan_port           "veth4" # FIXME:
 
   @vlan_trunk_port_sniffer "veth1" # FIXME:
   @access_port_sniffer     "veth2" # FIXME:
-  @vxlan_port_sniffer      "veth5" # FIXME:
 
   @bootnet_vid     0x1000 ||| 5
   @user_vid        0x1000 ||| 123
@@ -49,15 +47,15 @@ defmodule FlogTest do
     wait_for_connected()
     ports = get_ports_desc()
     vlan_trunk = Enum.find(ports, fn(port) -> port.name == @vlan_trunk_port end)
-    vxlan_port = Enum.find(ports, fn(port) -> port.name == @vxlan_port end)
     port = Enum.find(ports, fn(port) -> port.name == @access_port end)
-    cookie = 0x1000000000000001
-    timeout = 32678
+    cookie =  0x2000000000000001
+    cookie2 = 0x2000000000000001
+    timeout = 32_678
     options = [
       vlan_trunk: vlan_trunk,
-      vxlan_port: vxlan_port,
       port: port,
       cookie: cookie,
+      cookie2: cookie2,
       timeout: timeout
     ]
     {:ok, options}
@@ -71,13 +69,12 @@ defmodule FlogTest do
         priority: 0
       ]
       :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-      refute_receive %Openflow.ErrorMsg{}, 1000
+      refute_receive %Openflow.ErrorMsg{}, 2000
     end
 
     test "Inject Packet(ARP)" do
       {:ok, pid1} = Pf.start_link(@access_port_sniffer)
       {:ok, pid2} = Pf.start_link(@vlan_trunk_port_sniffer)
-      {:ok, pid3} = Pf.start_link(@vxlan_port_sniffer)
 
       shost = Openflow.Match.Field.codec(@mac, :eth_src)
       dhost = Openflow.Match.Field.codec(@bcast, :eth_dst)
@@ -87,11 +84,9 @@ defmodule FlogTest do
         arp(op: 1, sha: shost, sip: @client_ip, tip: @gateway_ip)
       ]
       Pf.inject!(pid1, packet, payload)
-      refute_receive {@vlan_trunk_port_sniffer, [^packet, ^payload]}, 1000
-      refute_receive {@vxlan_port_sniffer, [^packet, ^payload]}, 1000
+      refute_receive {@vlan_trunk_port_sniffer, [^packet, ^payload]}, 2000
       Pf.stop(pid1)
       Pf.stop(pid2)
-      Pf.stop(pid3)
     end
   end
 
@@ -114,11 +109,10 @@ defmodule FlogTest do
          match: match,
          instructions: [ins]]
       :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-      refute_receive %Openflow.ErrorMsg{}, 1000
+      refute_receive %Openflow.ErrorMsg{}, 2000
 
       {:ok, pid1} = Pf.start_link(@access_port_sniffer)
       {:ok, pid2} = Pf.start_link(@vlan_trunk_port_sniffer)
-      {:ok, pid3} = Pf.start_link(@vxlan_port_sniffer)
 
       shost = Openflow.Match.Field.codec(state.vlan_trunk.hw_addr, :eth_src)
       dhost = Openflow.Match.Field.codec(@bcast, :eth_dst)
@@ -131,12 +125,10 @@ defmodule FlogTest do
       Pf.inject!(pid2, packet)
       in_port = state.vlan_trunk.number
       assert_receive %Openflow.PacketIn{in_port: ^in_port}, 3000
-      refute_receive {@vlan_trunk_port_sniffer, [^packet, ""]}, 1000
-      refute_receive {@vxlan_port_sniffer, [^packet, ""]}, 1000
-      refute_receive {@access_port_sniffer, [^packet, ""]}, 1000
+      refute_receive {@vlan_trunk_port_sniffer, [^packet, ""]}, 2000
+      refute_receive {@access_port_sniffer, [^packet, ""]}, 2000
       Pf.stop(pid1)
       Pf.stop(pid2)
-      Pf.stop(pid3)
     end
   end
 
@@ -151,7 +143,7 @@ defmodule FlogTest do
            priority: 201,
            match: match]
         :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-        refute_receive %Openflow.ErrorMsg{}, 1000
+        refute_receive %Openflow.ErrorMsg{}, 2000
       end
     end
   end
@@ -169,11 +161,10 @@ defmodule FlogTest do
          match: match,
          instructions: [ins]]
       :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-      refute_receive %Openflow.ErrorMsg{}, 1000
+      refute_receive %Openflow.ErrorMsg{}, 2000
 
       {:ok, pid1} = Pf.start_link(@access_port_sniffer)
       {:ok, pid2} = Pf.start_link(@vlan_trunk_port_sniffer)
-      {:ok, pid3} = Pf.start_link(@vxlan_port_sniffer)
 
       shost = Openflow.Match.Field.codec(@mac, :eth_src)
       dhost = Openflow.Match.Field.codec(@bcast, :eth_dst)
@@ -185,11 +176,9 @@ defmodule FlogTest do
       Pf.inject!(pid1, packet, payload)
       in_port = state.port.number
       assert_receive %Openflow.PacketIn{in_port: ^in_port}, 3000
-      refute_receive {@vlan_trunk_port_sniffer, [^packet, ^payload]}, 1000
-      refute_receive {@vxlan_port_sniffer, [^packet, ^payload]}, 1000
+      refute_receive {@vlan_trunk_port_sniffer, [^packet, ^payload]}, 2000
       Pf.stop(pid1)
       Pf.stop(pid2)
-      Pf.stop(pid3)
     end
   end
 
@@ -206,11 +195,10 @@ defmodule FlogTest do
          match: match,
          instructions: [ins]]
       :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-      refute_receive %Openflow.ErrorMsg{}, 1000
+      refute_receive %Openflow.ErrorMsg{}, 2000
 
       {:ok, pid1} = Pf.start_link(@access_port_sniffer)
       {:ok, pid2} = Pf.start_link(@vlan_trunk_port_sniffer)
-      {:ok, pid3} = Pf.start_link(@vxlan_port_sniffer)
 
       shost = Openflow.Match.Field.codec(@mac, :eth_src)
       dhost = Openflow.Match.Field.codec(@bcast, :eth_dst)
@@ -228,11 +216,9 @@ defmodule FlogTest do
       Pf.inject!(pid1, packet, <<payload::bytes>>)
       in_port = state.port.number
       assert_receive %Openflow.PacketIn{in_port: ^in_port}, 3000
-      refute_receive {@vlan_trunk_port_sniffer, [^packet, ^payload]}, 1000
-      refute_receive {@vxlan_port_sniffer, [^packet, ^payload]}, 1000
+      refute_receive {@vlan_trunk_port_sniffer, [^packet, ^payload]}, 2000
       Pf.stop(pid1)
       Pf.stop(pid2)
-      Pf.stop(pid3)
     end
   end
 
@@ -246,13 +232,12 @@ defmodule FlogTest do
          priority: 11,
          match: match]
       :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-      refute_receive %Openflow.ErrorMsg{}, 1000
+      refute_receive %Openflow.ErrorMsg{}, 2000
     end
 
     test "Inject Packet(ARP)" do
       {:ok, pid1} = Pf.start_link(@access_port_sniffer)
       {:ok, pid2} = Pf.start_link(@vlan_trunk_port_sniffer)
-      {:ok, pid3} = Pf.start_link(@vxlan_port_sniffer)
 
       shost = Openflow.Match.Field.codec(@mac, :eth_src)
       dhost = Openflow.Match.Field.codec(@bcast, :eth_dst)
@@ -262,11 +247,9 @@ defmodule FlogTest do
         arp(op: 1, sha: shost, sip: @client_ip, tip: @gateway_ip)
       ]
       Pf.inject!(pid2, packet, payload)
-      refute_receive {@access_port_sniffer, [^packet, ^payload]}, 1000
-      refute_receive {@vxlan_port_sniffer, [^packet, ^payload]}, 1000
+      refute_receive {@access_port_sniffer, [^packet, ^payload]}, 2000
       Pf.stop(pid1)
       Pf.stop(pid2)
-      Pf.stop(pid3)
     end
   end
 
@@ -295,13 +278,12 @@ defmodule FlogTest do
          match: match,
          instructions: [ins]]
       :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-      refute_receive %Openflow.ErrorMsg{}, 1000
+      refute_receive %Openflow.ErrorMsg{}, 2000
     end
 
     test "Inject Packet(ARP)" do
       {:ok, pid1} = Pf.start_link(@access_port_sniffer)
       {:ok, pid2} = Pf.start_link(@vlan_trunk_port_sniffer)
-      {:ok, pid3} = Pf.start_link(@vxlan_port_sniffer)
 
       shost = Openflow.Match.Field.codec(@mac, :eth_src)
       dhost = Openflow.Match.Field.codec(@bcast, :eth_dst)
@@ -314,10 +296,9 @@ defmodule FlogTest do
         ""
       ]
       Pf.inject!(pid1, packet)
-      assert_receive {@vlan_trunk_port_sniffer, ^expect}, 1000
+      assert_receive {@vlan_trunk_port_sniffer, ^expect}, 2000
       Pf.stop(pid1)
       Pf.stop(pid2)
-      Pf.stop(pid3)
     end
   end
 
@@ -346,13 +327,12 @@ defmodule FlogTest do
          match: match,
          instructions: [ins]]
       :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-      refute_receive %Openflow.ErrorMsg{}, 1000
+      refute_receive %Openflow.ErrorMsg{}, 2000
     end
 
     test "Inject Packet(ARP)" do
       {:ok, pid1} = Pf.start_link(@access_port_sniffer)
       {:ok, pid2} = Pf.start_link(@vlan_trunk_port_sniffer)
-      {:ok, pid3} = Pf.start_link(@vxlan_port_sniffer)
 
       shost = Openflow.Match.Field.codec(@mac, :eth_src)
       dhost = Openflow.Match.Field.codec(@bcast, :eth_dst)
@@ -367,10 +347,9 @@ defmodule FlogTest do
         ""
       ]
       Pf.inject!(pid2, packet)
-      assert_receive {@access_port_sniffer, ^expect}, 1000
+      assert_receive {@access_port_sniffer, ^expect}, 2000
       Pf.stop(pid1)
       Pf.stop(pid2)
-      Pf.stop(pid3)
     end
   end
 
@@ -399,13 +378,12 @@ defmodule FlogTest do
          match: match,
          instructions: [ins]]
       :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-      refute_receive %Openflow.ErrorMsg{}, 1000
+      refute_receive %Openflow.ErrorMsg{}, 2000
     end
 
     test "Inject Packet(ARP)" do
       {:ok, pid1} = Pf.start_link(@access_port_sniffer)
       {:ok, pid2} = Pf.start_link(@vlan_trunk_port_sniffer)
-      {:ok, pid3} = Pf.start_link(@vxlan_port_sniffer)
 
       shost = Openflow.Match.Field.codec(@sdl_vmac, :eth_src)
       dhost = Openflow.Match.Field.codec(@mac, :eth_dst)
@@ -420,10 +398,9 @@ defmodule FlogTest do
         ""
       ]
       Pf.inject!(pid2, packet)
-      assert_receive {@access_port_sniffer, ^expect}, 1000
+      assert_receive {@access_port_sniffer, ^expect}, 2000
       Pf.stop(pid1)
       Pf.stop(pid2)
-      Pf.stop(pid3)
     end
   end
 
@@ -445,7 +422,24 @@ defmodule FlogTest do
          hard_timeout: state.timeout,
          match: match]
       :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-      refute_receive %Openflow.ErrorMsg{}, 1000
+      refute_receive %Openflow.ErrorMsg{}, 2000
+    end
+
+    test "Inject Packet(ARP)" do
+      {:ok, pid1} = Pf.start_link(@access_port_sniffer)
+      {:ok, pid2} = Pf.start_link(@vlan_trunk_port_sniffer)
+
+      shost = Openflow.Match.Field.codec(@mac, :eth_src)
+      dhost = Openflow.Match.Field.codec(@bcast, :eth_dst)
+      payload = <<0::size(16)-unit(8)>>
+      packet = [
+        ether(dhost: dhost, shost: shost, type: 0x0806),
+        arp(op: 1, sha: shost, sip: @client_ip, tip: @gateway_ip)
+      ]
+      Pf.inject!(pid2, packet, payload)
+      refute_receive {@access_port_sniffer, [^packet, ^payload]}, 2000
+      Pf.stop(pid1)
+      Pf.stop(pid2)
     end
   end
 
@@ -476,7 +470,32 @@ defmodule FlogTest do
            match: match,
            instructions: [ins]]
         :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-        refute_receive %Openflow.ErrorMsg{}, 1000
+        refute_receive %Openflow.ErrorMsg{}, 2000
+      end
+    end
+
+    test "Inject Packet(ARP)" do
+      for trusted <- @trusted_macs do
+        {:ok, pid1} = Pf.start_link(@access_port_sniffer)
+        {:ok, pid2} = Pf.start_link(@vlan_trunk_port_sniffer)
+
+        shost = Openflow.Match.Field.codec(trusted, :eth_src)
+        dhost = Openflow.Match.Field.codec(@mac, :eth_dst)
+        payload = <<0::size(16)-unit(8)>>
+        packet = [
+          ether(dhost: dhost, shost: shost, type: 0x8100),
+          {:"802.1q", 0, 0, 5, 0x0806},
+          arp(op: 1, sha: shost, tha: dhost, tip: @client_ip, sip: @gateway_ip)
+        ]
+        expect = [
+          ether(dhost: dhost, shost: shost, type: 0x0806),
+          arp(op: 1, sha: shost, tha: dhost, tip: @client_ip, sip: @gateway_ip),
+          payload
+        ]
+        Pf.inject!(pid2, packet, payload)
+        assert_receive {@access_port_sniffer, ^expect}, 2000
+        Pf.stop(pid1)
+        Pf.stop(pid2)
       end
     end
   end
@@ -497,89 +516,27 @@ defmodule FlogTest do
            hard_timeout: state.timeout,
            match: match]
         :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-        refute_receive %Openflow.ErrorMsg{}, 1000
+        refute_receive %Openflow.ErrorMsg{}, 2000
       end
     end
   end
 
   describe("associate:register_usernet_rule:" <>
-    "table=0, priority=40,cookie={cookie},hard_timeout={htimeout},in_port={vxlan_port},dl_dst={mac}," <>
-    "actions=output:{port_no}") do
+    "in_port={vlan_trunk_port},dl_vlan={vlan}," <>
+    "actions=goto_table:1") do
+    setup [:flow_del_by_cookie]
+
     test "Install Flow", state do
-      match = Openflow.Match.new(
-        in_port: state.vxlan_port.number,
-        eth_dst: @mac
-      )
-      actions = [
-        Openflow.Action.Output.new(state.port.number),
-      ]
-      ins = Openflow.Instruction.ApplyActions.new(actions)
+      match = Openflow.Match.new(in_port: state.vlan_trunk.number, vlan_vid: @user_vid)
+      ins = [Openflow.Instruction.GotoTable.new(1)]
       options =
-        [cookie:   state.cookie,
+        [cookie:   state.cookie2,
          table_id: 0,
-         priority: 40,
-         idle_timeout: state.timeout,
-         hard_timeout: state.timeout,
+         priority: 50,
          match: match,
-         instructions: [ins]]
+         instructions: ins]
       :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-      refute_receive %Openflow.ErrorMsg{}, 1000
-    end
-  end
-
-  describe("associate:register_usernet_rule:" <>
-    "vlan_vid=0x1000/0x1000,tcp,tcp_dst=443,nw_dst={auth_ipv4_address}," <>
-    "strip_vlan,set_field:{sdl_vmac}->eth_dst,output:{vxlan_port}") do
-    test "Install Flow", state do
-      match = Openflow.Match.new(
-        vlan_vid: @vlan_present,
-        eth_type: 0x0800,
-        ip_proto: 6,
-        ipv4_dst: @auth_ipv4_address,
-        tcp_dst: 443
-      )
-      actions = [
-        Openflow.Action.PopVlan.new,
-        Openflow.Action.SetField.new({:eth_dst, @sdl_vmac}),
-        Openflow.Action.Output.new(state.port.number),
-      ]
-      ins = Openflow.Instruction.ApplyActions.new(actions)
-      options =
-        [cookie:   0x2000000000000001,
-         table_id: 1,
-         priority: 30,
-         match: match,
-         instructions: [ins]]
-      :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-      refute_receive %Openflow.ErrorMsg{}, 1000
-    end
-  end
-
-  describe("associate:register_usernet_rule:" <>
-    "vlan_vid=0x1000/0x1000,tcp,tcp_dst=80,nw_dst={captive_ipv4_address}," <>
-    "strip_vlan,set_field:{sdl_vmac}->eth_dst,output:{vxlan_port}") do
-    test "Install Flow", state do
-      match = Openflow.Match.new(
-        vlan_vid: @vlan_present,
-        eth_type: 0x0800,
-        ip_proto: 6,
-        ipv4_dst: @captive_ipv4_address,
-        tcp_dst: 80
-      )
-      actions = [
-        Openflow.Action.PopVlan.new,
-        Openflow.Action.SetField.new({:eth_dst, @sdl_vmac}),
-        Openflow.Action.Output.new(state.port.number),
-      ]
-      ins = Openflow.Instruction.ApplyActions.new(actions)
-      options =
-        [cookie:   0x2000000000000001,
-         table_id: 1,
-         priority: 30,
-         match: match,
-         instructions: [ins]]
-      :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-      refute_receive %Openflow.ErrorMsg{}, 1000
+      refute_receive %Openflow.ErrorMsg{}, 2000
     end
   end
 
@@ -597,7 +554,7 @@ defmodule FlogTest do
         Openflow.Instruction.GotoTable.new(1)
       ]
       options =
-        [cookie:   state.cookie,
+        [cookie:   state.cookie2,
          table_id: 0,
          priority: 20,
          flags: [:send_flow_rem],
@@ -606,7 +563,119 @@ defmodule FlogTest do
          match: match,
          instructions: ins]
       :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-      refute_receive %Openflow.ErrorMsg{}, 1000
+      refute_receive %Openflow.ErrorMsg{}, 2000
+    end
+  end
+
+  describe("associate:register_usernet_rule:" <>
+    "vlan_vid=0x1000/0x1000,tcp,tcp_dst=443,nw_dst={auth_ipv4_address}," <>
+    "strip_vlan,set_field:{sdl_vmac}->eth_dst,output:{vlan_trunk_port}") do
+    test "Install Flow", state do
+      match = Openflow.Match.new(
+        vlan_vid: @vlan_present,
+        eth_type: 0x0800,
+        ip_proto: 6,
+        ipv4_dst: @auth_ipv4_address,
+        tcp_dst: 443
+      )
+      actions = [
+        Openflow.Action.PopVlan.new,
+        Openflow.Action.SetField.new({:eth_dst, @sdl_vmac}),
+        Openflow.Action.Output.new(state.vlan_trunk.number),
+      ]
+      ins = Openflow.Instruction.ApplyActions.new(actions)
+      options =
+        [cookie:   state.cookie2,
+         table_id: 1,
+         priority: 30,
+         match: match,
+         instructions: [ins]]
+      :ok = GenServer.cast(Flay, {:flow_install, options, self()})
+      refute_receive %Openflow.ErrorMsg{}, 2000
+    end
+
+    test "Inject Packet(TCP:443)" do
+      {:ok, pid1} = Pf.start_link(@access_port_sniffer)
+      {:ok, pid2} = Pf.start_link(@vlan_trunk_port_sniffer)
+
+      shost = Openflow.Match.Field.codec(@mac, :eth_src)
+      dhost = Openflow.Match.Field.codec(@sdl_vmac, :eth_dst)
+
+      payload = ""
+      tcp_header = tcp(
+        sport: 53_688,
+        dport: 443,
+        seqno: 1_488_352_223,
+        off:   10,
+        syn:   1,
+        win:   29_200,
+        opt:   <<2, 4, 5, 180, 4, 2, 8, 10, 156, 30, 232, 154, 0, 0, 0, 0, 1, 3, 3, 7>>
+      )
+      ipv4_header = ipv4(saddr: @client_ip, daddr: @auth_ipv4_address, p: 6, len: 60)
+      tcp_sum = :pkt.makesum([ipv4_header, tcp_header, payload])
+      ether_header = ether(dhost: dhost, shost: shost, type: 0x0800)
+      packet = [ether_header, ipv4_header, tcp(tcp_header, sum: tcp_sum)]
+      expect = [ether_header, ipv4_header, tcp(tcp_header, sum: tcp_sum), payload]
+      Pf.inject!(pid1, packet, <<payload::bytes>>)
+      assert_receive {@vlan_trunk_port_sniffer, ^expect}, 2000
+      Pf.stop(pid1)
+      Pf.stop(pid2)
+    end
+  end
+
+  describe("associate:register_usernet_rule:" <>
+    "vlan_vid=0x1000/0x1000,tcp,tcp_dst=80,nw_dst={captive_ipv4_address}," <>
+    "strip_vlan,set_field:{sdl_vmac}->eth_dst,output:{vlan_trunk_port}") do
+    test "Install Flow", state do
+      match = Openflow.Match.new(
+        vlan_vid: @vlan_present,
+        eth_type: 0x0800,
+        ip_proto: 6,
+        ipv4_dst: @captive_ipv4_address,
+        tcp_dst: 80
+      )
+      actions = [
+        Openflow.Action.PopVlan.new,
+        Openflow.Action.SetField.new({:eth_dst, @sdl_vmac}),
+        Openflow.Action.Output.new(state.vlan_trunk.number),
+      ]
+      ins = Openflow.Instruction.ApplyActions.new(actions)
+      options =
+        [cookie:   state.cookie2,
+         table_id: 1,
+         priority: 30,
+         match: match,
+         instructions: [ins]]
+      :ok = GenServer.cast(Flay, {:flow_install, options, self()})
+      refute_receive %Openflow.ErrorMsg{}, 2000
+    end
+
+    test "Inject Packet(TCP:80)" do
+      {:ok, pid1} = Pf.start_link(@access_port_sniffer)
+      {:ok, pid2} = Pf.start_link(@vlan_trunk_port_sniffer)
+
+      shost = Openflow.Match.Field.codec(@mac, :eth_src)
+      dhost = Openflow.Match.Field.codec(@sdl_vmac, :eth_dst)
+
+      payload = ""
+      tcp_header = tcp(
+        sport: 53_688,
+        dport: 80,
+        seqno: 1_488_352_223,
+        off:   10,
+        syn:   1,
+        win:   29_200,
+        opt:   <<2, 4, 5, 180, 4, 2, 8, 10, 156, 30, 232, 154, 0, 0, 0, 0, 1, 3, 3, 7>>
+      )
+      ipv4_header = ipv4(saddr: @client_ip, daddr: @captive_ipv4_address, p: 6, len: 60)
+      tcp_sum = :pkt.makesum([ipv4_header, tcp_header, payload])
+      ether_header = ether(dhost: dhost, shost: shost, type: 0x0800)
+      packet = [ether_header, ipv4_header, tcp(tcp_header, sum: tcp_sum)]
+      expect = [ether_header, ipv4_header, tcp(tcp_header, sum: tcp_sum), payload]
+      Pf.inject!(pid1, packet, <<payload::bytes>>)
+      assert_receive {@vlan_trunk_port_sniffer, ^expect}, 2000
+      Pf.stop(pid1)
+      Pf.stop(pid2)
     end
   end
 
@@ -616,7 +685,7 @@ defmodule FlogTest do
     test "Install Flow", state do
       match = Openflow.Match.new(in_port: state.vlan_trunk.number, eth_src: @mac)
       options =
-        [cookie:   state.cookie,
+        [cookie:   state.cookie2,
          table_id: 0,
          priority: 19,
          flags: [:send_flow_rem],
@@ -624,7 +693,7 @@ defmodule FlogTest do
          hard_timeout: state.timeout,
          match: match]
       :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-      refute_receive %Openflow.ErrorMsg{}, 1000
+      refute_receive %Openflow.ErrorMsg{}, 2000
     end
   end
 
@@ -636,7 +705,7 @@ defmodule FlogTest do
       actions = [Openflow.Action.Output.new(:controller)]
       ins = [Openflow.Instruction.ApplyActions.new(actions)]
       options =
-        [cookie:   state.cookie,
+        [cookie:   state.cookie2,
          table_id: 0,
          priority: 18,
          flags: [:send_flow_rem],
@@ -645,7 +714,7 @@ defmodule FlogTest do
          match: match,
          instructions: ins]
       :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-      refute_receive %Openflow.ErrorMsg{}, 1000
+      refute_receive %Openflow.ErrorMsg{}, 2000
     end
   end
 
@@ -659,7 +728,7 @@ defmodule FlogTest do
         Openflow.Action.Output.new(state.port.number)]
       ins = [Openflow.Instruction.ApplyActions.new(actions)]
       options =
-        [cookie:   state.cookie,
+        [cookie:   state.cookie2,
          table_id: 1,
          priority: 50,
          flags: [:send_flow_rem],
@@ -668,7 +737,7 @@ defmodule FlogTest do
          match: match,
          instructions: ins]
       :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-      refute_receive %Openflow.ErrorMsg{}, 1000
+      refute_receive %Openflow.ErrorMsg{}, 2000
     end
   end
 
@@ -680,16 +749,17 @@ defmodule FlogTest do
       actions = [
         Openflow.Action.Output.new(state.vlan_trunk.number),
         Openflow.Action.PopVlan.new,
-        Openflow.Action.Output.new(state.port.number)]
+        Openflow.Action.Output.new(state.port.number)
+      ]
       ins = [Openflow.Instruction.ApplyActions.new(actions)]
       options =
-        [cookie:   0x2000000000000001,
+        [cookie:   state.cookie2,
          table_id: 1,
          priority: 60,
          match: match,
          instructions: ins]
       :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-      refute_receive %Openflow.ErrorMsg{}, 1000
+      refute_receive %Openflow.ErrorMsg{}, 2000
     end
   end
 
@@ -704,30 +774,13 @@ defmodule FlogTest do
         Openflow.Action.Output.new(state.port.number)]
       ins = [Openflow.Instruction.ApplyActions.new(actions)]
       options =
-        [cookie:   0x2000000000000001,
+        [cookie:   state.cookie2,
          table_id: 1,
          priority: 20,
          match: match,
          instructions: ins]
       :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-      refute_receive %Openflow.ErrorMsg{}, 1000
-    end
-  end
-
-  describe("associate:register_usernet_rule:" <>
-    "in_port={vlan_trunk_port},dl_vlan={vlan}," <>
-    "actions=goto_table:1") do
-    test "Install Flow", state do
-      match = Openflow.Match.new(in_port: state.vlan_trunk.number, vlan_vid: @user_vid)
-      ins = [Openflow.Instruction.GotoTable.new(1)]
-      options =
-        [cookie:   0x2000000000000001,
-         table_id: 0,
-         priority: 50,
-         match: match,
-         instructions: ins]
-      :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-      refute_receive %Openflow.ErrorMsg{}, 1000
+      refute_receive %Openflow.ErrorMsg{}, 2000
     end
   end
 
@@ -759,7 +812,7 @@ defmodule FlogTest do
          match: match,
          instructions: ins]
       :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-      refute_receive %Openflow.ErrorMsg{}, 1000
+      refute_receive %Openflow.ErrorMsg{}, 2000
     end
   end
 
@@ -790,7 +843,7 @@ defmodule FlogTest do
          match: match,
          instructions: ins]
       :ok = GenServer.cast(Flay, {:flow_install, options, self()})
-      refute_receive %Openflow.ErrorMsg{}, 1000
+      refute_receive %Openflow.ErrorMsg{}, 2000
     end
   end
 
@@ -818,6 +871,11 @@ defmodule FlogTest do
       pid when is_pid(pid) ->
         :ok
     end
+  end
+
+  defp flow_del_by_cookie(context) do
+    :ok = GenServer.cast(Flay, {:flow_del, context.cookie})
+    :timer.sleep 2000
   end
 
   defp get_ports_desc do

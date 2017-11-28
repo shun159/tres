@@ -47,7 +47,11 @@ defmodule Flay do
     {:noreply, %{state|tester_pid: tester_pid}}
   end
   def handle_cast(:flow_del, state) do
-    send_flow_mod_delete(state.datapath_id, match: Match.new)
+    send_flow_mod_delete(state.datapath_id)
+    {:noreply, state}
+  end
+  def handle_cast({:flow_del, cookie}, state) do
+    send_flow_mod_delete(state.datapath_id, cookie: cookie, cookie_mask: 0xffffffffffffffff)
     {:noreply, state}
   end
 

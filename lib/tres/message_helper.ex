@@ -1,7 +1,7 @@
 defmodule Tres.MessageHelper do
   defmacro __using__(_) do
     quote location: :keep do
-      defp send_flow_mod_add(datapath_id, options) do
+      defp send_flow_mod_add(datapath_id, options \\ []) do
         flow_mod = %Openflow.FlowMod{
           cookie:   options[:cookie] || 0,
           priority: options[:priority] || 0,
@@ -19,7 +19,7 @@ defmodule Tres.MessageHelper do
         send_message(flow_mod, datapath_id)
       end
 
-      defp send_flow_mod_modify(datapath_id, options) do
+      defp send_flow_mod_modify(datapath_id, options \\ []) do
         command = Tres.Utils.flow_command(:modify, options)
         flow_mod = %Openflow.FlowMod{
           cookie:   options[:cookie] || 0,
@@ -35,7 +35,7 @@ defmodule Tres.MessageHelper do
         send_message(flow_mod, datapath_id)
       end
 
-      defp send_flow_mod_delete(datapath_id, options) do
+      defp send_flow_mod_delete(datapath_id, options \\ []) do
         command = Tres.Utils.flow_command(:delete, options)
         flow_mod = %Openflow.FlowMod{
           cookie:   options[:cookie] || 0,
@@ -49,7 +49,7 @@ defmodule Tres.MessageHelper do
         send_message(flow_mod, datapath_id)
       end
 
-      defp send_packet_out(datapath_id, options) do
+      defp send_packet_out(datapath_id, options \\ []) do
         packet_out = %Openflow.PacketOut{
           buffer_id: options[:buffer_id] || :no_buffer,
           in_port: options[:in_port] || :controller,
@@ -59,7 +59,7 @@ defmodule Tres.MessageHelper do
         send_message(packet_out, datapath_id)
       end
 
-      defp send_group_mod_add(datapath_id, options) do
+      defp send_group_mod_add(datapath_id, options \\ []) do
         group_mod = Openflow.GroupMod.new(
           command: :add,
           type: options[:type] || :all,
