@@ -56,8 +56,9 @@ defmodule Pf do
   end
 
   def handle_info({:packet, _dlt, _time, _len, data}, state) do
-    pkt = :pkt.decapsulate(data)
-    send(state.tester_pid, {to_string(state.ifname), pkt})
+    packet = :pkt.decapsulate(data)
+    packet_len = length(packet)
+    send(state.tester_pid, {to_string(state.ifname), Enum.take(packet, packet_len - 1)})
     {:noreply, state}
   end
   def handle_info(_info, state) do

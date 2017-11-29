@@ -20,8 +20,8 @@ defmodule Flay do
 
   def init(args) do
     state = init_controller(args)
-    init_bridge(state.datapath_id)
     GenServer.cast(Flay, :desc_stats)
+    GenServer.cast(Flay, :flow_del)
     {:ok, state}
   end
 
@@ -68,10 +68,16 @@ defmodule Flay do
   end
   def handle_info(%PortDesc.Reply{} = desc, state) do
     GenServer.reply(state.reply_to, desc)
-    {:noreply, %{state|reply_to: nil}}
+    {:noreply, state}
   end
   def handle_info(%Desc.Reply{} = desc, state) do
-    IO.inspect(desc)
+    info(
+      "[#{__MODULE__}] Switch Desc: "
+      <> "mfr = #{desc.mfr_desc} "
+      <> "hw = #{desc.hw_desc} "
+      <> "sw = #{desc.sw_desc} "
+    )
+    init_bridge(state.datapath_id, desc)
     {:noreply, state}
   end
   def handle_info(%Flow.Reply{} = desc, state) do
@@ -127,7 +133,8 @@ defmodule Flay do
     }
   end
 
-  defp init_bridge(datapath_id) do
+  defp init_bridge(datapath_id, %Desc.Reply{mfr_desc: "Aruba"}) do
+    :ok = info("Transform flow table pipeline")
     tables = [
       TableFeatures.Body.new(
         table_id:      0,
@@ -180,17 +187,19 @@ defmodule Flay do
         max_entries: 50,
         config: [:table_miss_mask],
         match: [
-          :in_port,
           :eth_type,
           :eth_src,
-          :vlan_vid,
           :masked_eth_dst,
+          :vlan_vid,
           :ip_proto,
           :udp_dst,
           :tcp_dst,
+          :ipv4_src,
+          :ipv4_dst,
+          :arp_spa,
+          :arp_tpa
         ],
         wildcards: [
-          :in_port,
           :eth_type,
           :eth_src,
           :masked_eth_dst,
@@ -198,6 +207,10 @@ defmodule Flay do
           :ip_proto,
           :udp_dst,
           :tcp_dst,
+          :ipv4_src,
+          :ipv4_dst,
+          :arp_spa,
+          :arp_tpa
         ],
         instructions: [
           Openflow.Instruction.GotoTable,
@@ -220,5 +233,9 @@ defmodule Flay do
     TableFeatures.Request.new(tables)
     |> send_message(datapath_id)
     send_flow_mod_delete(datapath_id, table_id: :all)
+  end
+  defp init_bridge(_datapath_id, _mfr) do
+    :ok = info("Flow pipeline profile is not defined")
+    :ok
   end
 end
