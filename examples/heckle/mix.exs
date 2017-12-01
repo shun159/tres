@@ -17,6 +17,7 @@ defmodule Heckle.Mixfile do
   end
 
   defp deps do
-    [{:tres, path: @tres_path}]
+    [{:tres, path: @tres_path},
+     {:pkt,  github: "msantos/pkt", branch: "master"}]
   end
 end
