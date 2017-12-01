@@ -3,7 +3,7 @@
 -include_lib("stdlib/include/ms_transform.hrl").
 
 -export([create/0, drop/1]).
--export([insert/3, update/3, get/2, delete/2, is_exists/2]).
+-export([insert/3, update/3, get/2, delete/2, is_exists/2, is_empty/1]).
 
 -define(TABLE, xact_kv).
 -define(ENTRY, xact_entry).
@@ -42,6 +42,13 @@ is_exists(Tid, Xid) ->
     case ets:select(Tid, ms_for_exists(Xid)) of
         [_|_] -> true;
         []    -> false
+    end.
+
+-spec is_empty(reference()) -> boolean().
+is_empty(Tid) ->
+    case ets:info(Tid, size) of
+        0 -> true;
+        _ -> false
     end.
 
 %% Private functions

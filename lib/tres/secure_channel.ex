@@ -189,10 +189,13 @@ defmodule Tres.SecureChannel do
     :keep_state_and_data
   end
   defp handle_CONNECTED(:cast, {:send_message, message} = action, state_data) do
-    if Queue.is_empty(state_data.action_queue),
-      do: xactional_send_message(message, state_data)
-    action_queue = Queue.in(action, state_data.action_queue)
-    {:keep_state, %{state_data|action_queue: action_queue}}
+    new_action_queue = if XACT_KV.is_empty(state_data.xact_kv_ref) do
+      xactional_send_message(message, state_data)
+      state_data.action_queue
+    else
+      Queue.in(action, state_data.action_queue)
+    end
+    {:keep_state, %{state_data|action_queue: new_action_queue}}
   end
 
   # WATING state

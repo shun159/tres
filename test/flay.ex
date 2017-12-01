@@ -195,9 +195,7 @@ defmodule Flay do
           :udp_dst,
           :tcp_dst,
           :ipv4_src,
-          :ipv4_dst,
-          :arp_spa,
-          :arp_tpa
+          :ipv4_dst
         ],
         wildcards: [
           :eth_type,
@@ -208,9 +206,7 @@ defmodule Flay do
           :udp_dst,
           :tcp_dst,
           :ipv4_src,
-          :ipv4_dst,
-          :arp_spa,
-          :arp_tpa
+          :ipv4_dst
         ],
         instructions: [
           Openflow.Instruction.GotoTable,
