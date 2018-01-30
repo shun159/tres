@@ -6,7 +6,7 @@ defmodule Openflow.Features.Reply do
     n_buffers:      0,
     n_tables:       0,
     aux_id:         0,
-    capabilities:   [],
+    capabilities:   []
   )
 
   alias __MODULE__

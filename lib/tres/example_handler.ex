@@ -20,20 +20,13 @@ defmodule Tres.ExampleHandler do
     info("[#{__MODULE__}] Switch Ready: "
       <> "datapath_id: #{datapath_id} "
       <> "aux_id: #{aux_id} "
-      <> "in #{inspect(self())}")
-    _ = send_flows_for_test(datapath_id)
-    _ = send_flow_stats_request(datapath_id)
+      <> "on #{inspect(self())}")
     _ = send_desc_stats_request(datapath_id)
     _ = send_port_desc_stats_request(datapath_id)
-    conn_ref = SwitchRegistry.monitor(datapath_id)
-    state = %State{datapath_id: datapath_id, aux_id: aux_id, conn_ref: conn_ref}
+    state = %State{datapath_id: datapath_id, aux_id: aux_id}
     {:ok, state}
   end
 
-  def handle_info(%Flow.Reply{datapath_id: datapath_id} = desc, state) do
-    handle_flow_stats_reply(desc, datapath_id)
-    {:noreply, state}
-  end
   def handle_info(%PortDesc.Reply{datapath_id: datapath_id} = desc, state) do
     handle_port_desc_stats_reply(desc, datapath_id)
     {:noreply, state}
@@ -42,13 +35,14 @@ defmodule Tres.ExampleHandler do
     handle_desc_stats_reply(desc, datapath_id)
     {:noreply, state}
   end
-
-  # To prevent process leakage, following section is required.
-  def handle_info({:'DOWN', ref, :process, _pid, _reason}, %State{conn_ref: ref} = state) do
-    :ok = warn("[#{__MODULE__}] Switch Disconnected: datapath_id: #{state.datapath_id}")
+  def handle_info({:switch_disconnected, reason}, state) do
+    :ok = warn("[#{__MODULE__}] Switch Disconnected: datapath_id: #{state.datapath_id} by #{reason}")
     {:stop, :normal, state}
   end
-
+  def handle_info({:switch_hang, _datapath_id}, state) do
+    :ok = warn("[#{__MODULE__}] Switch possible hang: datapath_id: #{state.datapath_id}")
+    {:noreply, state}
+  end
   # `Catch all` function is required.
   def handle_info(info, state) do
     :ok = warn("[#{__MODULE__}] unhandled message #{inspect(info)}: #{state.datapath_id}")
@@ -56,17 +50,6 @@ defmodule Tres.ExampleHandler do
   end
 
   # private functions
-
-  defp send_flows_for_test(datapath_id) do
-    for count <- Range.new(1, 1024) do
-      send_flow_mod_add(datapath_id, match: Match.new(metadata: count))
-    end
-  end
-
-  defp send_flow_stats_request(datapath_id) do
-    Flow.Request.new
-    |> send_message(datapath_id)
-  end
 
   defp send_desc_stats_request(datapath_id) do
     Desc.Request.new
@@ -76,10 +59,6 @@ defmodule Tres.ExampleHandler do
   defp send_port_desc_stats_request(datapath_id) do
     PortDesc.Request.new
     |> send_message(datapath_id)
-  end
-
-  defp handle_flow_stats_reply(desc, datapath_id) do
-    info("[#{__MODULE__}] Switch #{length(desc.flows)} installed on #{datapath_id}")
   end
 
   defp handle_desc_stats_reply(desc, datapath_id) do
