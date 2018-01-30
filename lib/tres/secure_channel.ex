@@ -251,6 +251,11 @@ defmodule Tres.SecureChannel do
     :keep_state_and_data
   end
 
+  defp handle_CONNECTED({:call, from}, :get_xid, state_data) do
+    xid = State.get_transaction_id(state_data.xid)
+    {:keep_state_and_data, [{:reply, from, {:ok, xid}}]}
+  end
+
   defp handle_CONNECTED(:cast, {:send_message, message} = action, state_data) do
     new_action_queue =
       if XACT_KV.is_empty(state_data.xact_kv_ref) do

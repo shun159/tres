@@ -19,11 +19,20 @@ defmodule Tres.SwitchRegistry do
   end
 
   def send_message(message, {_dpid, _aux_id} = datapath_id) do
-    Registry.dispatch(__MODULE__, datapath_id, &dispatch(&1, message))
+    Registry.dispatch(__MODULE__, datapath_id, &do_send_message(&1, message))
   end
 
   def send_message(message, dpid) when is_binary(dpid) do
     send_message(message, {dpid, 0})
+  end
+
+  def get_current_xid({_dpid, _aux_id} = datapath_id) do
+    [{pid, _}|_] = Registry.lookup(__MODULE__,  datapath_id)
+    :gen_statem.call(pid, :get_xid, 1000)
+  end
+
+  def get_current_xid(datapath_id) do
+    get_current_xid({datapath_id, 0})
   end
 
   def monitor(datapath_id) do
@@ -34,7 +43,7 @@ defmodule Tres.SwitchRegistry do
 
   # private function
 
-  defp dispatch(entries, message) do
+  defp do_send_message(entries, message) do
     for {pid, _} <- entries, do: :gen_statem.cast(pid, {:send_message, message})
   end
 end
