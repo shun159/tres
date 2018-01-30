@@ -433,32 +433,46 @@ defmodule Tres.SecureChannel do
     warn("[#{__MODULE__}] connection terminated: Features handshake timed out")
     {:stop, :normal, %{state_data|socket: nil}}
   end
-  defp close_connection(:handler_error, state_data) do
+  defp close_connection(:handler_error = disconnected_reason, state_data) do
     warn("[#{__MODULE__}] connection terminated: Got handler error")
+    %State{handler_pid: handler_pid} = state_data
+    send(handler_pid, {:switch_disconnected, disconnected_reason})
     {:stop, :normal, %{state_data|socket: nil}}
   end
-  defp close_connection(:ping_failed, state_data) do
+  defp close_connection(:ping_failed = disconnected_reason, state_data) do
     warn("[#{__MODULE__}] connection terminated: Exceeded to max_ping_fail_count")
+    %State{handler_pid: handler_pid} = state_data
+    send(handler_pid, {:switch_disconnected, disconnected_reason})
     {:stop, :normal, %{state_data|socket: nil}}
   end
-  defp close_connection({:main_closed, reason}, state_data) do
+  defp close_connection({:main_closed = disconnected_reason, reason}, state_data) do
     warn("[#{__MODULE__}] connection terminated: Main connection down by #{reason}")
+    %State{handler_pid: handler_pid} = state_data
+    send(handler_pid, {:switch_disconnected, disconnected_reason})
     {:stop, :normal, %{state_data|socket: nil}}
   end
-  defp close_connection({:handler_down, reason}, state_data) do
+  defp close_connection({:handler_down = disconnected_reason, reason}, state_data) do
     warn("[#{__MODULE__}] connection terminated: Handler process down by #{reason}")
+    %State{handler_pid: handler_pid} = state_data
+    send(handler_pid, {:switch_disconnected, disconnected_reason})
     {:stop, :normal, %{state_data|socket: nil}}
   end
-  defp close_connection({:trap_detected, reason}, state_data) do
+  defp close_connection({:trap_detected = disconnected_reason, reason}, state_data) do
     warn("[#{__MODULE__}] connection terminated: Trapped by #{reason}")
+    %State{handler_pid: handler_pid} = state_data
+    send(handler_pid, {:switch_disconnected, disconnected_reason})
     {:stop, :normal, %{state_data|socket: nil}}
   end
-  defp close_connection(:tcp_closed, state_data) do
+  defp close_connection(:tcp_closed = disconnected_reason, state_data) do
     warn("[#{__MODULE__}] connection terminated: TCP Closed by peer")
+    %State{handler_pid: handler_pid} = state_data
+    send(handler_pid, {:switch_disconnected, disconnected_reason})
     {:stop, :normal, %{state_data|socket: nil}}
   end
-  defp close_connection({:tcp_error, reason}, state_data) do
+  defp close_connection({:tcp_error, reason} = disconnected_reason, state_data) do
     warn("[#{__MODULE__}] connection terminated: TCP Error occured: #{reason}")
+    %State{handler_pid: handler_pid} = state_data
+    send(handler_pid, {:switch_disconnected, disconnected_reason})
     {:stop, :normal, %{state_data|socket: nil}}
   end
 end

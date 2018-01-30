@@ -21,8 +21,6 @@ defmodule Tres.Mixfile do
   defp deps do
     [{:ranch, "~> 1.4.0"},
      {:eovsdb, github: "shun159/eovsdb", branch: "master"},
-     {:binpp, github: "jtendo/binpp", branch: "master"},
-     {:pkt, github: "msantos/pkt", ref: "3afb196", only: :test, override: true},
      {:epcap, github: "msantos/epcap", branch: "master", only: :test}]
   end
 end

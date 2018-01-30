@@ -1071,6 +1071,7 @@ defmodule Openflow.Enums do
 
   for {enum_name, enum_def} <- @enums do
     enum_name = to_string(enum_name)
+
     to_int_fn_name = String.to_atom(enum_name <> "_to_int")
     to_atom_fn_name = String.to_atom(enum_name <> "_to_atom")
 
@@ -1091,6 +1092,7 @@ defmodule Openflow.Enums do
         end
       end
     end
+
     def to_int(_int, unquote(String.to_atom(enum_name))) do
       throw(:bad_enum)
     end
@@ -1101,9 +1103,14 @@ defmodule Openflow.Enums do
 
     for {key, value} <- enum_def do
       def unquote(to_int_fn_name)(unquote(key)), do: unquote(value)
+    end
+
+    def unquote(to_int_fn_name)(_),  do: throw(:bad_enum)
+
+    for {key, value} <- enum_def do
       def unquote(to_atom_fn_name)(unquote(value)), do: unquote(key)
     end
-    def unquote(to_int_fn_name)(_),  do: throw(:bad_enum)
+
     def unquote(to_atom_fn_name)(_), do: throw(:bad_enum)
 
     def int_to_flags(int, unquote(String.to_atom(enum_name))) do

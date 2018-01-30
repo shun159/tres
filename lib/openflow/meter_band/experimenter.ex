@@ -2,7 +2,7 @@ defmodule Openflow.MeterBand.Experimenter do
   defstruct(
     rate:         0,
     burst_size:   0,
-    experimenter: 0,
+    experimenter: 0
   )
 
   alias __MODULE__
