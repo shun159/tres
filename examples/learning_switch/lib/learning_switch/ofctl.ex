@@ -18,7 +18,6 @@ defmodule LearningSwitch.Ofctl do
   defmodule State do
     defstruct [
       datapath_id: nil,
-      conn_ref:    nil,
       fdb_pid:     nil
     ]
   end
@@ -27,14 +26,12 @@ defmodule LearningSwitch.Ofctl do
     GenServer.start_link(__MODULE__, [datapath_id, args])
   end
 
-  def init([datapath_id, _args]) do
+  def init([{datapath_id, _aux_id}, _args]) do
     :ok = debug("Switch Ready: datapath_id: #{inspect(datapath_id)}")
-    conn_ref = SwitchRegistry.monitor(datapath_id)
     {:ok, pid} = FDB.start_link
     init_datapath(datapath_id)
     state = %State{
       datapath_id: datapath_id,
-      conn_ref:    conn_ref,
       fdb_pid:     pid
     }
     {:ok, state}
@@ -48,8 +45,8 @@ defmodule LearningSwitch.Ofctl do
     :ok = debug("PacketIn: eth_src: #{eth_src} datapath_id: #{inspect(state.datapath_id)}")
     {:noreply, state}
   end
-  def handle_info({:'DOWN', ref, :process, _pid, _reason}, %State{conn_ref: ref} = state) do
-    :ok = debug("Switch Disconnected: datapath_id: #{inspect(state.datapath_id)}")
+  def handle_info({:switch_disconnected, reason}, state) do
+    :ok = warn("[#{__MODULE__}] Switch Disconnected: datapath_id: #{state.datapath_id} by #{reason}")
     {:stop, :normal, state}
   end
   def handle_info(info, state) do
