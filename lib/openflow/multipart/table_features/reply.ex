@@ -1,11 +1,12 @@
 defmodule Openflow.Multipart.TableFeatures.Reply do
   defstruct(
-    version:      4,
-    xid:          0,
-    datapath_id:  nil, # virtual field
-    aux_id:       nil,
-    flags:        [],
-    tables:       []
+    version: 4,
+    xid: 0,
+    # virtual field
+    datapath_id: nil,
+    aux_id: nil,
+    flags: [],
+    tables: []
   )
 
   alias __MODULE__
@@ -30,12 +31,15 @@ defmodule Openflow.Multipart.TableFeatures.Reply do
   end
 
   def append_body(%Reply{tables: tables} = message, %Reply{flags: [:more], tables: continue}) do
-    %{message|tables: [continue|tables]}
+    %{message | tables: [continue | tables]}
   end
+
   def append_body(%Reply{tables: tables} = message, %Reply{flags: [], tables: continue}) do
-    new_tables = [continue|tables]
-    |> Enum.reverse
-    |> List.flatten
-    %{message|tables: new_tables}
+    new_tables =
+      [continue | tables]
+      |> Enum.reverse()
+      |> List.flatten()
+
+    %{message | tables: new_tables}
   end
 end

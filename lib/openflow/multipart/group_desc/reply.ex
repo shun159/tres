@@ -1,10 +1,11 @@
 defmodule Openflow.Multipart.GroupDesc.Reply do
   defstruct(
-    version:      4,
-    xid:          0,
-    datapath_id:  nil, # virtual field
-    flags:        [],
-    groups:       []
+    version: 4,
+    xid: 0,
+    # virtual field
+    datapath_id: nil,
+    flags: [],
+    groups: []
   )
 
   alias __MODULE__
@@ -21,21 +22,24 @@ defmodule Openflow.Multipart.GroupDesc.Reply do
   end
 
   def append_body(%Reply{groups: groups} = message, %Reply{flags: [:more], groups: continue}) do
-    %{message|groups: [continue|groups]}
+    %{message | groups: [continue | groups]}
   end
+
   def append_body(%Reply{groups: groups} = message, %Reply{flags: [], groups: continue}) do
-    new_groups = [continue|groups]
-    |> Enum.reverse
-    |> List.flatten
-    %{message|groups: new_groups}
+    new_groups =
+      [continue | groups]
+      |> Enum.reverse()
+      |> List.flatten()
+
+    %{message | groups: new_groups}
   end
 end
 
 defmodule Openflow.Multipart.GroupDescStats do
   defstruct(
-    type:     :all,
-    group_id:    0,
-    buckets:    []
+    type: :all,
+    group_id: 0,
+    buckets: []
   )
 
   alias __MODULE__
@@ -49,9 +53,10 @@ defmodule Openflow.Multipart.GroupDescStats do
   # private functions
 
   defp do_read(acc, ""), do: Enum.reverse(acc)
+
   defp do_read(acc, <<length::16, _tail::bytes>> = binary) do
     <<group_stats_bin::size(length)-bytes, rest::bytes>> = binary
-    do_read([codec(group_stats_bin)|acc], rest)
+    do_read([codec(group_stats_bin) | acc], rest)
   end
 
   defp codec(<<length::16, type_int::8, _::8, group_id::32, tail::bytes>>) do

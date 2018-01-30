@@ -1,9 +1,11 @@
 defmodule Openflow.Role.Reply do
   defstruct(
-    version:        4,
-    xid:            0,
-    datapath_id:  nil, # virtual field
-    aux_id:         0,  # virtual field
+    version: 4,
+    xid: 0,
+    # virtual field
+    datapath_id: nil,
+    # virtual field
+    aux_id: 0,
     role: :nochange,
     generation_id: 0
   )

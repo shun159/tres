@@ -1,11 +1,12 @@
 defmodule Openflow.Multipart.Queue.Request do
   defstruct(
-    version:      4,
-    xid:          0,
-    datapath_id:  nil, # virtual field
+    version: 4,
+    xid: 0,
+    # virtual field
+    datapath_id: nil,
     flags: [],
     port_number: :any,
-    queue_id:    :all
+    queue_id: :all
   )
 
   alias __MODULE__

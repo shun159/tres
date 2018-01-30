@@ -12,7 +12,7 @@ defmodule Openflow.Action.NxExit do
 
   def to_binary(%NxExit{}) do
     exp_body = <<@experimenter::32, @nxast::16, 0::48>>
-    <<0xffff::16, 16::16, exp_body::bytes>>
+    <<0xFFFF::16, 16::16, exp_body::bytes>>
   end
 
   def read(<<@experimenter::32, @nxast::16, 0::48>>) do

@@ -6,8 +6,8 @@ defmodule OfpPortStatusTest do
     test "with OFP_PORT_STATUS packet" do
       {:ok, port_status, ""} =
         "test/packet_data/libofproto-OFP13-port_status.packet"
-        |> File.read!
-        |> Openflow.read
+        |> File.read!()
+        |> Openflow.read()
 
       assert port_status.version == 4
       assert port_status.xid == 0
@@ -27,8 +27,8 @@ defmodule OfpPortStatusTest do
     test "with OFP_PORT_STATUS packet(with kanji port name)" do
       {:ok, port_status, ""} =
         "test/packet_data/4-39-ofp_port_status.packet"
-        |> File.read!
-        |> Openflow.read
+        |> File.read!()
+        |> Openflow.read()
 
       assert port_status.version == 4
       assert port_status.xid == 0

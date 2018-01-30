@@ -6,8 +6,9 @@ defmodule OfpEchoTest do
     test "with OFP_ECHO_REQUEST packet" do
       {:ok, %Openflow.Echo.Request{} = echo, ""} =
         "test/packet_data/ofp_echo_request.raw"
-        |> File.read!
-        |> Openflow.read
+        |> File.read!()
+        |> Openflow.read()
+
       assert echo.version == 4
       assert echo.xid == 0
       assert echo.data == ""
@@ -16,8 +17,9 @@ defmodule OfpEchoTest do
     test "with OFP_ECHO_REPLY packet" do
       {:ok, %Openflow.Echo.Reply{} = echo, ""} =
         "test/packet_data/ofp_echo_reply.raw"
-        |> File.read!
-        |> Openflow.read
+        |> File.read!()
+        |> Openflow.read()
+
       assert echo.version == 4
       assert echo.xid == 0
       assert echo.data == ""
@@ -31,9 +33,11 @@ defmodule OfpEchoTest do
         xid: 0,
         data: ""
       }
+
       expect =
         "test/packet_data/ofp_echo_request.raw"
-        |> File.read!
+        |> File.read!()
+
       assert Openflow.to_binary(echo) == expect
     end
 
@@ -43,9 +47,11 @@ defmodule OfpEchoTest do
         xid: 0,
         data: ""
       }
+
       expect =
         "test/packet_data/ofp_echo_reply.raw"
-        |> File.read!
+        |> File.read!()
+
       assert Openflow.to_binary(echo) == expect
     end
   end

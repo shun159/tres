@@ -3,7 +3,7 @@ defmodule Tres.MessageHelper do
     quote location: :keep do
       defp send_flow_mod_add(datapath_id, options \\ []) do
         flow_mod = %Openflow.FlowMod{
-          cookie:   options[:cookie] || 0,
+          cookie: options[:cookie] || 0,
           priority: options[:priority] || 0,
           table_id: options[:table_id] || 0,
           command: :add,
@@ -11,41 +11,46 @@ defmodule Tres.MessageHelper do
           hard_timeout: options[:hard_timeout] || 0,
           buffer_id: :no_buffer,
           out_port: :any,
-          out_group:  :any,
+          out_group: :any,
           flags: options[:flags] || [],
-          match: options[:match] || Openflow.Match.new,
-          instructions: options[:instructions] || [],
+          match: options[:match] || Openflow.Match.new(),
+          instructions: options[:instructions] || []
         }
+
         send_message(flow_mod, datapath_id)
       end
 
       defp send_flow_mod_modify(datapath_id, options \\ []) do
         command = Tres.Utils.flow_command(:modify, options)
+
         flow_mod = %Openflow.FlowMod{
-          cookie:   options[:cookie] || 0,
+          cookie: options[:cookie] || 0,
           table_id: options[:table_id] || 0,
           command: command,
           idle_timeout: options[:idle_timeout] || 0,
           hard_timeout: options[:hard_timeout] || 0,
           out_port: :any,
           out_group: :any,
-          match: options[:match] || Openflow.Match.new,
-          instructions: options[:instructions] || [],
+          match: options[:match] || Openflow.Match.new(),
+          instructions: options[:instructions] || []
         }
+
         send_message(flow_mod, datapath_id)
       end
 
       defp send_flow_mod_delete(datapath_id, options \\ []) do
         command = Tres.Utils.flow_command(:delete, options)
+
         flow_mod = %Openflow.FlowMod{
-          cookie:   options[:cookie] || 0,
+          cookie: options[:cookie] || 0,
           cookie_mask: options[:cookie_mask] || 0,
           table_id: options[:table_id] || :all,
           command: command,
           out_port: options[:out_port] || :any,
           out_group: options[:out_group] || :any,
-          match: options[:match] || Openflow.Match.new
+          match: options[:match] || Openflow.Match.new()
         }
+
         send_message(flow_mod, datapath_id)
       end
 
@@ -56,16 +61,19 @@ defmodule Tres.MessageHelper do
           actions: options[:actions] || [],
           data: options[:data] || ""
         }
+
         send_message(packet_out, datapath_id)
       end
 
       defp send_group_mod_add(datapath_id, options \\ []) do
-        group_mod = Openflow.GroupMod.new(
-          command: :add,
-          type: options[:type] || :all,
-          group_id: options[:group_id] || 0,
-          buckets: options[:buckets] || []
-        )
+        group_mod =
+          Openflow.GroupMod.new(
+            command: :add,
+            type: options[:type] || :all,
+            group_id: options[:group_id] || 0,
+            buckets: options[:buckets] || []
+          )
+
         send_message(group_mod, datapath_id)
       end
 
@@ -75,12 +83,14 @@ defmodule Tres.MessageHelper do
       end
 
       defp send_group_mod_modify(datapath_id, options) do
-        group_mod = Openflow.GroupMod.new(
-          command: :modify,
-          type: options[:type] || :all,
-          group_id: options[:group_id] || 0,
-          buckets: options[:buckets] || []
-        )
+        group_mod =
+          Openflow.GroupMod.new(
+            command: :modify,
+            type: options[:type] || :all,
+            group_id: options[:group_id] || 0,
+            buckets: options[:buckets] || []
+          )
+
         send_message(group_mod, datapath_id)
       end
     end

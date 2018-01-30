@@ -11,7 +11,7 @@ defmodule Tres.MessageHandlerSup do
   end
 
   def start_child({dpid, aux_id}) do
-    {_cb_mod, cb_args} = Tres.Utils.get_callback_module
+    {_cb_mod, cb_args} = Tres.Utils.get_callback_module()
     Supervisor.start_child(__MODULE__, [{dpid, aux_id}, cb_args])
   end
 end

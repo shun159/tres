@@ -8,11 +8,9 @@ defmodule Pf do
   end
 
   defmodule State do
-    defstruct [
-      ifname:     nil,
-      pcap_ref:   nil,
-      tester_pid: nil
-    ]
+    defstruct ifname: nil,
+              pcap_ref: nil,
+              tester_pid: nil
   end
 
   def inject!(pid, packet, payload \\ "") do
@@ -33,24 +31,28 @@ defmodule Pf do
   end
 
   def handle_cast({:inject, {headers, payload}}, state) do
-    headers_bin = for header <- headers do
-      case header do
-        ether() -> :pkt.ether(header)
-        {:"802.1q", _, _, _, _} = vlan -> :pkt_802_1q.codec(vlan)
-        arp()   -> :pkt.arp(header)
-        ipv4()  -> :pkt.ipv4(header)
-        lldp()  -> :pkt.lldp(header)
-        udp()   -> :pkt.udp(header)
-        tcp()   -> :pkt.tcp(header)
+    headers_bin =
+      for header <- headers do
+        case header do
+          ether() -> :pkt.ether(header)
+          {:"802.1q", _, _, _, _} = vlan -> :pkt_802_1q.codec(vlan)
+          arp() -> :pkt.arp(header)
+          ipv4() -> :pkt.ipv4(header)
+          lldp() -> :pkt.lldp(header)
+          udp() -> :pkt.udp(header)
+          tcp() -> :pkt.tcp(header)
+        end
       end
-    end
+
     binary = Enum.join(headers_bin, "")
     :epcap.send(state.pcap_ref, <<binary::bytes, payload::bytes>>)
     {:noreply, state}
   end
+
   def handle_cast(:stop, state) do
     {:stop, :normal, state}
   end
+
   def handle_cast(_req, state) do
     {:noreply, state}
   end
@@ -61,6 +63,7 @@ defmodule Pf do
     send(state.tester_pid, {to_string(state.ifname), Enum.take(packet, packet_len - 1)})
     {:noreply, state}
   end
+
   def handle_info(_info, state) do
     {:noreply, state}
   end

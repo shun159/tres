@@ -1,13 +1,14 @@
 defmodule Openflow.Multipart.Aggregate.Reply do
   defstruct(
-    version:      4,
-    xid:          0,
-    datapath_id:  nil, # virtual field
-    aux_id:       nil,
-    flags:        [],
+    version: 4,
+    xid: 0,
+    # virtual field
+    datapath_id: nil,
+    aux_id: nil,
+    flags: [],
     packet_count: 0,
-    byte_count:   0,
-    flow_count:   0
+    byte_count: 0,
+    flow_count: 0
   )
 
   alias __MODULE__

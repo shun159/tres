@@ -1,8 +1,8 @@
 defmodule Openflow.Action.NxConjunction do
   defstruct(
-    clause:    0,
+    clause: 0,
     n_clauses: 0,
-    id:        0
+    id: 0
   )
 
   @experimenter 0x00002320
@@ -11,14 +11,16 @@ defmodule Openflow.Action.NxConjunction do
   alias __MODULE__
 
   def new(options) do
-    %NxConjunction{clause:    options[:clause] || 0,
-                   n_clauses: options[:n_clauses] || 0,
-                   id:        options[:id] || 0}
+    %NxConjunction{
+      clause: options[:clause] || 0,
+      n_clauses: options[:n_clauses] || 0,
+      id: options[:id] || 0
+    }
   end
 
   def to_binary(%NxConjunction{clause: clause, n_clauses: n_clauses, id: id}) do
     exp_body = <<@experimenter::32, @nxast::16, clause::8, n_clauses::8, id::32>>
-    <<0xffff::16, 16::16, exp_body::bytes>>
+    <<0xFFFF::16, 16::16, exp_body::bytes>>
   end
 
   def read(<<@experimenter::32, @nxast::16, clause::8, n_clauses::8, id::32>>) do

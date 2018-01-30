@@ -11,6 +11,7 @@ defmodule Openflow.Action.Output do
   def new(port) when not is_list(port) do
     new(port_number: port)
   end
+
   def new(options) when is_list(options) do
     port_no = Keyword.get(options, :port_number)
     max_len = Keyword.get(options, :max_len, :no_buffer)

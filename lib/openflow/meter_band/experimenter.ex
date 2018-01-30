@@ -1,7 +1,7 @@
 defmodule Openflow.MeterBand.Experimenter do
   defstruct(
-    rate:         0,
-    burst_size:   0,
+    rate: 0,
+    burst_size: 0,
     experimenter: 0
   )
 
@@ -14,11 +14,11 @@ defmodule Openflow.MeterBand.Experimenter do
     %Experimenter{rate: rate, burst_size: burst_size, experimenter: experimenter}
   end
 
-  def read(<<0xffff::16, _::16, rate::32, burst_size::32, experimenter::32>>) do
+  def read(<<0xFFFF::16, _::16, rate::32, burst_size::32, experimenter::32>>) do
     %Experimenter{rate: rate, burst_size: burst_size, experimenter: experimenter}
   end
 
   def to_binary(%Experimenter{rate: rate, burst_size: burst_size, experimenter: experimenter}) do
-    <<0xffff::16, 16::16, rate::32, burst_size::32, experimenter::32>>
+    <<0xFFFF::16, 16::16, rate::32, burst_size::32, experimenter::32>>
   end
 end

@@ -14,8 +14,8 @@ defmodule Openflow.Action.SetField do
   def to_binary(%SetField{field: {field, value}}) do
     match_bin =
       [{field, value}]
-      |> Openflow.Match.new
-      |> Openflow.Match.to_binary
+      |> Openflow.Match.new()
+      |> Openflow.Match.to_binary()
 
     <<1::16, _length::16, padded_field::bytes>> = match_bin
     patial_len = @set_field_size - 4 + byte_size(padded_field)
@@ -28,7 +28,7 @@ defmodule Openflow.Action.SetField do
     <<_class::16, _field::7, _hm::1, flen::8, _rest::bytes>> = match_field_bin
     match_len = 4 + 4 + flen
     match_bin = <<1::16, match_len::16, match_field_bin::bytes>>
-    {[field|_], _rest} = Openflow.Match.read(match_bin)
+    {[field | _], _rest} = Openflow.Match.read(match_bin)
     %SetField{field: field}
   end
 end

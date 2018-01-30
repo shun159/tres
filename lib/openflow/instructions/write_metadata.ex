@@ -1,11 +1,11 @@
 defmodule Openflow.Instruction.WriteMetadata do
-  defstruct(metadata: 0, metadata_mask: 0xffffffffffffffff)
+  defstruct(metadata: 0, metadata_mask: 0xFFFFFFFFFFFFFFFF)
 
   alias __MODULE__
 
   def new(options) do
     metadata = Keyword.get(options, :metadata, 0)
-    metadata_mask = Keyword.get(options, :metadata_mask, 0xffffffffffffffff)
+    metadata_mask = Keyword.get(options, :metadata_mask, 0xFFFFFFFFFFFFFFFF)
     %WriteMetadata{metadata: metadata, metadata_mask: metadata_mask}
   end
 

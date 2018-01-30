@@ -1,8 +1,9 @@
 defmodule Openflow.Multipart.PortDesc.Request do
   defstruct(
-    version:      4,
-    xid:          0,
-    datapath_id:  nil, # virtual field
+    version: 4,
+    xid: 0,
+    # virtual field
+    datapath_id: nil,
     flags: []
   )
 

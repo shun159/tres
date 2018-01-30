@@ -9,32 +9,32 @@ defmodule Openflow.Hello do
 
   alias __MODULE__
 
-  def ofp_type,
-    do: 0
+  def ofp_type, do: 0
 
   def new(version) when is_integer(version) do
     %Hello{elements: [versionbitmap: [version]]}
   end
+
   def new(versions) when is_list(versions) do
     %Hello{elements: [versionbitmap: versions]}
   end
 
   def supported_version?(%Hello{version: 4, elements: []}), do: true
   def supported_version?(%Hello{elements: []}), do: false
+
   def supported_version?(%Hello{elements: elements}) do
     versionbitmaps = for {:versionbitmap, versions} <- elements, do: versions
-    Enum.any?(versionbitmaps, fn(versions) -> 4 in versions end)
+    Enum.any?(versionbitmaps, fn versions -> 4 in versions end)
   end
 
-  def read(binary),
-    do: %Hello{elements: decode([], binary)}
+  def read(binary), do: %Hello{elements: decode([], binary)}
 
-  def to_binary(%Hello{elements: elements}),
-    do: encode([], elements)
+  def to_binary(%Hello{elements: elements}), do: encode([], elements)
 
   # private functions
 
   defp decode(acc, <<>>), do: acc
+
   defp decode(acc, <<typeint::16, length::16, rest::bytes>>) do
     data_len = length - @ofp_hello_size
     <<data::bytes-size(data_len), rest2::bytes>> = rest
@@ -50,15 +50,13 @@ defmodule Openflow.Hello do
     end
   end
 
-  defp encode(acc, []),
-    do: to_string(acc)
-  defp encode(acc, [h|rest]),
-    do: encode([encode_hello_elem(h)|acc], rest)
+  defp encode(acc, []), do: to_string(acc)
+  defp encode(acc, [h | rest]), do: encode([encode_hello_elem(h) | acc], rest)
 
   defp decode_hello_elem(:versionbitmap, acc, binary),
-    do: [{:versionbitmap, decode_bitmap([], binary, 0)}|acc]
-  defp decode_hello_elem(_, acc, _binary),
-    do: acc
+    do: [{:versionbitmap, decode_bitmap([], binary, 0)} | acc]
+
+  defp decode_hello_elem(_, acc, _binary), do: acc
 
   defp encode_hello_elem({:versionbitmap, versions}) do
     bitmap_bin = encode_bitmap(versions)
@@ -66,11 +64,13 @@ defmodule Openflow.Hello do
     size_int = @ofp_hello_size + byte_size(bitmap_bin)
     <<type_int::16, size_int::16, bitmap_bin::bytes>>
   end
+
   defp encode_hello_elem(_) do
     <<>>
   end
 
   defp decode_bitmap(acc, "", _), do: acc
+
   defp decode_bitmap(acc, <<int::32, rest::bytes>>, base) do
     acc
     |> decode_bitmap(int, 0, base)
@@ -80,24 +80,27 @@ defmodule Openflow.Hello do
   defp encode_bitmap(list) do
     size =
       list
-      |> Enum.max
+      |> Enum.max()
       |> div(32)
+
     encode_bitmap(0, list, size)
   end
 
-  defp decode_bitmap(acc, _, index, _) when index >= 32,
-    do: acc
-  defp decode_bitmap(acc, int, index, base) when (int &&& (1 <<< index)) == 0,
+  defp decode_bitmap(acc, _, index, _) when index >= 32, do: acc
+
+  defp decode_bitmap(acc, int, index, base) when (int &&& 1 <<< index) == 0,
     do: decode_bitmap(acc, int, index + 1, base)
+
   defp decode_bitmap(acc, int, index, base),
-    do: decode_bitmap([base + index|acc], int, index + 1, base)
+    do: decode_bitmap([base + index | acc], int, index + 1, base)
 
   defp encode_bitmap(acc, [], size) do
     bytes = (size + 1) * 32
     <<acc::size(bytes)>>
   end
-  defp encode_bitmap(acc, [h|rest], size) do
-    index = (size - div(h, 32) * 32 + rem(h, 32))
-    encode_bitmap(acc ||| (1 <<< index), rest, size)
+
+  defp encode_bitmap(acc, [h | rest], size) do
+    index = size - div(h, 32) * 32 + rem(h, 32)
+    encode_bitmap(acc ||| 1 <<< index, rest, size)
   end
 end

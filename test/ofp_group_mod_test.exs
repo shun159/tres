@@ -12,14 +12,16 @@ defmodule OfpGroupModTest do
       assert group_mod.command == :add
       assert group_mod.type == :all
       assert group_mod.group_id == 1
+
       assert group_mod.buckets == [
-        Openflow.Bucket.new(
-          weight: 1,
-          watch_port: 1,
-          watch_group: 1,
-          actions: [Openflow.Action.Output.new(2)]
-        )
-      ]
+               Openflow.Bucket.new(
+                 weight: 1,
+                 watch_port: 1,
+                 watch_group: 1,
+                 actions: [Openflow.Action.Output.new(2)]
+               )
+             ]
+
       assert Openflow.to_binary(group_mod) == binary
     end
   end

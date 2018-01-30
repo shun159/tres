@@ -3,12 +3,12 @@
 use Mix.Config
 
 config :tres,
-  protocol:        :tcp,
-  port:            6653,
+  protocol: :tcp,
+  port: 6653,
   max_connections: 10,
-  num_acceptors:   10,
+  num_acceptors: 10,
   callback_module: Tres.ExampleHandler,
-  callback_args:   []
+  callback_args: []
 
 config :logger,
   level: :info,

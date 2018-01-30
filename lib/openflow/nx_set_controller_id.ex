@@ -1,8 +1,8 @@
 defmodule Openflow.NxSetControllerId do
   defstruct(
     version: 4,
-    xid:     0,
-    id:      0
+    xid: 0,
+    id: 0
   )
 
   @experimenter 0x00002320

@@ -1,6 +1,6 @@
 defmodule Openflow.MeterBand.Remark do
   defstruct(
-    rate:       0,
+    rate: 0,
     burst_size: 0,
     prec_level: 0
   )

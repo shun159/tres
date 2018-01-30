@@ -5,13 +5,11 @@ defmodule Flay do
   import Logger
 
   defmodule State do
-    defstruct [
-      datapath_id: nil,
-      tester_pid:  nil,
-      conn_ref:    nil,
-      reply_to:    nil,
-      default_profile: nil,
-    ]
+    defstruct datapath_id: nil,
+              tester_pid: nil,
+              conn_ref: nil,
+              reply_to: nil,
+              default_profile: nil
   end
 
   def start_link(datapath, args) do
@@ -26,32 +24,37 @@ defmodule Flay do
   end
 
   def handle_call(:port_desc_stats, from, state) do
-    send_message(PortDesc.Request.new, state.datapath_id)
-    {:noreply, %{state|reply_to: from}}
+    send_message(PortDesc.Request.new(), state.datapath_id)
+    {:noreply, %{state | reply_to: from}}
   end
+
   def handle_call(:flow_stats, from, state) do
-    send_message(Flow.Request.new, state.datapath_id)
-    {:noreply, %{state|reply_to: from}}
+    send_message(Flow.Request.new(), state.datapath_id)
+    {:noreply, %{state | reply_to: from}}
   end
 
   def handle_cast(:desc_stats, state) do
-    send_message(Desc.Request.new, state.datapath_id)
+    send_message(Desc.Request.new(), state.datapath_id)
     {:noreply, state}
   end
+
   def handle_cast({:register_pid, tester_pid}, state) do
-    {:noreply, %{state|tester_pid: tester_pid}}
+    {:noreply, %{state | tester_pid: tester_pid}}
   end
+
   def handle_cast({:flow_install, flow_opts, tester_pid}, state) do
     send_flow_mod_add(state.datapath_id, flow_opts)
     flow_opts_to_ofp_print(flow_opts)
-    {:noreply, %{state|tester_pid: tester_pid}}
+    {:noreply, %{state | tester_pid: tester_pid}}
   end
+
   def handle_cast(:flow_del, state) do
     send_flow_mod_delete(state.datapath_id)
     {:noreply, state}
   end
+
   def handle_cast({:flow_del, cookie}, state) do
-    send_flow_mod_delete(state.datapath_id, cookie: cookie, cookie_mask: 0xffffffffffffffff)
+    send_flow_mod_delete(state.datapath_id, cookie: cookie, cookie_mask: 0xFFFFFFFFFFFFFFFF)
     {:noreply, state}
   end
 
@@ -59,31 +62,36 @@ defmodule Flay do
     send(state.tester_pid, error)
     {:noreply, state}
   end
+
   def handle_info(%PacketIn{} = pktin, state) do
     send(state.tester_pid, pktin)
     {:noreply, state}
   end
+
   def handle_info(%TableFeatures.Reply{} = table, state) do
-    {:noreply, %{state|default_profile: table}}
+    {:noreply, %{state | default_profile: table}}
   end
+
   def handle_info(%PortDesc.Reply{} = desc, state) do
     GenServer.reply(state.reply_to, desc)
     {:noreply, state}
   end
+
   def handle_info(%Desc.Reply{} = desc, state) do
     info(
-      "[#{__MODULE__}] Switch Desc: "
-      <> "mfr = #{desc.mfr_desc} "
-      <> "hw = #{desc.hw_desc} "
-      <> "sw = #{desc.sw_desc} "
+      "[#{__MODULE__}] Switch Desc: " <>
+        "mfr = #{desc.mfr_desc} " <> "hw = #{desc.hw_desc} " <> "sw = #{desc.sw_desc} "
     )
+
     init_bridge(state.datapath_id, desc)
     {:noreply, state}
   end
+
   def handle_info(%Flow.Reply{} = desc, state) do
     GenServer.reply(state.reply_to, desc)
-    {:noreply, %{state|reply_to: nil}}
+    {:noreply, %{state | reply_to: nil}}
   end
+
   # `Catch all` function is required.
   def handle_info(info, state) do
     :ok = warn("[#{__MODULE__}] unhandled message #{inspect(info)}")
@@ -94,11 +102,11 @@ defmodule Flay do
 
   defp flow_opts_to_ofp_print(flow_opts) do
     flow_opts
-    |> FlowMod.new
-    |> Openflow.to_binary
+    |> FlowMod.new()
+    |> Openflow.to_binary()
     |> binary_to_space_delimited_hex
     |> ofp_print_cmd
-    |> Logger.info
+    |> Logger.info()
   end
 
   defp ofp_print_cmd(print_args) do
@@ -110,7 +118,7 @@ defmodule Flay do
     binary
     |> split_to_hex_string
     |> Enum.join(" ")
-    |> String.downcase
+    |> String.downcase()
   end
 
   defp split_to_hex_string(binary) do
@@ -120,24 +128,26 @@ defmodule Flay do
   defp integer_to_hex(int) do
     case Integer.to_string(int, 16) do
       <<d>> -> <<48, d>>
-      dd    -> dd
+      dd -> dd
     end
   end
 
   defp init_controller([datapath_id, tester_pid]) do
     conn_ref = SwitchRegistry.monitor(datapath_id)
+
     %State{
       datapath_id: datapath_id,
-      tester_pid:  tester_pid,
-      conn_ref:    conn_ref
+      tester_pid: tester_pid,
+      conn_ref: conn_ref
     }
   end
 
   defp init_bridge(datapath_id, %Desc.Reply{mfr_desc: "Aruba"}) do
     :ok = info("Transform flow table pipeline")
+
     tables = [
       TableFeatures.Body.new(
-        table_id:      0,
+        table_id: 0,
         name: "classifier",
         max_entries: 50,
         config: [:table_miss_mask],
@@ -161,7 +171,7 @@ defmodule Flay do
           :ip_proto,
           :ipv4_src,
           :udp_dst,
-          :tcp_dst,
+          :tcp_dst
         ],
         instructions: [
           Openflow.Instruction.GotoTable,
@@ -178,11 +188,11 @@ defmodule Flay do
           :vlan_vid
         ],
         next_tables: [
-          1,
-        ],
+          1
+        ]
       ),
       TableFeatures.Body.new(
-        table_id:      1,
+        table_id: 1,
         name: "admission_control",
         max_entries: 50,
         config: [:table_miss_mask],
@@ -223,13 +233,16 @@ defmodule Flay do
           :vlan_vid,
           :ipv4_src,
           :ipv4_dst
-        ],
+        ]
       )
     ]
+
     TableFeatures.Request.new(tables)
     |> send_message(datapath_id)
+
     send_flow_mod_delete(datapath_id, table_id: :all)
   end
+
   defp init_bridge(_datapath_id, _mfr) do
     :ok = info("Flow pipeline profile is not defined")
     :ok

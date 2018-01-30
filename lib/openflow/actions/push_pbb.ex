@@ -1,5 +1,5 @@
 defmodule Openflow.Action.PushPbb do
-  defstruct(ethertype: 0x88e7)
+  defstruct(ethertype: 0x88E7)
 
   alias __MODULE__
 

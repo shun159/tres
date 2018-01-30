@@ -6,8 +6,9 @@ defmodule OfpSetConfigTest do
     test "with OFP_SET_CONFIG packet" do
       {:ok, %Openflow.SetConfig{} = config, ""} =
         "test/packet_data/ofp_set_config.raw"
-        |> File.read!
-        |> Openflow.read
+        |> File.read!()
+        |> Openflow.read()
+
       assert config.version == 4
       assert config.xid == 0
       assert config.flags == []
@@ -23,9 +24,11 @@ defmodule OfpSetConfigTest do
         flags: [],
         miss_send_len: 128
       }
+
       expect =
         "test/packet_data/ofp_set_config.raw"
-        |> File.read!
+        |> File.read!()
+
       assert Openflow.to_binary(config) == expect
     end
   end

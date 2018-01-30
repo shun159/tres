@@ -6,8 +6,9 @@ defmodule OfpFeaturesTest do
     test "with OFP_FEATURES_REQUEST packet" do
       {:ok, %Openflow.Features.Request{} = features, ""} =
         "test/packet_data/ofp_features_request.raw"
-        |> File.read!
-        |> Openflow.read
+        |> File.read!()
+        |> Openflow.read()
+
       assert features.version == 4
       assert features.xid == 0
     end
@@ -15,15 +16,23 @@ defmodule OfpFeaturesTest do
     test "with OFP_FEATURES_REPLY packet" do
       {:ok, %Openflow.Features.Reply{} = features, ""} =
         "test/packet_data/ofp_features_reply.raw"
-        |> File.read!
-        |> Openflow.read
+        |> File.read!()
+        |> Openflow.read()
+
       assert features.version == 4
       assert features.xid == 0
       assert features.datapath_id == "0000000000000001"
       assert features.n_buffers == 255
       assert features.n_tables == 255
       assert features.aux_id == 0
-      assert features.capabilities == [:flow_stats, :table_stats, :port_stats, :group_stats, :queue_stats]
+
+      assert features.capabilities == [
+               :flow_stats,
+               :table_stats,
+               :port_stats,
+               :group_stats,
+               :queue_stats
+             ]
     end
   end
 
@@ -33,9 +42,11 @@ defmodule OfpFeaturesTest do
         version: 4,
         xid: 0
       }
+
       expect =
         "test/packet_data/ofp_features_request.raw"
-        |> File.read!
+        |> File.read!()
+
       assert Openflow.to_binary(features) == expect
     end
   end
@@ -48,11 +59,13 @@ defmodule OfpFeaturesTest do
       n_buffers: 255,
       n_tables: 255,
       aux_id: 0,
-      capabilities: [:flow_stats, :table_stats, :port_stats, :group_stats, :queue_stats],
+      capabilities: [:flow_stats, :table_stats, :port_stats, :group_stats, :queue_stats]
     }
+
     expect =
       "test/packet_data/ofp_features_reply.raw"
-      |> File.read!
+      |> File.read!()
+
     assert Openflow.to_binary(features) == expect
   end
 end

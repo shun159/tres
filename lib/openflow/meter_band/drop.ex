@@ -1,6 +1,6 @@
 defmodule Openflow.MeterBand.Drop do
   defstruct(
-    rate:       0,
+    rate: 0,
     burst_size: 0
   )
 

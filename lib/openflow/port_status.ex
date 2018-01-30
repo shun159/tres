@@ -1,11 +1,11 @@
 defmodule Openflow.PortStatus do
   defstruct(
-    version:      4,
-    xid:          0,
+    version: 4,
+    xid: 0,
     datapath_id: "",
-    aux_id:       0,
-    reason:    :add,
-    port:        nil
+    aux_id: 0,
+    reason: :add,
+    port: nil
   )
 
   alias __MODULE__

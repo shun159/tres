@@ -1,10 +1,11 @@
 defmodule Openflow.Multipart.Group.Request do
   defstruct(
-    version:      4,
-    xid:          0,
-    datapath_id:  nil, # virtual field
+    version: 4,
+    xid: 0,
+    # virtual field
+    datapath_id: nil,
     flags: [],
-    group_id:    :all
+    group_id: :all
   )
 
   alias __MODULE__

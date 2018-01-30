@@ -1,9 +1,9 @@
 defmodule Openflow.NxSetPacketInFormat do
   defstruct(
-    version:      4,
-    xid:          0,
+    version: 4,
+    xid: 0,
     datapath_id: "",
-    aux_id:       0,
+    aux_id: 0,
     format: :standard
   )
 

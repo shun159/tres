@@ -3,8 +3,8 @@ defmodule Tres.Utils do
 
   @connection_manager Tres.SecureChannel
   @default_max_connections 10
-  @default_num_acceptors   10
-  @default_openflow_port   6633
+  @default_num_acceptors 10
+  @default_openflow_port 6633
 
   def get_callback_module do
     cb_mod = get_config(:callback_module, Tres.ExampleHandler)
@@ -32,7 +32,7 @@ defmodule Tres.Utils do
 
   def is_multipart?(message) do
     message.__struct__
-    |> Module.split
+    |> Module.split()
     |> Enum.at(1)
     |> String.match?(~r/Multipart/)
   end
@@ -44,6 +44,7 @@ defmodule Tres.Utils do
       :delete
     end
   end
+
   def flow_command(:modify, options) do
     if Keyword.get(options, :strict, false) do
       :modify_strict

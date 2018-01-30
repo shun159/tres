@@ -1,10 +1,12 @@
 defmodule Openflow.Echo.Reply do
   defstruct(
-    version:        4,
-    xid:            0,
-    data:          "",
-    datapath_id:  nil, # virtual field
-    aux_id:         0  # virtual field
+    version: 4,
+    xid: 0,
+    data: "",
+    # virtual field
+    datapath_id: nil,
+    # virtual field
+    aux_id: 0
   )
 
   alias __MODULE__

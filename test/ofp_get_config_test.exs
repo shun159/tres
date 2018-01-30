@@ -6,8 +6,9 @@ defmodule OfpGetConfigTest do
     test "with OFP_GET_CONFIG_REQUEST packet" do
       {:ok, %Openflow.GetConfig.Request{} = config, ""} =
         "test/packet_data/ofp_get_config_request.raw"
-        |> File.read!
-        |> Openflow.read
+        |> File.read!()
+        |> Openflow.read()
+
       assert config.version == 4
       assert config.xid == 0
     end
@@ -15,8 +16,9 @@ defmodule OfpGetConfigTest do
     test "with OFP_GET_CONFIG_REPLY packet" do
       {:ok, %Openflow.GetConfig.Reply{} = config, ""} =
         "test/packet_data/ofp_get_config_reply.raw"
-        |> File.read!
-        |> Openflow.read
+        |> File.read!()
+        |> Openflow.read()
+
       assert config.version == 4
       assert config.xid == 0
       assert config.flags == []
@@ -30,9 +32,11 @@ defmodule OfpGetConfigTest do
         version: 4,
         xid: 0
       }
+
       expect =
         "test/packet_data/ofp_get_config_request.raw"
-        |> File.read!
+        |> File.read!()
+
       assert Openflow.to_binary(config) == expect
     end
 
@@ -43,9 +47,11 @@ defmodule OfpGetConfigTest do
         flags: [],
         miss_send_len: 128
       }
+
       expect =
         "test/packet_data/ofp_get_config_reply.raw"
-        |> File.read!
+        |> File.read!()
+
       assert Openflow.to_binary(config) == expect
     end
   end

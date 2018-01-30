@@ -1,10 +1,11 @@
 defmodule Openflow.SetConfig do
   defstruct(
-    version:        4,
-    xid:            0,
-    datapath_id:   "",
-    aux_id:         0,
-    flags:          [], # default = "normal" is no special handling
+    version: 4,
+    xid: 0,
+    datapath_id: "",
+    aux_id: 0,
+    # default = "normal" is no special handling
+    flags: [],
     miss_send_len: 128
   )
 

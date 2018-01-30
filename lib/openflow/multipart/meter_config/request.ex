@@ -1,10 +1,11 @@
 defmodule Openflow.Multipart.MeterConfig.Request do
   defstruct(
-    version:      4,
-    xid:          0,
-    datapath_id:  nil, # virtual field
+    version: 4,
+    xid: 0,
+    # virtual field
+    datapath_id: nil,
     flags: [],
-    meter_id:    :all
+    meter_id: :all
   )
 
   alias __MODULE__
