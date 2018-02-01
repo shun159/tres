@@ -124,15 +124,19 @@ defmodule Tres.SecureChannel do
 
   defp init_handler(state_data) do
     %State{datapath_id: dpid, aux_id: aux_id} = state_data
-    {:ok, pid} = MessageHandlerSup.start_child({dpid, aux_id})
-    ref = Process.monitor(pid)
-    %{state_data | handler_pid: pid, handler_ref: ref}
+    case MessageHandlerSup.start_child({dpid, aux_id}) do
+      {:ok, pid} ->
+        ref = Process.monitor(pid)
+        %{state_data | handler_pid: pid, handler_ref: ref}
+      {:error, reason} ->
+        {:stop, reason}
+    end
   end
 
   # INIT state
   defp handle_INIT(:enter, _old_state, state_data) do
     debug(
-      "[#{__MODULE__}] Initiate HELLO handshake: " <> ">#{state_data.ip_addr}:#{state_data.port}"
+      "[#{__MODULE__}] Initiate HELLO handshake: " <> "#{state_data.ip_addr}:#{state_data.port}"
     )
 
     initiate_hello_handshake(state_data)
@@ -202,9 +206,13 @@ defmodule Tres.SecureChannel do
 
   # CONNECTED state
   defp handle_CONNECTED(:enter, :CONNECTING, state_data) do
-    new_state_data = init_handler(state_data)
-    start_periodic_idle_check()
-    {:keep_state, new_state_data}
+    case init_handler(state_data) do
+      %State{} = new_state_data ->
+        start_periodic_idle_check()
+        {:keep_state, new_state_data}
+      {:stop, reason} ->
+        close_connection({:handler_down, reason}, state_data)
+    end
   end
 
   defp handle_CONNECTED(:info, :idle_check, state_data) do
@@ -563,10 +571,8 @@ defmodule Tres.SecureChannel do
     {:stop, :normal, %{state_data | socket: nil}}
   end
 
-  defp close_connection({:handler_down = disconnected_reason, reason}, state_data) do
+  defp close_connection({:handler_down = _disconnected_reason, reason}, state_data) do
     warn("[#{__MODULE__}] connection terminated: Handler process down by #{reason}")
-    %State{handler_pid: handler_pid} = state_data
-    send(handler_pid, {:switch_disconnected, disconnected_reason})
     {:stop, :normal, %{state_data | socket: nil}}
   end
 
