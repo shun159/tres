@@ -26,3 +26,9 @@ To use `Tres.Controller` with your code, set the handler callback_module to your
 This module must implement the `Module.start_link/2` that returns `on_start`.
 
 Set the callback_args to the terms you want pass to the `start_link/2` callback function.
+
+## Examples
+
+- learning-switch: Simple Layer2 switch
+- leader-example: Simple Leader election based multiple controller
+
