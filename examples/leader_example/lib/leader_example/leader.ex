@@ -11,25 +11,25 @@ defmodule LeaderExample.Leader do
 
   def init([{datapath_id, _aux_id}, _args]) do
     :ok = Logger.debug("Switch Ready: datapath_id: #{inspect(datapath_id)}")
-    :ok = role_request(datapath_id, role: :slave, generation_id: 0)
+    :ok = send_role_request(datapath_id, role: :slave, generation_id: 0)
     {:ok, %{am_leader: false, gen_id: 0, datapath_id: datapath_id}}
   end
 
   def elected(state, _info, _cand) do
     :ok = Logger.info("Elected: #{inspect(Node.self)} for #{state.datapath_id} gen_id: #{state.gen_id}")
-    :ok = role_request(state.datapath_id, role: :master, generation_id: state.gen_id)
+    :ok = send_role_request(state.datapath_id, role: :master, generation_id: state.gen_id)
     {:ok, {:elected, {Node.self(), state.gen_id + 1}}, %{state|am_leader: true}}
   end
 
   def surrendered(%{am_leader: true} = state, {:elected, {_node, next_gen_id}}, _info) do
     :ok = Logger.info("network split possible detected")
-    :ok = role_request(state.datapath_id, role: :slave, generation_id: state.gen_id)
+    :ok = send_role_request(state.datapath_id, role: :slave, generation_id: state.gen_id)
     {:ok, %{state|am_leader: false, gen_id: next_gen_id}}
   end
 
   def surrendered(state, {:elected, {node, next_gen_id}}, _info) do
     :ok = Logger.info("Surrendered: elected node is #{node} for #{state.datapath_id}")
-    :ok = role_request(state.datapath_id, role: :slave, generation_id: state.gen_id)
+    :ok = send_role_request(state.datapath_id, role: :slave, generation_id: state.gen_id)
     {:ok, %{state|am_leader: false, gen_id: next_gen_id}}
   end
 

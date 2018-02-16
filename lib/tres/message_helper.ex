@@ -94,7 +94,7 @@ defmodule Tres.MessageHelper do
         send_message(group_mod, datapath_id)
       end
 
-      defp role_request(datapath_id, options) do
+      defp send_role_request(datapath_id, options) do
         role_request =
           Openflow.Role.Request.new(
             role: options[:role] || :nochange,
