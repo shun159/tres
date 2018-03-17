@@ -64,5 +64,5 @@ ms_for_update(Xid, Msg) ->
 
 ms_for_handle_error(Tid, Xid, Error) ->
     [#?ENTRY{orig = Orig}|_] = get(Tid, Xid),
-    Error1 = maps:merge(Error, #{data => Orig}),
+    Error1 = maps:merge(Error, #{data => Orig, xid => Xid}),
     ets:fun2ms(fun(#?ENTRY{xid = TXid} = E) when TXid == Xid -> E#?ENTRY{pending = Error1} end).
