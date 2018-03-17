@@ -41,7 +41,7 @@ defmodule Tres.SecureChannel do
         " #{state_data.ip_addr}:#{state_data.port}" <> " on #{inspect(self())}"
     )
 
-    :gen_statem.enter_loop(__MODULE__, [debug: [:debug]], :INIT, state_data, [])
+    :gen_statem.enter_loop(__MODULE__, [], :INIT, state_data, [])
   end
 
   # TCP handler
