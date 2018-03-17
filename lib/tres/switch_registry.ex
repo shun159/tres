@@ -27,7 +27,7 @@ defmodule Tres.SwitchRegistry do
   end
 
   def get_current_xid({_dpid, _aux_id} = datapath_id) do
-    [{pid, _}|_] = Registry.lookup(__MODULE__,  datapath_id)
+    [{pid, _} | _] = Registry.lookup(__MODULE__, datapath_id)
     :gen_statem.call(pid, :get_xid, 1000)
   end
 

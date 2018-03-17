@@ -993,20 +993,22 @@ defmodule Openflow.Enums do
     to_int_fn_name = String.to_atom(enum_name <> "_to_int")
     to_atom_fn_name = String.to_atom(enum_name <> "_to_atom")
 
-    for {key, value} <- enum_def do
+    for {key, _value} <- enum_def do
       def to_int(unquote(key), unquote(String.to_atom(enum_name))) do
         try do
           unquote(to_int_fn_name)(unquote(key))
         catch
-          _ -> unquote(key)
+          :throw, _ -> unquote(key)
         end
       end
+    end
 
+    for {_key, value} <- enum_def do
       def to_atom(unquote(value), unquote(String.to_atom(enum_name))) do
         try do
           unquote(to_atom_fn_name)(unquote(value))
         catch
-          _ -> unquote(value)
+          :throw, _ -> unquote(value)
         end
       end
     end

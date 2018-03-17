@@ -124,10 +124,12 @@ defmodule Tres.SecureChannel do
 
   defp init_handler(state_data) do
     %State{datapath_id: dpid, aux_id: aux_id} = state_data
+
     case MessageHandlerSup.start_child({dpid, aux_id}) do
       {:ok, pid} ->
         ref = Process.monitor(pid)
         %{state_data | handler_pid: pid, handler_ref: ref}
+
       {:error, reason} ->
         {:stop, reason}
     end
@@ -210,6 +212,7 @@ defmodule Tres.SecureChannel do
       %State{} = new_state_data ->
         start_periodic_idle_check()
         {:keep_state, new_state_data}
+
       {:stop, reason} ->
         close_connection({:handler_down, reason}, state_data)
     end
