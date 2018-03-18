@@ -25,7 +25,7 @@ defmodule Tres.Utils do
       packet = Openflow.to_binary(message)
       transport.send(socket, packet)
     catch
-      _ ->
+      _class, _reason ->
         error("[#{__MODULE__}] Unencodable error: #{inspect(message)}")
     end
   end
