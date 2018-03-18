@@ -11,7 +11,7 @@ defmodule Tres.SecureChannel do
 
   @process_flags [
     trap_exit: true,
-    message_queue_data: :on_heap
+    message_queue_data: :off_heap
   ]
 
   @supported_version 4
@@ -379,7 +379,7 @@ defmodule Tres.SecureChannel do
 
   defp initiate_hello_handshake(state_data) do
     send_hello(state_data)
-    ref = :erlang.send_after(@hello_handshake_timeout, self(), :hello_timeout)
+    ref = Process.send_after(self(), :hello_timeout, @hello_handshake_timeout)
     {:keep_state, %{state_data | timer_ref: ref}}
   end
 
@@ -397,7 +397,7 @@ defmodule Tres.SecureChannel do
   defp initiate_features_handshake(state_data) do
     new_xid = State.increment_transaction_id(state_data.xid)
     send_features(new_xid, state_data)
-    ref = :erlang.send_after(@features_handshake_timeout, self(), :features_timeout)
+    ref = Process.send_after(self(), :features_timeout, @features_handshake_timeout)
     {:keep_state, %{state_data | timer_ref: ref}}
   end
 
@@ -445,7 +445,7 @@ defmodule Tres.SecureChannel do
   end
 
   defp start_periodic_idle_check do
-    :erlang.send_after(@ping_interval, self(), :idle_check)
+    Process.send_after(self(), :idle_check, @ping_interval)
   end
 
   defp maybe_ping(state_data) do
@@ -463,10 +463,10 @@ defmodule Tres.SecureChannel do
     false
   end
 
-  defp send_ping(%State{xid: x_agent} = state_data) do
-    xid = State.increment_transaction_id(x_agent)
+  defp send_ping(%State{xid: table_ref} = state_data) do
+    xid = State.increment_transaction_id(table_ref)
     send_echo_request(xid, "", state_data)
-    ping_ref = :erlang.send_after(@ping_timeout, self(), :ping_timeout)
+    ping_ref = Process.send_after(self(), :ping_timeout, @ping_timeout)
     %{state_data | ping_timer_ref: ping_ref, ping_xid: xid}
   end
 
@@ -516,7 +516,7 @@ defmodule Tres.SecureChannel do
   defp maybe_cancel_timer(ref) when not is_reference(ref), do: :ok
 
   defp maybe_cancel_timer(ref) do
-    :erlang.cancel_timer(ref)
+    Process.cancel_timer(ref)
     :ok
   end
 
