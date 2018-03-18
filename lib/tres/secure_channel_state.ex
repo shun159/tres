@@ -44,7 +44,7 @@ defmodule Tres.SecureChannelState do
   end
 
   def increment_transaction_id(table_ref) do
-    :ets.update_counter(table_ref, :datapath_xid, {2, 1, 0xffffffff, 0})
+    :ets.update_counter(table_ref, :datapath_xid, {2, 1, 0xFFFFFFFF, 0})
   end
 
   def set_transaction_id(table_ref, xid) do
