@@ -29,7 +29,7 @@ defmodule Tres.SecureChannelState do
     socket = Keyword.get(options, :socket)
     transport = Keyword.get(options, :transport)
     {:ok, {ip_addr, port}} = :inet.peername(socket)
-    {:ok, xid_agent} = Agent.start_link(fn -> 0 end)
+    {:ok, table_ref} = create_counter()
     kv_ref = XACT_KV.create()
 
     %SecureChannelState{
@@ -38,20 +38,31 @@ defmodule Tres.SecureChannelState do
       transport: transport,
       ip_addr: :inet.ntoa(ip_addr),
       port: port,
-      xid: xid_agent,
+      xid: table_ref,
       xact_kv_ref: kv_ref
     }
   end
 
-  def increment_transaction_id(xid_agent) do
-    Agent.get_and_update(xid_agent, &{&1 + 1, &1 + 1})
+  def increment_transaction_id(table_ref) do
+    :ets.update_counter(table_ref, :datapath_xid, {2, 1, 0xffffffff, 0})
   end
 
-  def set_transaction_id(xid_agent, xid) do
-    Agent.update(xid_agent, fn _ -> xid end)
+  def set_transaction_id(table_ref, xid) do
+    :ets.insert(table_ref, {:datapath_xid, xid})
   end
 
-  def get_transaction_id(xid_agent) do
-    Agent.get(xid_agent, & &1)
+  def get_transaction_id(table_ref) do
+    case :ets.lookup(table_ref, :datapath_xid) do
+      [{_, xid} | _] -> xid
+    end
+  end
+
+  # private functions
+
+  @spec create_counter() :: reference()
+  defp create_counter do
+    table_ref = :ets.new(:xid_counter, [:set, :private])
+    _ = :ets.insert(table_ref, {:datapath_xid, 0})
+    {:ok, table_ref}
   end
 end
