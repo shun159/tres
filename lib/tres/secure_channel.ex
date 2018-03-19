@@ -489,8 +489,19 @@ defmodule Tres.SecureChannel do
     {:keep_state, %{state_data | ping_timer_ref: nil, ping_xid: nil}}
   end
 
-  defp xactional_send_message(message, state_data) do
+  defp xactional_send_message(%{xid: 0} = message, state_data) do
     xid = State.increment_transaction_id(state_data.xid)
+
+    messages = [
+      %{message | xid: xid},
+      %{Openflow.Barrier.Request.new() | xid: xid}
+    ]
+
+    XACT_KV.insert(state_data.xact_kv_ref, xid, message)
+    send_message(messages, state_data)
+  end
+  defp xactional_send_message(%{xid: xid} = message, state_data) do
+    _ = State.set_transaction_id(state_data.xid, xid)
 
     messages = [
       %{message | xid: xid},
