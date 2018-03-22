@@ -18,6 +18,7 @@ defmodule Openflow.Multipart.Aggregate.Request do
   def ofp_type, do: 18
 
   def new(options) do
+    xid = Keyword.get(options, :xid, 0)
     table_id = Keyword.get(options, :table_id, :all)
     out_port = Keyword.get(options, :out_port, :any)
     out_group = Keyword.get(options, :out_group, :any)
@@ -26,6 +27,7 @@ defmodule Openflow.Multipart.Aggregate.Request do
     match = Keyword.get(options, :match, [])
 
     %Request{
+      xid: xid,
       table_id: table_id,
       out_port: out_port,
       out_group: out_group,

@@ -24,6 +24,7 @@ defmodule Tres.MessageHelper do
         command = Tres.Utils.flow_command(:modify, options)
 
         flow_mod = %Openflow.FlowMod{
+          xid: options[:xid] || 0,
           cookie: options[:cookie] || 0,
           table_id: options[:table_id] || 0,
           command: command,
@@ -42,6 +43,7 @@ defmodule Tres.MessageHelper do
         command = Tres.Utils.flow_command(:delete, options)
 
         flow_mod = %Openflow.FlowMod{
+          xid: options[:xid] || 0,
           cookie: options[:cookie] || 0,
           cookie_mask: options[:cookie_mask] || 0,
           table_id: options[:table_id] || :all,
@@ -56,6 +58,7 @@ defmodule Tres.MessageHelper do
 
       defp send_packet_out(datapath_id, options \\ []) do
         packet_out = %Openflow.PacketOut{
+          xid: options[:xid] || 0,
           buffer_id: options[:buffer_id] || :no_buffer,
           in_port: options[:in_port] || :controller,
           actions: options[:actions] || [],
@@ -68,6 +71,7 @@ defmodule Tres.MessageHelper do
       defp send_group_mod_add(datapath_id, options \\ []) do
         group_mod =
           Openflow.GroupMod.new(
+            xid: options[:xid] || 0,
             command: :add,
             type: options[:type] || :all,
             group_id: options[:group_id] || 0,
@@ -77,14 +81,19 @@ defmodule Tres.MessageHelper do
         send_message(group_mod, datapath_id)
       end
 
-      defp send_group_mod_delete(datapath_id, group_id) do
-        group_mod = Openflow.GroupMod.new(command: :delete, group_id: group_id)
+      defp send_group_mod_delete(datapath_id, options \\ []) do
+        group_mod = Openflow.GroupMod.new(
+          xid: options[:xid] || 0,
+          command: :delete,
+          group_id: options[:group_id] || :all
+        )
         send_message(group_mod, datapath_id)
       end
 
-      defp send_group_mod_modify(datapath_id, options) do
+      defp send_group_mod_modify(datapath_id, options \\ []) do
         group_mod =
           Openflow.GroupMod.new(
+            xid: options[:xid] || 0,
             command: :modify,
             type: options[:type] || :all,
             group_id: options[:group_id] || 0,
@@ -97,6 +106,7 @@ defmodule Tres.MessageHelper do
       defp send_role_request(datapath_id, options) do
         role_request =
           Openflow.Role.Request.new(
+            xid: options[:xid] || 0,
             role: options[:role] || :nochange,
             generation_id: options[:generation_id] || 0
           )

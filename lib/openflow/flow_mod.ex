@@ -24,6 +24,7 @@ defmodule Openflow.FlowMod do
   def ofp_type, do: 14
 
   def new(options \\ []) do
+    xid = Keyword.get(options, :xid, 0)
     cookie = Keyword.get(options, :cookie, 0)
     cookie_mask = Keyword.get(options, :cookie_mask, 0)
     table_id = Keyword.get(options, :table_id, 0)
@@ -39,6 +40,7 @@ defmodule Openflow.FlowMod do
     instructions = Keyword.get(options, :instructions, [])
 
     %FlowMod{
+      xid: xid,
       cookie: cookie,
       cookie_mask: cookie_mask,
       priority: priority,

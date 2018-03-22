@@ -14,8 +14,11 @@ defmodule Openflow.Multipart.TableFeatures.Request do
 
   def ofp_type, do: 18
 
-  def new(tables \\ []) do
-    %Request{tables: tables}
+  def new(options \\ []) do
+    %Request{
+      xid: options[:xid] || 0,
+      tables: options[:tables] || []
+    }
   end
 
   def read(<<tables_bin::bytes>>) do

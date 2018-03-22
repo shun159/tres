@@ -15,6 +15,7 @@ defmodule Openflow.Experimenter do
 
   def new(options) do
     %Experimenter{
+      xid: options[:xid] || 0,
       exp_id: Keyword.get(options, :exp_id, 0),
       exp_type: Keyword.get(options, :exp_type, 0),
       data: Keyword.get(options, :data, "")

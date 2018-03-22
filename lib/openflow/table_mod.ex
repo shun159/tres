@@ -12,7 +12,13 @@ defmodule Openflow.TableMod do
 
   def ofp_type, do: 17
 
-  def new(table_id) do
+  def new(options) when is_list(options) do
+    %TableMod{
+      xid: options[:xid] || 0,
+      table_id: options[:table_id] || 0
+    }
+  end
+  def new(table_id) when is_integer(table_id) or is_atom(table_id) do
     %TableMod{table_id: table_id}
   end
 

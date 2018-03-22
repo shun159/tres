@@ -13,7 +13,13 @@ defmodule Openflow.Echo.Request do
 
   def ofp_type, do: 2
 
-  def new(data \\ "") do
+  def new(options) when is_list(options) do
+    %Request{
+      xid: options[:xid] || 0,
+      data: options[:data] || ""
+    }
+  end
+  def new(data) when is_binary(data) do
     %Request{data: data}
   end
 

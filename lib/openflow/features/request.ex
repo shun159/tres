@@ -12,8 +12,8 @@ defmodule Openflow.Features.Request do
 
   def ofp_type, do: 5
 
-  def new do
-    %Request{}
+  def new(xid \\ 0) do
+    %Request{xid: xid}
   end
 
   def read(_) do

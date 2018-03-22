@@ -15,9 +15,10 @@ defmodule Openflow.Role.Request do
   def ofp_type, do: 24
 
   def new(options \\ []) do
+    xid = Keyword.get(options, :xid, 0)
     role = Keyword.get(options, :role, :nochange)
     generation_id = Keyword.get(options, :generation_id, 0)
-    %Request{role: role, generation_id: generation_id}
+    %Request{xid: xid, role: role, generation_id: generation_id}
   end
 
   def read(<<role_int::32, 0::size(4)-unit(8), generation_id::64>>) do

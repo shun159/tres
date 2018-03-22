@@ -14,9 +14,10 @@ defmodule Openflow.Multipart.Queue.Request do
   def ofp_type, do: 18
 
   def new(options) do
+    xid = Keyword.get(options, :xid, 0)
     port_no = Keyword.get(options, :port_number, :any)
     queue_id = Keyword.get(options, :queue_id, :all)
-    %Request{port_number: port_no, queue_id: queue_id}
+    %Request{xid: xid, port_number: port_no, queue_id: queue_id}
   end
 
   def read(<<port_no_int::32, queue_id_int::32>>) do

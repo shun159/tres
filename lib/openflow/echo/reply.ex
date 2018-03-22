@@ -13,7 +13,13 @@ defmodule Openflow.Echo.Reply do
 
   def ofp_type, do: 3
 
-  def new(data \\ "") do
+  def new(options) when is_list(options) do
+    %Reply{
+      xid: options[:xid] || 0,
+      data: options[:data] || ""
+    }
+  end
+  def new(data) when is_binary(data) do
     %Reply{data: data}
   end
 

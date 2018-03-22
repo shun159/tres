@@ -12,6 +12,10 @@ defmodule Openflow.GetAsync.Request do
 
   def ofp_type, do: 26
 
+  def new(xid \\ 0) do
+    %Request{xid: xid}
+  end
+
   def read(_) do
     %Request{}
   end

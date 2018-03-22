@@ -15,11 +15,12 @@ defmodule Openflow.GroupMod do
   def ofp_type, do: 15
 
   def new(options \\ []) do
+    xid = Keyword.get(options, :xid, 0)
     command = Keyword.get(options, :command, :add)
     type = Keyword.get(options, :type, :all)
     group_id = Keyword.get(options, :group_id, 0)
     buckets = Keyword.get(options, :buckets, [])
-    %GroupMod{command: command, type: type, group_id: group_id, buckets: buckets}
+    %GroupMod{xid: xid, command: command, type: type, group_id: group_id, buckets: buckets}
   end
 
   def read(<<command_int::16, type_int::8, _::8, group_id_int::32, buckets_bin::bytes>>) do

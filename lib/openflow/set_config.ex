@@ -14,9 +14,10 @@ defmodule Openflow.SetConfig do
   def ofp_type, do: 9
 
   def new(options \\ []) do
+    xid = Keyword.get(options, :xid, 0)
     flags = Keyword.get(options, :flags, [])
     miss_send_len = Keyword.get(options, :miss_send_len, :no_buffer)
-    %SetConfig{flags: flags, miss_send_len: miss_send_len}
+    %SetConfig{xid: xid, flags: flags, miss_send_len: miss_send_len}
   end
 
   def read(<<flags_int::16, miss_send_len0::16>>) do

@@ -12,7 +12,14 @@ defmodule Openflow.Multipart.Group.Request do
 
   def ofp_type, do: 18
 
-  def new(group_id \\ :all) do
+  def new(options) when is_list(options) do
+    %Request{
+      xid: options[:xid] || 0,
+      group_id: options[:group_id] || :all
+    }
+  end
+
+  def new(group_id) when is_integer(group_id) or is_atom(group_id) do
     %Request{group_id: group_id}
   end
 
