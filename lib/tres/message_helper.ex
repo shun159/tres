@@ -82,11 +82,13 @@ defmodule Tres.MessageHelper do
       end
 
       defp send_group_mod_delete(datapath_id, options \\ []) do
-        group_mod = Openflow.GroupMod.new(
-          xid: options[:xid] || 0,
-          command: :delete,
-          group_id: options[:group_id] || :all
-        )
+        group_mod =
+          Openflow.GroupMod.new(
+            xid: options[:xid] || 0,
+            command: :delete,
+            group_id: options[:group_id] || :all
+          )
+
         send_message(group_mod, datapath_id)
       end
 

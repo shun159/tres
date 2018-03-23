@@ -500,6 +500,7 @@ defmodule Tres.SecureChannel do
     XACT_KV.insert(state_data.xact_kv_ref, xid, message)
     send_message(messages, state_data)
   end
+
   defp xactional_send_message(%{xid: xid} = message, state_data) do
     _ = State.set_transaction_id(state_data.xid, xid)
 
