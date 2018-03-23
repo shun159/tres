@@ -18,6 +18,7 @@ defmodule Openflow.TableMod do
       table_id: options[:table_id] || 0
     }
   end
+
   def new(table_id) when is_integer(table_id) or is_atom(table_id) do
     %TableMod{table_id: table_id}
   end

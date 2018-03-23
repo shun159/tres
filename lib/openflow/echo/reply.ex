@@ -19,6 +19,7 @@ defmodule Openflow.Echo.Reply do
       data: options[:data] || ""
     }
   end
+
   def new(data) when is_binary(data) do
     %Reply{data: data}
   end
