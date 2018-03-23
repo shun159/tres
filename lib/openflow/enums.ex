@@ -988,59 +988,58 @@ defmodule Openflow.Enums do
   ]
 
   for {enum_name, enum_def} <- @enums do
-    enum_name = to_string(enum_name)
-
-    to_int_fn_name = String.to_atom(enum_name <> "_to_int")
-    to_atom_fn_name = String.to_atom(enum_name <> "_to_atom")
+    to_int_fn_name = :"#{enum_name}_to_int"
+    to_atom_fn_name = :"#{enum_name}_to_atom"
 
     for {key, _value} <- enum_def do
-      def to_int(unquote(key), unquote(String.to_atom(enum_name))) do
-        try do
-          unquote(to_int_fn_name)(unquote(key))
-        catch
-          :throw, _ -> unquote(key)
-        end
+      def to_int(unquote(key), unquote(enum_name)) do
+        unquote(to_int_fn_name)(unquote(key))
+      catch
+        _class, _reason -> unquote(key)
       end
     end
 
     for {_key, value} <- enum_def do
-      def to_atom(unquote(value), unquote(String.to_atom(enum_name))) do
-        try do
-          unquote(to_atom_fn_name)(unquote(value))
-        catch
-          :throw, _ -> unquote(value)
-        end
+      def to_atom(unquote(value), unquote(enum_name)) do
+        unquote(to_atom_fn_name)(unquote(value))
+      catch
+        _class, _reason -> unquote(value)
       end
     end
 
-    def to_int(_int, unquote(String.to_atom(enum_name))) do
+    def to_int(_int, unquote(enum_name)) do
       throw(:bad_enum)
     end
 
-    def to_atom(_, unquote(String.to_atom(enum_name))) do
+    def to_atom(_, unquote(enum_name)) do
       throw(:bad_enum)
     end
+  end
+
+  for {enum_name, enum_def} <- @enums do
+    to_int_fn_name = :"#{enum_name}_to_int"
+    to_atom_fn_name = :"#{enum_name}_to_atom"
 
     for {key, value} <- enum_def do
       def unquote(to_int_fn_name)(unquote(key)), do: unquote(value)
     end
-
     def unquote(to_int_fn_name)(_), do: throw(:bad_enum)
 
     for {key, value} <- enum_def do
       def unquote(to_atom_fn_name)(unquote(value)), do: unquote(key)
     end
-
     def unquote(to_atom_fn_name)(_), do: throw(:bad_enum)
+  end
 
-    def int_to_flags(int, unquote(String.to_atom(enum_name))) do
-      Openflow.Utils.int_to_flags([], int, enum_of(unquote(String.to_atom(enum_name))))
+  for {enum_name, enum_def} <- @enums do
+    def int_to_flags(int, unquote(enum_name)) do
+      Openflow.Utils.int_to_flags([], int, enum_of(unquote(enum_name)))
     end
 
-    def flags_to_int(flags, unquote(String.to_atom(enum_name))) do
-      Openflow.Utils.flags_to_int(0, flags, enum_of(unquote(String.to_atom(enum_name))))
+    def flags_to_int(flags, unquote(enum_name)) do
+      Openflow.Utils.flags_to_int(0, flags, enum_of(unquote(enum_name)))
     end
 
-    defp enum_of(unquote(String.to_atom(enum_name))), do: unquote(enum_def)
+    defp enum_of(unquote(enum_name)), do: unquote(enum_def)
   end
 end
