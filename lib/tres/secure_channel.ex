@@ -280,7 +280,7 @@ defmodule Tres.SecureChannel do
   end
 
   # WATING state
-  defp handle_WATING(:enter, :CONNECTING, state_data) do
+  defp handle_WATING(:enter, _state, state_data) do
     warn("[#{__MODULE__}] Possible HANG Detected on datapath_id: #{state_data.datapath_id} !")
     %State{handler_pid: handler_pid, datapath_id: dpid, aux_id: aux_id} = state_data
     send(handler_pid, {:switch_hang, {dpid, aux_id}})
@@ -311,7 +311,7 @@ defmodule Tres.SecureChannel do
   end
 
   defp handle_packet("", state_data, _state, actions) do
-    {:keep_state, state_data, Enum.reverse(actions)}
+    {:keep_state, %{state_data | ping_fail_count: 0}, Enum.reverse(actions)}
   end
 
   defp handle_packet(packet, %State{buffer: buffer} = state_data, state, actions) do
@@ -470,9 +470,9 @@ defmodule Tres.SecureChannel do
     %{state_data | ping_timer_ref: ping_ref, ping_xid: xid}
   end
 
-  defp handle_ping_timeout(%State{ping_fail_count: fail_count} = state_data, :CONNECTING)
+  defp handle_ping_timeout(%State{ping_fail_count: fail_count} = state_data, :CONNECTED)
        when fail_count > @ping_fail_max_count do
-    {:next_state, :WAITING, state_data}
+    {:next_state, :WAITING, %{state_data | ping_fail_count: fail_count + 1}}
   end
 
   defp handle_ping_timeout(%State{ping_fail_count: fail_count} = state_data, :WAITING)
@@ -481,11 +481,11 @@ defmodule Tres.SecureChannel do
   end
 
   defp handle_ping_timeout(state_data, _) do
-    new_state_data = maybe_ping(state_data)
-    {:keep_state, new_state_data}
+    {:keep_state, %{state_data | ping_fail_count: state_data.ping_fail_count + 1}}
   end
 
   defp handle_ping_reply(state_data) do
+    :ok = maybe_cancel_timer(state_data.ping_timer_ref)
     {:keep_state, %{state_data | ping_timer_ref: nil, ping_xid: nil}}
   end
 
