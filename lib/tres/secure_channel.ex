@@ -580,19 +580,19 @@ defmodule Tres.SecureChannel do
   end
 
   defp close_connection({:main_closed = disconnected_reason, reason}, state_data) do
-    warn("[#{__MODULE__}] connection terminated: Main connection down by #{reason}")
+    warn("[#{__MODULE__}] connection terminated: Main connection down by #{inspect(reason)}")
     %State{handler_pid: handler_pid} = state_data
     send(handler_pid, {:switch_disconnected, disconnected_reason})
     {:stop, :normal, %{state_data | socket: nil}}
   end
 
   defp close_connection({:handler_down = _disconnected_reason, reason}, state_data) do
-    warn("[#{__MODULE__}] connection terminated: Handler process down by #{reason}")
+    warn("[#{__MODULE__}] connection terminated: Handler process down by #{inspect(reason)}")
     {:stop, :normal, %{state_data | socket: nil}}
   end
 
   defp close_connection({:trap_detected = disconnected_reason, reason}, state_data) do
-    warn("[#{__MODULE__}] connection terminated: Trapped by #{reason}")
+    warn("[#{__MODULE__}] connection terminated: Trapped by #{inspect(reason)}")
     %State{handler_pid: handler_pid} = state_data
     send(handler_pid, {:switch_disconnected, disconnected_reason})
     {:stop, :normal, %{state_data | socket: nil}}
@@ -606,7 +606,7 @@ defmodule Tres.SecureChannel do
   end
 
   defp close_connection({:tcp_error, reason} = disconnected_reason, state_data) do
-    warn("[#{__MODULE__}] connection terminated: TCP Error occured: #{reason}")
+    warn("[#{__MODULE__}] connection terminated: TCP Error occured: #{inspect(reason)}")
     %State{handler_pid: handler_pid} = state_data
     send(handler_pid, {:switch_disconnected, disconnected_reason})
     {:stop, :normal, %{state_data | socket: nil}}
