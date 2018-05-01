@@ -262,6 +262,11 @@ defmodule Tres.SecureChannel do
     :keep_state_and_data
   end
 
+  defp handle_CONNECTED({:call, from}, {:send_message, message}, state_data) do
+    xactional_send_message({from, message}, state_data)
+    :keep_state_and_data
+  end
+
   defp handle_CONNECTED({:call, from}, :get_xid, state_data) do
     xid = State.get_transaction_id(state_data.xid)
     {:keep_state_and_data, [{:reply, from, {:ok, xid}}]}
@@ -338,7 +343,7 @@ defmodule Tres.SecureChannel do
 
   defp handle_message(_in_xact = true, message, state_data) do
     case XACT_KV.get(state_data.xact_kv_ref, message.xid) do
-      [{:xact_entry, _xid, prev_message, _orig} | _] ->
+      [{:xact_entry, _xid, prev_message, _orig, _from} | _] ->
         new_message = Openflow.append_body(prev_message, message)
         XACT_KV.update(state_data.xact_kv_ref, message.xid, new_message)
 
@@ -359,8 +364,12 @@ defmodule Tres.SecureChannel do
     pop_action_queue(state_data)
   end
 
-  defp process_xact_entry({:xact_entry, xid, message, _orig}, state_data) do
+  defp process_xact_entry({:xact_entry, xid, message, _orig, nil}, state_data) do
     unless is_nil(message), do: send(state_data.handler_pid, message)
+    XACT_KV.delete(state_data.xact_kv_ref, xid)
+  end
+  defp process_xact_entry({:xact_entry, xid, message, _orig, from}, state_data) when is_tuple(from) do
+    unless is_nil(message), do: :gen_statem.reply(from, message)
     XACT_KV.delete(state_data.xact_kv_ref, xid)
   end
 
@@ -510,6 +519,30 @@ defmodule Tres.SecureChannel do
     ]
 
     XACT_KV.insert(state_data.xact_kv_ref, xid, message)
+    send_message(messages, state_data)
+  end
+
+  defp xactional_send_message({from, %{xid: 0} = message}, state_data) do
+    xid = State.increment_transaction_id(state_data.xid)
+
+    messages = [
+      %{message | xid: xid},
+      %{Openflow.Barrier.Request.new() | xid: xid}
+    ]
+
+    XACT_KV.insert(state_data.xact_kv_ref, xid, message, from)
+    send_message(messages, state_data)
+  end
+
+  defp xactional_send_message({from, %{xid: xid} = message}, state_data) do
+    _ = State.set_transaction_id(state_data.xid, xid)
+
+    messages = [
+      %{message | xid: xid},
+      %{Openflow.Barrier.Request.new() | xid: xid}
+    ]
+
+    XACT_KV.insert(state_data.xact_kv_ref, xid, message, from)
     send_message(messages, state_data)
   end
 

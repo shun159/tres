@@ -26,6 +26,18 @@ defmodule Tres.SwitchRegistry do
     send_message(message, {dpid, 0})
   end
 
+  def blocking_send_message(message, {_dpid, _aux_id} = datapath_id) do
+    [{pid, _} | _] = Registry.lookup(__MODULE__, datapath_id)
+    :gen_statem.call(pid, {:send_message, message}, 500)
+  catch
+    :exit, {:timeout, _} ->
+      {:error, :timeout}
+  end
+
+  def blocking_send_message(message, dpid) when is_binary(dpid) do
+    blocking_send_message(message, {dpid, 0})
+  end
+
   def get_current_xid({_dpid, _aux_id} = datapath_id) do
     [{pid, _} | _] = Registry.lookup(__MODULE__, datapath_id)
     :gen_statem.call(pid, :get_xid, 1000)
