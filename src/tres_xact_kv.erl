@@ -3,13 +3,16 @@
 -include_lib("stdlib/include/ms_transform.hrl").
 
 -export([create/0, drop/1]).
--export([insert/3, update/3, get/2, delete/2, is_exists/2, is_empty/1]).
+-export([insert/3, insert/4,
+         update/3, get/2,
+         delete/2, is_exists/2,
+         is_empty/1]).
 
 -define(TABLE, xact_kv).
 -define(ENTRY, xact_entry).
 -define(TABLE_OPTS, [set, protected, {keypos, #?ENTRY.xid}]).
 
--record(?ENTRY, {xid = 0, pending = nil, orig = nil}).
+-record(?ENTRY, {xid = 0, pending = nil, orig = nil, from = nil}).
 
 -spec create() -> reference().
 create() ->
@@ -22,6 +25,10 @@ drop(Tid) ->
 -spec insert(reference(), integer(), map()) -> true.
 insert(Tid, Xid, Orig) ->
     ets:insert(Tid, #?ENTRY{xid = Xid, orig = Orig}).
+
+-spec insert(reference(), integer(), map(), term()) -> true.
+insert(Tid, Xid, Orig, From) ->
+    ets:insert(Tid, #?ENTRY{xid = Xid, orig = Orig, from = From}).
 
 -spec update(reference(), integer(), map()) -> integer().
 update(Tid, Xid, #{'__struct__' := 'Elixir.Openflow.ErrorMsg'} = Error) ->

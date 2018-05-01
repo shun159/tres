@@ -369,7 +369,8 @@ defmodule Tres.SecureChannel do
     XACT_KV.delete(state_data.xact_kv_ref, xid)
   end
   defp process_xact_entry({:xact_entry, xid, message, _orig, from}, state_data) when is_tuple(from) do
-    unless is_nil(message), do: :gen_statem.reply(from, message)
+    reply = if is_nil(message), do: :noreply, else: message
+    _ = :gen_statem.reply(from, {:ok, reply})
     XACT_KV.delete(state_data.xact_kv_ref, xid)
   end
 

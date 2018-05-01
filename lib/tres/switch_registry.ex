@@ -18,6 +18,13 @@ defmodule Tres.SwitchRegistry do
     lookup_pid({datapath_id, 0})
   end
 
+  def send_message(message, dpid, _blocking = true) do
+    blocking_send_message(message, dpid)
+  end
+  def send_message(message, dpid, _blocking) do
+    send_message(message, dpid)
+  end
+
   def send_message(message, {_dpid, _aux_id} = datapath_id) do
     Registry.dispatch(__MODULE__, datapath_id, &do_send_message(&1, message))
   end

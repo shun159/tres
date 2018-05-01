@@ -17,7 +17,7 @@ defmodule Tres.MessageHelper do
           instructions: options[:instructions] || []
         }
 
-        send_message(flow_mod, datapath_id)
+        send_message(flow_mod, datapath_id, Keyword.get(options, :blocking, false))
       end
 
       defp send_flow_mod_modify(datapath_id, options \\ []) do
@@ -36,7 +36,7 @@ defmodule Tres.MessageHelper do
           instructions: options[:instructions] || []
         }
 
-        send_message(flow_mod, datapath_id)
+        send_message(flow_mod, datapath_id, Keyword.get(options, :blocking, false))
       end
 
       defp send_flow_mod_delete(datapath_id, options \\ []) do
@@ -53,7 +53,7 @@ defmodule Tres.MessageHelper do
           match: options[:match] || Openflow.Match.new()
         }
 
-        send_message(flow_mod, datapath_id)
+        send_message(flow_mod, datapath_id, Keyword.get(options, :blocking, false))
       end
 
       defp send_packet_out(datapath_id, options \\ []) do
@@ -65,7 +65,7 @@ defmodule Tres.MessageHelper do
           data: options[:data] || ""
         }
 
-        send_message(packet_out, datapath_id)
+        send_message(packet_out, datapath_id, Keyword.get(options, :blocking, false))
       end
 
       defp send_group_mod_add(datapath_id, options \\ []) do
@@ -78,7 +78,7 @@ defmodule Tres.MessageHelper do
             buckets: options[:buckets] || []
           )
 
-        send_message(group_mod, datapath_id)
+        send_message(group_mod, datapath_id, Keyword.get(options, :blocking, false))
       end
 
       defp send_group_mod_delete(datapath_id, options \\ []) do
@@ -89,7 +89,7 @@ defmodule Tres.MessageHelper do
             group_id: options[:group_id] || :all
           )
 
-        send_message(group_mod, datapath_id)
+        send_message(group_mod, datapath_id, Keyword.get(options, :blocking, false))
       end
 
       defp send_group_mod_modify(datapath_id, options \\ []) do
@@ -102,7 +102,7 @@ defmodule Tres.MessageHelper do
             buckets: options[:buckets] || []
           )
 
-        send_message(group_mod, datapath_id)
+        send_message(group_mod, datapath_id, Keyword.get(options, :blocking, false))
       end
 
       defp send_role_request(datapath_id, options) do
@@ -113,7 +113,7 @@ defmodule Tres.MessageHelper do
             generation_id: options[:generation_id] || 0
           )
 
-        send_message(role_request, datapath_id)
+        send_message(role_request, datapath_id, Keyword.get(options, :blocking, false))
       end
     end
   end

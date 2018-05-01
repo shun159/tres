@@ -4,6 +4,7 @@ defmodule Tres.Controller do
       import Tres.SwitchRegistry,
         only: [
           send_message: 2,
+          blocking_send_message: 2,
           get_current_xid: 1
         ]
 
