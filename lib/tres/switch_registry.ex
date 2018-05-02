@@ -35,7 +35,7 @@ defmodule Tres.SwitchRegistry do
 
   def blocking_send_message(message, {_dpid, _aux_id} = datapath_id) do
     [{pid, _} | _] = Registry.lookup(__MODULE__, datapath_id)
-    :gen_statem.call(pid, {:send_message, message}, 500)
+    :gen_statem.call(pid, {:send_message, message}, 5000)
   catch
     :exit, {:timeout, _} ->
       {:error, :timeout}

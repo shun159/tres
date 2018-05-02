@@ -41,7 +41,7 @@ defmodule Tres.SecureChannel do
         " #{state_data.ip_addr}:#{state_data.port}" <> " on #{inspect(self())}"
     )
 
-    :gen_statem.enter_loop(__MODULE__, [], :INIT, state_data, [])
+    :gen_statem.enter_loop(__MODULE__, [debug: []], :INIT, state_data, [])
   end
 
   # TCP handler
@@ -50,7 +50,7 @@ defmodule Tres.SecureChannel do
         {:tcp, socket, packet},
         state,
         %State{socket: socket, transport: transport} = state_data
-      ) do
+  ) do
     transport.setopts(socket, active: :once)
     handle_packet(packet, state_data, state, [])
   end
@@ -208,6 +208,7 @@ defmodule Tres.SecureChannel do
 
   # CONNECTED state
   defp handle_CONNECTED(:enter, :CONNECTING, state_data) do
+    _tref = schedule_xactdb_ageout()
     case init_handler(state_data) do
       %State{} = new_state_data ->
         start_periodic_idle_check()
@@ -226,6 +227,12 @@ defmodule Tres.SecureChannel do
 
   defp handle_CONNECTED(:info, :ping_timeout, state_data) do
     handle_ping_timeout(state_data, :CONNECTED)
+  end
+
+  defp handle_CONNECTED(:info, :xactdb_ageout, state_data) do
+    _num_deleted = XACT_KV.aged_out(state_data.xact_kv_ref)
+    _tref = schedule_xactdb_ageout()
+    :keep_state_and_data
   end
 
   defp handle_CONNECTED(
@@ -303,6 +310,12 @@ defmodule Tres.SecureChannel do
     handle_ping_timeout(state_data, :WAITING)
   end
 
+  defp handle_WATING(:info, :xactdb_ageout, state_data) do
+    _num_deleted = XACT_KV.aged_out(state_data.xact_kv_ref)
+    _tref = schedule_xactdb_ageout()
+    :keep_state_and_data
+  end
+
   defp handle_WATING(:internal, {:openflow, message}, state_data) do
     %State{handler_pid: handler_pid, datapath_id: dpid, aux_id: aux_id} = state_data
     send(handler_pid, %{message | datapath_id: dpid, aux_id: aux_id})
@@ -324,26 +337,20 @@ defmodule Tres.SecureChannel do
 
     case Openflow.read(binary) do
       {:ok, message, leftovers} ->
-        debug(
-          "[#{__MODULE__}] Received: #{inspect(message.__struct__)}" <>
-            "(xid: #{message.xid}) in #{state}"
-        )
-
         action = {:next_event, :internal, {:openflow, message}}
         new_state_data = %{state_data | buffer: "", last_received: :os.timestamp()}
         handle_packet(leftovers, new_state_data, state, [action | actions])
-
       {:error, :binary_too_small} ->
         handle_packet("", %{state_data | buffer: binary}, state, actions)
-
-      {:error, _reason} ->
-        handle_packet("", state_data, state, actions)
+      {:error, :malformed_packet} ->
+        :ok = warn("malformed packet received from #{state_data.datapath_id}")
+        handle_packet("", %{state_data | buffer: ""}, state, actions)
     end
   end
 
   defp handle_message(_in_xact = true, message, state_data) do
     case XACT_KV.get(state_data.xact_kv_ref, message.xid) do
-      [{:xact_entry, _xid, prev_message, _orig, _from} | _] ->
+      [{:xact_entry, _xid, prev_message, _orig, _from, _inserted_at} | _] ->
         new_message = Openflow.append_body(prev_message, message)
         XACT_KV.update(state_data.xact_kv_ref, message.xid, new_message)
 
@@ -364,13 +371,14 @@ defmodule Tres.SecureChannel do
     pop_action_queue(state_data)
   end
 
-  defp process_xact_entry({:xact_entry, xid, message, _orig, nil}, state_data) do
+  defp process_xact_entry({:xact_entry, xid, message, _orig, nil, _inserted_at}, state_data) do
     unless is_nil(message), do: send(state_data.handler_pid, message)
     XACT_KV.delete(state_data.xact_kv_ref, xid)
   end
-  defp process_xact_entry({:xact_entry, xid, message, _orig, from}, state_data) when is_tuple(from) do
+  defp process_xact_entry({:xact_entry, xid, message, _orig, from, _inserted_at}, state_data)
+  when is_tuple(from) do
     reply = if is_nil(message), do: :noreply, else: message
-    _ = :gen_statem.reply(from, {:ok, reply})
+    :ok = :gen_statem.reply(from, {:ok, reply})
     XACT_KV.delete(state_data.xact_kv_ref, xid)
   end
 
@@ -564,6 +572,11 @@ defmodule Tres.SecureChannel do
   defp maybe_cancel_timer(ref) do
     Process.cancel_timer(ref)
     :ok
+  end
+
+  @spec schedule_xactdb_ageout() :: reference()
+  defp schedule_xactdb_ageout do
+    Process.send_after(self(), :xactdb_ageout, 1_000)
   end
 
   defp handle_signal(
