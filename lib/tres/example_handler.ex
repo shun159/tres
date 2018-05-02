@@ -10,7 +10,7 @@ defmodule Tres.ExampleHandler do
               conn_ref: nil
   end
 
-  def start_link(datapath, args) do
+  def start_link([datapath, args]) do
     GenServer.start_link(__MODULE__, [datapath, args])
   end
 

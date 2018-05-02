@@ -22,7 +22,7 @@ defmodule LearningSwitch.Ofctl do
     ]
   end
 
-  def start_link(datapath_id, args) do
+  def start_link([datapath_id, args]) do
     GenServer.start_link(__MODULE__, [datapath_id, args])
   end
 
