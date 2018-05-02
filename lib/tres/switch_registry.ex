@@ -1,4 +1,8 @@
 defmodule Tres.SwitchRegistry do
+  @moduledoc """
+  Dispatcher
+  """
+
   def register({_dpid, _aux_id} = datapath_id) do
     {:ok, _} = Registry.register(__MODULE__, datapath_id, [])
   end
@@ -34,8 +38,8 @@ defmodule Tres.SwitchRegistry do
   end
 
   def blocking_send_message(message, {_dpid, _aux_id} = datapath_id) do
-    __MODULE__
-    |> Registry.lookup(datapath_id)
+    datapath_id
+    |> lookup_pid
     |> call({:send_message, message}, 5_000)
   end
 
@@ -44,8 +48,8 @@ defmodule Tres.SwitchRegistry do
   end
 
   def get_current_xid({_dpid, _aux_id} = datapath_id) do
-    __MODULE__
-    |> Registry.lookup(datapath_id)
+    datapath_id
+    |> lookup_pid
     |> call(:get_xid, 1_000)
   end
 
@@ -61,15 +65,15 @@ defmodule Tres.SwitchRegistry do
 
   # private function
 
-  defp call([{pid, _}|_], msg, timeout) do
+  defp call(nil, _, _) do
+    {:error, :not_found}
+  end
+
+  defp call(pid, msg, timeout) when is_pid(pid) do
     :gen_statem.call(pid, msg, timeout)
   catch
     :exit, {:timeout, _} ->
       {:error, :timeout}
-  end
-
-  defp call(_, _, _) do
-    {:error, :not_found}
   end
 
   defp do_send_message(entries, message) do
