@@ -16,7 +16,7 @@ defmodule Tres.SecureChannel do
 
   @supported_version 4
 
-  @hello_handshake_timeout 1000
+  @hello_handshake_timeout 3000
   @features_handshake_timeout 1000
   @ping_timeout 5000
   # @transaction_timeout        5000
@@ -402,10 +402,10 @@ defmodule Tres.SecureChannel do
   end
 
   defp handle_hello_handshake_1(hello, state_data) do
-    maybe_cancel_timer(state_data.timer_ref)
     State.set_transaction_id(state_data.xid, hello.xid)
 
     if Openflow.Hello.supported_version?(hello) do
+      :ok = maybe_cancel_timer(state_data.timer_ref)
       {:next_state, :CONNECTING, %{state_data | timer_ref: nil}}
     else
       close_connection(:failed_version_negotiation, state_data)
