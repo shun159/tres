@@ -8,11 +8,9 @@ defmodule Tres.Application do
   def start(_type, _args) do
     import Supervisor.Spec
 
-    {cb_mod, _cb_args} = Tres.Utils.get_callback_module()
-
     children = [
       worker(Registry, [[keys: :unique, name: SwitchRegistry]], id: SwitchRegistry),
-      supervisor(Tres.MessageHandlerSup, [cb_mod], id: MessageHandlerSup),
+      supervisor(Tres.MessageHandlerSup, [], id: MessageHandlerSup),
       supervisor(OVSDB, [], id: OVSDB)
     ]
 
