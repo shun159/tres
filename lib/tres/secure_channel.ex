@@ -37,7 +37,7 @@ defmodule Tres.SecureChannel do
     state_data = init_secure_channel(ref, socket, transport)
 
     debug(
-      "[#{__MODULE__}] TCP connected to Switch on" <>
+      "TCP connected to Switch on" <>
         " #{state_data.ip_addr}:#{state_data.port}" <> " on #{inspect(self())}"
     )
 
@@ -102,7 +102,7 @@ defmodule Tres.SecureChannel do
         aux_id: aux_id,
         xact_kv_ref: kv_ref
       }) do
-    warn("[#{__MODULE__}] termiate: #{inspect(reason)} state = #{inspect(state)}")
+    debug("termiate: #{inspect(reason)} state = #{inspect(state)}")
     true = XACT_KV.drop(kv_ref)
     :ok = SwitchRegistry.unregister({datapath_id, aux_id})
   end
@@ -138,7 +138,7 @@ defmodule Tres.SecureChannel do
   # INIT state
   defp handle_INIT(:enter, _old_state, state_data) do
     debug(
-      "[#{__MODULE__}] Initiate HELLO handshake: " <> "#{state_data.ip_addr}:#{state_data.port}"
+      "Initiate HELLO handshake: " <> "#{state_data.ip_addr}:#{state_data.port}"
     )
 
     initiate_hello_handshake(state_data)
@@ -154,7 +154,7 @@ defmodule Tres.SecureChannel do
 
   defp handle_INIT(:internal, message, _state_data) do
     debug(
-      "[#{__MODULE__}] Hello handshake in progress, " <> "dropping message: #{inspect(message)}"
+      "Hello handshake in progress, " <> "dropping message: #{inspect(message)}"
     )
 
     :keep_state_and_data
@@ -163,7 +163,7 @@ defmodule Tres.SecureChannel do
   # CONNECTING state
   defp handle_CONNECTING(:enter, :INIT, state_data) do
     debug(
-      "[#{__MODULE__}] Initiate FEATURES handshake:" <>
+      "Initiate FEATURES handshake:" <>
         " #{state_data.ip_addr}:#{state_data.port}"
     )
 
@@ -171,7 +171,7 @@ defmodule Tres.SecureChannel do
   end
 
   defp handle_CONNECTING(:enter, :WAITING, state_data) do
-    debug("[#{__MODULE__}] Re-entered features handshake")
+    debug("Re-entered features handshake")
     initiate_features_handshake(state_data)
   end
 
@@ -185,7 +185,7 @@ defmodule Tres.SecureChannel do
          state_data
        ) do
     debug(
-      "[#{__MODULE__}] Switch connected " <>
+      "Switch connected " <>
         "datapath_id: #{features.datapath_id}" <> " auxiliary_id: #{features.aux_id}"
     )
 
@@ -195,7 +195,7 @@ defmodule Tres.SecureChannel do
 
   defp handle_CONNECTING(:internal, {:openflow, message}, _state_data) do
     debug(
-      "[#{__MODULE__}] Features handshake in progress," <>
+      "Features handshake in progress," <>
         " dropping message: #{inspect(message.__struct__)}"
     )
 
@@ -293,7 +293,7 @@ defmodule Tres.SecureChannel do
 
   # WATING state
   defp handle_WATING(:enter, _state, state_data) do
-    warn("[#{__MODULE__}] Possible HANG Detected on datapath_id: #{state_data.datapath_id} !")
+    debug("Possible HANG Detected on datapath_id: #{state_data.datapath_id} !")
     %State{handler_pid: handler_pid, datapath_id: dpid, aux_id: aux_id} = state_data
     send(handler_pid, {:switch_hang, {dpid, aux_id}})
     start_periodic_idle_check()
@@ -324,7 +324,7 @@ defmodule Tres.SecureChannel do
 
   defp handle_WATING(type, message, state_data)
        when type == :cast or type == :call do
-    debug("[#{__MODULE__}] Postponed: #{inspect(message)}, now WATING")
+    debug("Postponed: #{inspect(message)}, now WATING")
     {:keep_state, state_data, [{:postpone, true}]}
   end
 
@@ -343,7 +343,7 @@ defmodule Tres.SecureChannel do
       {:error, :binary_too_small} ->
         handle_packet("", %{state_data | buffer: binary}, state, actions)
       {:error, :malformed_packet} ->
-        :ok = warn("malformed packet received from #{state_data.datapath_id}")
+        :ok = debug("malformed packet received from #{state_data.datapath_id}")
         handle_packet("", %{state_data | buffer: ""}, state, actions)
     end
   end
@@ -559,9 +559,9 @@ defmodule Tres.SecureChannel do
     if is_list(message) do
       for message <- message,
           do:
-            debug("[#{__MODULE__}] Sending: #{inspect(message.__struct__)}(xid: #{message.xid})")
+            debug("Sending: #{inspect(message.__struct__)}(xid: #{message.xid})")
     else
-      debug("[#{__MODULE__}] Sending: #{inspect(message.__struct__)}(xid: #{message.xid})")
+      debug("Sending: #{inspect(message.__struct__)}(xid: #{message.xid})")
     end
 
     Tres.Utils.send_message(message, socket, transport)
@@ -598,62 +598,62 @@ defmodule Tres.SecureChannel do
   end
 
   defp close_connection(:failed_version_negotiation, state_data) do
-    warn("[#{__MODULE__}] connection terminated: Version negotiation failed")
+    debug("connection terminated: Version negotiation failed")
     {:stop, :normal, %{state_data | socket: nil}}
   end
 
   defp close_connection(:hello_handshake_timeout, state_data) do
-    warn("[#{__MODULE__}] connection terminated: Hello handshake timed out")
+    debug("connection terminated: Hello handshake timed out")
     {:stop, :normal, %{state_data | socket: nil}}
   end
 
   defp close_connection(:features_timeout, state_data) do
-    warn("[#{__MODULE__}] connection terminated: Features handshake timed out")
+    debug("connection terminated: Features handshake timed out")
     {:stop, :normal, %{state_data | socket: nil}}
   end
 
   defp close_connection(:handler_error = disconnected_reason, state_data) do
-    warn("[#{__MODULE__}] connection terminated: Got handler error")
+    debug("connection terminated: Got handler error")
     %State{handler_pid: handler_pid} = state_data
     send(handler_pid, {:switch_disconnected, disconnected_reason})
     {:stop, :normal, %{state_data | socket: nil}}
   end
 
   defp close_connection(:ping_failed = disconnected_reason, state_data) do
-    warn("[#{__MODULE__}] connection terminated: Exceeded to max_ping_fail_count")
+    debug("connection terminated: Exceeded to max_ping_fail_count")
     %State{handler_pid: handler_pid} = state_data
     send(handler_pid, {:switch_disconnected, disconnected_reason})
     {:stop, :normal, %{state_data | socket: nil}}
   end
 
   defp close_connection({:main_closed = disconnected_reason, reason}, state_data) do
-    warn("[#{__MODULE__}] connection terminated: Main connection down by #{inspect(reason)}")
+    debug("connection terminated: Main connection down by #{inspect(reason)}")
     %State{handler_pid: handler_pid} = state_data
     send(handler_pid, {:switch_disconnected, disconnected_reason})
     {:stop, :normal, %{state_data | socket: nil}}
   end
 
   defp close_connection({:handler_down = _disconnected_reason, reason}, state_data) do
-    warn("[#{__MODULE__}] connection terminated: Handler process down by #{inspect(reason)}")
+    debug("connection terminated: Handler process down by #{inspect(reason)}")
     {:stop, :normal, %{state_data | socket: nil}}
   end
 
   defp close_connection({:trap_detected = disconnected_reason, reason}, state_data) do
-    warn("[#{__MODULE__}] connection terminated: Trapped by #{inspect(reason)}")
+    debug("connection terminated: Trapped by #{inspect(reason)}")
     %State{handler_pid: handler_pid} = state_data
     send(handler_pid, {:switch_disconnected, disconnected_reason})
     {:stop, :normal, %{state_data | socket: nil}}
   end
 
   defp close_connection(:tcp_closed = disconnected_reason, state_data) do
-    warn("[#{__MODULE__}] connection terminated: TCP Closed by peer")
+    debug("connection terminated: TCP Closed by peer")
     %State{handler_pid: handler_pid} = state_data
     send(handler_pid, {:switch_disconnected, disconnected_reason})
     {:stop, :normal, %{state_data | socket: nil}}
   end
 
   defp close_connection({:tcp_error, reason} = disconnected_reason, state_data) do
-    warn("[#{__MODULE__}] connection terminated: TCP Error occured: #{inspect(reason)}")
+    debug("connection terminated: TCP Error occured: #{inspect(reason)}")
     %State{handler_pid: handler_pid} = state_data
     send(handler_pid, {:switch_disconnected, disconnected_reason})
     {:stop, :normal, %{state_data | socket: nil}}
