@@ -36,13 +36,6 @@ defmodule Tres.ExampleHandler do
     {:noreply, state}
   end
 
-  def handle_info({:switch_disconnected, reason}, state) do
-    :ok =
-      warn("[#{__MODULE__}] Switch Disconnected: datapath_id: #{state.datapath_id} by #{reason}")
-
-    {:stop, :normal, state}
-  end
-
   def handle_info({:switch_hang, _datapath_id}, state) do
     :ok = warn("[#{__MODULE__}] Switch possible hang: datapath_id: #{state.datapath_id}")
     {:noreply, state}
