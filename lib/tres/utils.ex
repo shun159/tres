@@ -13,21 +13,21 @@ defmodule Tres.Utils do
   end
 
   def start_openflow_listener do
-    max_connections = get_config(:max_connections, @default_max_connections)
-    num_acceptors = get_config(:num_acceptors, @default_num_acceptors)
-    port = get_config(:port, @default_openflow_port)
-    options = [max_connections: max_connections, num_acceptors: num_acceptors, port: port]
-    :ranch.start_listener(Tres, :ranch_tcp, options, @connection_manager, [])
+    :ranch.start_listener(
+      _ref            = Tres,
+      _trasport       = :ranch_tcp,
+      _transport_opts = transport_options(),
+      _protocol       = @connection_manager,
+      _protocol_opts  = []
+    )
   end
 
   def send_message(message, socket, transport) do
-    try do
-      packet = Openflow.to_binary(message)
-      transport.send(socket, packet)
-    catch
-      _class, _reason ->
-        error("[#{__MODULE__}] Unencodable error: #{inspect(message)}")
-    end
+    packet = Openflow.to_binary(message)
+    transport.send(socket, packet)
+  catch
+    _class, _reason ->
+      error("[#{__MODULE__}] Unencodable error: #{inspect(message)}")
   end
 
   def is_multipart?(message) do
@@ -54,7 +54,32 @@ defmodule Tres.Utils do
   end
 
   # private functions
+
   defp get_config(item, default) do
     Application.get_env(:tres, item, default)
   end
+
+  defp transport_options do
+    %{
+      max_connections: max_connections(),
+      num_acceptors: num_acceptors(),
+      logger: :logger,
+      socket_opts: socket_opts()
+    }
+  end
+
+  defp socket_opts do
+    [
+      port: port()
+    ]
+  end
+
+  defp port,
+    do: get_config(:port, @default_openflow_port)
+
+  defp max_connections,
+    do: get_config(:max_connections, @default_max_connections)
+
+  defp num_acceptors,
+    do: get_config(:num_acceptors, @default_num_acceptors)
 end

@@ -7,6 +7,6 @@
   "gen_state_machine": {:hex, :gen_state_machine, "2.0.1", "85efd5a0376929c3a4246dd943e17564a2908c7ddd7acd242d84594e785d83f8", [], [], "hexpm"},
   "jsone": {:git, "https://github.com/sile/jsone.git", "b23d312a5ed051ea7ad0989a9f2cb1a9c3f9a502", [tag: "1.4.6"]},
   "pkt": {:git, "https://github.com/msantos/pkt.git", "ff0e9a7d28cdae941bce935602cd252cad1ea296", [branch: "master"]},
-  "ranch": {:hex, :ranch, "1.4.0", "10272f95da79340fa7e8774ba7930b901713d272905d0012b06ca6d994f8826b", [:rebar3], [], "hexpm"},
+  "ranch": {:hex, :ranch, "1.6.0", "92ac674645ec5dd23c6f0aeb9fff0aae1dd4e94a0af8407ff4d14f750a4cd7cf", [:rebar3], [], "hexpm"},
   "uuid": {:git, "https://github.com/avtobiff/erlang-uuid.git", "585c2474afb4a597ae8c8bf6d21e5a9c73f18e0b", [tag: "v0.5.0"]},
 }
