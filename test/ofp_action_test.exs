@@ -626,5 +626,22 @@ defmodule OfpActionTest do
       assert actions_bin == packet
       assert actions == [resubmit_table_ct]
     end
+
+    test "with clone(push_vlan:0x8100,set_field:5->vlan_vid,output:10)" do
+      test_file = "test/packet_data/nx_clone.raw"
+      packet = File.read!(test_file)
+      actions = Openflow.Action.read(packet)
+      clone =
+        Openflow.Action.NxClone.new(
+          [
+            Openflow.Action.PushVlan.new(),
+            Openflow.Action.SetField.new({:vlan_vid, 5}),
+            Openflow.Action.Output.new(10)
+          ]
+        )
+      actions_bin = Openflow.Action.to_binary(clone)
+      assert actions_bin == packet
+      assert actions == [clone]
+    end
   end
 end
