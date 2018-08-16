@@ -194,7 +194,7 @@ defmodule OVSDB.OpenvSwitch do
   def handle_call({:add_br, options}, _from, state) do
     %State{client_pid: pid, ovs_uuid: ovs} = state
     br_iface = %{name: options[:bridge], type: :internal}
-    br_port = %{name: options[:bridge], interfaces: ["named-uuid", "brinterface"]}
+    br_port = %{name: options[:bridge], interfaces: ["named-uuid", "interface"]}
 
     other_config = [
       ["datapath-id", options[:datapath_id]],
@@ -205,22 +205,22 @@ defmodule OVSDB.OpenvSwitch do
 
     new_bridge = %{
       name: options[:bridge],
-      ports: ["named-uuid", "brport"],
+      ports: ["named-uuid", "port"],
       fail_mode: options[:fail_mode],
       other_config: make_ovsdb_map(other_config)
     }
 
     named_uuid = ["named-uuid", "bridge"]
+    new_bridges = %{bridges: add_elem_to_set(options[:br_uuids], named_uuid)}
 
-    new_bridges = add_elem_to_set(options[:br_uuids], named_uuid)
     next_config = [{"next_cfg", "+=", 1}]
     eq_ovs_uuid = [{"_uuid", "==", ovs}]
 
     replies =
       xact(
         [
-          :eovsdb_op.insert(@interface, br_iface, "brinterface"),
-          :eovsdb_op.insert(@port, br_port, "brport"),
+          :eovsdb_op.insert(@interface, br_iface, "interface"),
+          :eovsdb_op.insert(@port, br_port, "port"),
           :eovsdb_op.insert(@bridge, new_bridge, "bridge"),
           :eovsdb_op.update(@open_vswitch, eq_ovs_uuid, new_bridges),
           :eovsdb_op.mutate(@open_vswitch, eq_ovs_uuid, next_config)
@@ -394,7 +394,7 @@ defmodule OVSDB.OpenvSwitch do
   defp make_ovsdb_set(value), do: value
 
   defp add_elem_to_set(["set", []], value), do: value
-  defp add_elem_to_set(["set", values], value), do: ["set", values ++ value]
+  defp add_elem_to_set(["set", values], value), do: ["set", values ++ [value]]
   defp add_elem_to_set(["uuid", _] = uuid, value), do: ["set", [uuid] ++ [value]]
 
   defp del_elem_from_set(["set", values], value), do: ["set", values -- [value]]
