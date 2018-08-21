@@ -14,9 +14,9 @@ defmodule OfpPacketIn2Test do
       assert pktin.full_len == 64
       assert pktin.table_id == 7
       assert pktin.buffer_id == 0x114
-      assert pktin.cookie == 0xfedcba9876543210
+      assert pktin.cookie == 0xFEDCBA9876543210
       assert pktin.reason == :action
-      assert pktin.metadata == [metadata: 0x5a5a5a5a5a5a5a5a]
+      assert pktin.metadata == [metadata: 0x5A5A5A5A5A5A5A5A]
       assert pktin.userdata == <<1, 2, 3, 4, 5>>
     end
   end
