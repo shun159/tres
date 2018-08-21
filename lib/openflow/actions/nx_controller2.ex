@@ -4,7 +4,8 @@ defmodule Openflow.Action.NxController2 do
     id: 0,
     reason: :action,
     userdata: "",
-    pause: false
+    pause: false,
+    meter_id: 0
   )
 
   @experimenter 0x00002320
@@ -17,6 +18,9 @@ defmodule Openflow.Action.NxController2 do
   @prop_reason 2
   @prop_userdata 3
   @prop_pause 4
+  @prop_meter_id 5
+
+  @nx_ctlr_no_meter 0
 
   alias __MODULE__
 
@@ -26,7 +30,8 @@ defmodule Openflow.Action.NxController2 do
       id: options[:id] || 0,
       reason: options[:reason] || :action,
       userdata: options[:userdata],
-      pause: options[:pause] || false
+      pause: options[:pause] || false,
+      meter_id: options[:meter_id] || @nx_ctlr_no_meter
     }
   end
 
@@ -89,6 +94,10 @@ defmodule Openflow.Action.NxController2 do
           prop_length = @prop_header_size + padding_length
           <<@prop_pause::16, prop_length::16, 0::size(padding_length)-unit(8)>>
 
+        prop == :meter_id and value != @nx_ctlr_no_meter ->
+          prop_length = @prop_header_size + 4
+          <<@prop_meter_id::16, prop_length::16, value::32>>
+
         true ->
           ""
       end
@@ -135,6 +144,10 @@ defmodule Openflow.Action.NxController2 do
       :pause ->
         <<@prop_pause::16, _::16, 0::size(4)-unit(8), rest::bytes>> = bin
         decode_prop(struct(ctl, %{pause: true}), rest)
+
+      :meter_id ->
+        <<@prop_meter_id::16, _::16, meter_id::32, rest::bytes>> = bin
+        decode_prop(struct(ctl, %{meter_id: meter_id}), rest)
     end
   end
 end
