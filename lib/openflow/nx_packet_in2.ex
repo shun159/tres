@@ -25,6 +25,24 @@ defmodule Openflow.NxPacketIn2 do
 
   alias __MODULE__
 
+  @encode_keys ~w(
+    packet
+    full_len
+    buffer_id
+    table_id
+    cookie
+    reason
+    metadata
+    userdata
+    continuation_bridge
+    continuation_stack
+    continuation_conntracked
+    continuation_table_id
+    continuation_cookie
+    continuation_actions
+    continuation_action_set
+  )a
+
   @experimenter 0x00002320
   @nx_type 30
 
