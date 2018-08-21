@@ -14,6 +14,15 @@ defmodule Openflow.MeterMod do
 
   def ofp_type, do: 29
 
+  def new(options \\ []) do
+    %MeterMod{
+      command: options[:command] || :add,
+      flags: options[:flags] || [],
+      meter_id: options[:meter_id] || 0,
+      bands: options[:bands] || []
+    }
+  end
+
   def read(<<command_int::16, flags_int::16, meter_id_int::32, bands_bin::bytes>>) do
     command = Openflow.Enums.to_atom(command_int, :meter_mod_command)
     flags = Openflow.Enums.int_to_flags(flags_int, :meter_flags)

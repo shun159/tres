@@ -115,6 +115,43 @@ defmodule Tres.MessageHelper do
 
         send_message(role_request, datapath_id, Keyword.get(options, :blocking, false))
       end
+
+      defp send_meter_mod_add(datapath_id, options \\ []) do
+        meter_mod =
+          Openflow.MeterMod.new(
+            xid: options[:xid] || 0,
+            command: :add,
+            flags: options[:flags] || [],
+            meter_id: options[:meter_id] || 0,
+            bands: options[:bands] || []
+          )
+
+        send_message(meter_mod, datapath_id, options[:blocking] || false)
+      end
+
+      defp send_meter_mod_modify(datapath_id, options \\ []) do
+        meter_mod =
+          Openflow.MeterMod.new(
+            xid: options[:xid] || 0,
+            command: :modify,
+            flags: options[:flags] || [],
+            meter_id: options[:meter_id] || 0,
+            bands: options[:bands] || []
+          )
+
+        send_message(meter_mod, datapath_id, options[:blocking] || false)
+      end
+
+      defp send_meter_mod_delete(datapath_id, options \\ []) do
+        meter_mod =
+          Openflow.MeterMod.new(
+            xid: options[:xid] || 0,
+            command: :delete,
+            meter_id: options[:meter_id] || 0,
+          )
+
+        send_message(meter_mod, datapath_id, options[:blocking] || false)
+      end
     end
   end
 end
