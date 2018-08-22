@@ -259,7 +259,7 @@ defmodule Openflow.NxResume do
          acc,
          %NxResume{continuation_actions: actions} = pin,
          [:continuation_actions | rest]
-       ) do
+       ) when is_nil(actions) do
     actions_bin = Openflow.Action.to_binary(actions)
     length = @prop_header_length + byte_size(actions_bin)
     pad_length = Openflow.Utils.pad_length(length, 8)
