@@ -34,12 +34,12 @@ defmodule OVSDB.OpenvSwitch do
              disable_in_band: "true"
            )
   """
-  def add_br(pid, [_|_] = options) do
+  def add_br(pid, [_ | _] = options) do
     br_uuids = GenServer.call(pid, {:sync_get, @open_vswitch, "bridges"})
 
     add_br_options = [
       bridge: options[:name],
-      fail_mode: options[:fail_mode]  || "standalone",
+      fail_mode: options[:fail_mode] || "standalone",
       datapath_id: options[:datapath_id],
       disable_in_band: options[:disable_in_band],
       br_uuids: br_uuids
@@ -83,10 +83,11 @@ defmodule OVSDB.OpenvSwitch do
             protocol: "OpenFlow13"
           )
   """
-  def set_controller(pid, [_|_] = options) do
+  def set_controller(pid, [_ | _] = options) do
     case find_by_name(pid, @bridge, options[:bridge]) do
       :not_found ->
         {:error, :not_found}
+
       %{"_uuid" => _uuid} ->
         set_ctl_opts = [
           bridge: options[:bridge],
@@ -94,7 +95,7 @@ defmodule OVSDB.OpenvSwitch do
           connection_mode: options[:connection_mode] || "out-of-band",
           controller_rate_limit: options[:controller_rate_limit] || 1000,
           controller_burst_limit: options[:controller_burst_limit] || 100,
-          protocol: options[:protocol] || "OpenFlow13",
+          protocol: options[:protocol] || "OpenFlow13"
         ]
 
         GenServer.call(pid, {:set_controller, set_ctl_opts})
@@ -111,10 +112,11 @@ defmodule OVSDB.OpenvSwitch do
             ofport_request: 99
           )
   """
-  def add_port(pid, [_|_] = options) do
+  def add_port(pid, [_ | _] = options) do
     case find_by_name(pid, @bridge, options[:bridge]) do
       :not_found ->
         {:error, :not_found}
+
       %{"_uuid" => _uuid, "ports" => ports} ->
         port_opts = [
           bridge: options[:bridge],
@@ -146,14 +148,16 @@ defmodule OVSDB.OpenvSwitch do
   @doc """
       iex> OpenvSwitch.del_port(client_pid, bridge: "br0", port: "vxlan5")
   """
-  def del_port(pid, [_|_] = options) do
+  def del_port(pid, [_ | _] = options) do
     case find_by_name(pid, @bridge, options[:bridge]) do
       :not_found ->
         {:error, :not_found}
+
       %{"_uuid" => _uuid, "ports" => ports} ->
         case find_by_name(pid, @port, options[:port]) do
           :not_found ->
             {:error, :not_found}
+
           %{"_uuid" => port_uuid} ->
             new_ports = del_elem_from_set(ports, port_uuid)
 
@@ -257,34 +261,41 @@ defmodule OVSDB.OpenvSwitch do
     bridge = %{ports: options[:ports]}
 
     replies =
-      xact([
-        :eovsdb_op.update(@bridge, eq_br_name, bridge),
-        :eovsdb_op.mutate(@open_vswitch, eq_ovs_uuid, next_config)
-      ], pid)
+      xact(
+        [
+          :eovsdb_op.update(@bridge, eq_br_name, bridge),
+          :eovsdb_op.mutate(@open_vswitch, eq_ovs_uuid, next_config)
+        ],
+        pid
+      )
 
     {:reply, replies, state}
   end
 
   def handle_call({:set_controller, options}, _from, state) do
     %State{client_pid: pid, ovs_uuid: ovs} = state
+
     controller = %{
       target: options[:target],
       connection_mode: options[:connection_mode],
       controller_rate_limit: options[:controller_rate_limit],
-      controller_burst_limit: options[:controller_burst_limit],
+      controller_burst_limit: options[:controller_burst_limit]
     }
 
     bridge = %{
       protocols: options[:protocol],
-      controller: ["named-uuid", "controller"],
+      controller: ["named-uuid", "controller"]
     }
 
     replies =
-      xact([
-        :eovsdb_op.insert(@controller, controller, "controller"),
-        :eovsdb_op.update(@bridge, [{"name", "==", options[:bridge]}], bridge),
-        :eovsdb_op.mutate(@open_vswitch, [{"_uuid", "==", ovs}], [{"next_cfg", "+=", 1}])
-      ], pid)
+      xact(
+        [
+          :eovsdb_op.insert(@controller, controller, "controller"),
+          :eovsdb_op.update(@bridge, [{"name", "==", options[:bridge]}], bridge),
+          :eovsdb_op.mutate(@open_vswitch, [{"_uuid", "==", ovs}], [{"next_cfg", "+=", 1}])
+        ],
+        pid
+      )
 
     {:reply, replies, state}
   end
@@ -294,7 +305,7 @@ defmodule OVSDB.OpenvSwitch do
 
     port = %{
       name: options[:name],
-      interfaces: ["named-uuid", "interface"],
+      interfaces: ["named-uuid", "interface"]
     }
 
     iface_options = [
@@ -377,6 +388,7 @@ defmodule OVSDB.OpenvSwitch do
 
   defp do_find_by_name(pid, table, name) do
     query = :eovsdb_op.select('*', table, [{"name", "==", name}])
+
     case xact(query, pid) do
       [%{"rows" => []}] -> :not_found
       [%{"rows" => [row]}] -> row
@@ -386,11 +398,11 @@ defmodule OVSDB.OpenvSwitch do
   defp make_ovsdb_map(map), do: make_ovsdb_map([], map)
 
   defp make_ovsdb_map(acc, []), do: ["map", Enum.reverse(acc)]
-  defp make_ovsdb_map(acc, [[_key, nil]|rest]), do: make_ovsdb_map(acc, rest)
-  defp make_ovsdb_map(acc, [attr|rest]), do: make_ovsdb_map([attr|acc], rest)
+  defp make_ovsdb_map(acc, [[_key, nil] | rest]), do: make_ovsdb_map(acc, rest)
+  defp make_ovsdb_map(acc, [attr | rest]), do: make_ovsdb_map([attr | acc], rest)
 
   defp make_ovsdb_set(nil), do: ["set", []]
-  defp make_ovsdb_set([_|_] = list), do: ["set", list]
+  defp make_ovsdb_set([_ | _] = list), do: ["set", list]
   defp make_ovsdb_set(value), do: value
 
   defp add_elem_to_set(["set", []], value), do: value
