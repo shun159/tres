@@ -25,6 +25,7 @@ defmodule Tres.SwitchRegistry do
   def send_message(message, dpid, _blocking = true) do
     blocking_send_message(message, dpid)
   end
+
   def send_message(message, dpid, _blocking) do
     send_message(message, dpid)
   end

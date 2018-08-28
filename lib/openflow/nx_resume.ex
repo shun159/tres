@@ -1,4 +1,4 @@
-defmodule Openflow.NxPacketIn2 do
+defmodule Openflow.NxResume do
   defstruct(
     version: 4,
     xid: 0,
@@ -49,7 +49,7 @@ defmodule Openflow.NxPacketIn2 do
   )a
 
   @experimenter 0x00002320
-  @nx_type 30
+  @nx_type 28
 
   @packet 0
   @full_len 1
@@ -74,14 +74,40 @@ defmodule Openflow.NxPacketIn2 do
 
   def ofp_type, do: 4
 
-  def to_binary(%NxPacketIn2{} = pin) do
+  def new(options \\ []) do
+    packet_in = options[:packet_in]
+    packet = options[:packet] || packet_in.packet
+
+    %NxResume{
+      packet: options[:packet] || packet_in.packet,
+      full_len: byte_size(packet),
+      buffer_id: packet_in.buffer_id || :no_buffer,
+      table_id: packet_in.table_id,
+      cookie: packet_in.cookie,
+      reason: packet_in.reason,
+      metadata: packet_in.metadata,
+      userdata: packet_in.userdata,
+      continuation_bridge: packet_in.continuation_bridge,
+      continuation_stack: packet_in.continuation_stack,
+      continuation_conntracked: packet_in.continuation_conntracked,
+      continuation_table_id: packet_in.continuation_table_id,
+      continuation_cookie: packet_in.continuation_cookie,
+      continuation_actions: packet_in.continuation_actions,
+      continuation_action_set: packet_in.continuation_action_set,
+      continuation_mirrors: packet_in.continuation_mirrors
+    }
+  end
+
+  def to_binary(%NxResume{} = pin) do
     props_bin = encode_props("", pin, @encode_keys)
     continuations_bin = encode_continuations("", pin, @continuation_keys)
-    <<@experimenter::32, @nx_type::32, props_bin::bytes, continuations_bin::bytes>>
+    bin0 = <<@experimenter::32, @nx_type::32, props_bin::bytes, continuations_bin::bytes>>
+    pad_length = Openflow.Utils.pad_length(byte_size(bin0) + 8, 8)
+    <<bin0::bytes, 0::size(pad_length)-unit(8)>>
   end
 
   def read(<<@experimenter::32, @nx_type::32, props_bin::bytes>>) do
-    %NxPacketIn2{}
+    %NxResume{}
     |> decode_props(props_bin)
   end
 
@@ -89,7 +115,7 @@ defmodule Openflow.NxPacketIn2 do
 
   defp encode_props(acc, _pin, []), do: acc
 
-  defp encode_props(acc, %NxPacketIn2{packet: packet} = pin, [:packet | rest])
+  defp encode_props(acc, %NxResume{packet: packet} = pin, [:packet | rest])
        when not is_nil(packet) and is_binary(packet) do
     length = @prop_header_length + byte_size(packet)
     pad_length = Openflow.Utils.pad_length(length, 8)
@@ -97,35 +123,36 @@ defmodule Openflow.NxPacketIn2 do
     encode_props(<<acc::bytes, binary::bytes>>, pin, rest)
   end
 
-  defp encode_props(acc, %NxPacketIn2{full_len: full_len} = pin, [:full_len | rest])
+  defp encode_props(acc, %NxResume{full_len: full_len} = pin, [:full_len | rest])
        when not is_nil(full_len) and is_integer(full_len) do
     length = @prop_header_length + 4
     binary = <<@full_len::16, length::16, full_len::32>>
     encode_props(<<acc::bytes, binary::bytes>>, pin, rest)
   end
 
-  defp encode_props(acc, %NxPacketIn2{buffer_id: buffer_id} = pin, [:buffer_id | rest])
-       when not is_nil(buffer_id) and is_integer(buffer_id) do
+  defp encode_props(acc, %NxResume{buffer_id: buffer_id} = pin, [:buffer_id | rest])
+       when not is_nil(buffer_id) do
     length = @prop_header_length + 4
-    binary = <<@buffer_id::16, length::16, buffer_id::32>>
+    buffer_id_int = Openflow.Utils.get_enum(buffer_id, :buffer_id)
+    binary = <<@buffer_id::16, length::16, buffer_id_int::32>>
     encode_props(<<acc::bytes, binary::bytes>>, pin, rest)
   end
 
-  defp encode_props(acc, %NxPacketIn2{table_id: table_id} = pin, [:table_id | rest])
+  defp encode_props(acc, %NxResume{table_id: table_id} = pin, [:table_id | rest])
        when not is_nil(table_id) and is_integer(table_id) do
     length = @prop_header_length + 4
     binary = <<@table_id::16, length::16, table_id::8, 0::24>>
     encode_props(<<acc::bytes, binary::bytes>>, pin, rest)
   end
 
-  defp encode_props(acc, %NxPacketIn2{cookie: cookie} = pin, [:cookie | rest])
+  defp encode_props(acc, %NxResume{cookie: cookie} = pin, [:cookie | rest])
        when not is_nil(cookie) and is_integer(cookie) do
     length = @prop_header_length + 4
     binary = <<@cookie::16, length::16, 0::32, cookie::64>>
     encode_props(<<acc::bytes, binary::bytes>>, pin, rest)
   end
 
-  defp encode_props(acc, %NxPacketIn2{metadata: metadata} = pin, [:metadata | rest])
+  defp encode_props(acc, %NxResume{metadata: metadata} = pin, [:metadata | rest])
        when not is_nil(metadata) and is_list(metadata) do
     pad_match_bin =
       metadata
@@ -141,7 +168,7 @@ defmodule Openflow.NxPacketIn2 do
     encode_props(<<acc::bytes, binary::bytes>>, pin, rest)
   end
 
-  defp encode_props(acc, %NxPacketIn2{userdata: userdata} = pin, [:userdata | rest])
+  defp encode_props(acc, %NxResume{userdata: userdata} = pin, [:userdata | rest])
        when not is_nil(userdata) and is_binary(userdata) do
     length = @prop_header_length + byte_size(userdata)
     pad_length = Openflow.Utils.pad_length(length, 8)
@@ -157,7 +184,8 @@ defmodule Openflow.NxPacketIn2 do
     if byte_size(acc) > 0 do
       length = @prop_header_length + byte_size(acc)
       pad_length = Openflow.Utils.pad_length(length, 8)
-      <<@continuation::16, acc::bytes, 0::size(pad_length)-unit(8)>>
+      binary = <<@continuation::16, length::16, acc::bytes, 0::size(pad_length)-unit(8)>>
+      binary
     else
       <<>>
     end
@@ -165,20 +193,20 @@ defmodule Openflow.NxPacketIn2 do
 
   defp encode_continuations(
          acc,
-         %NxPacketIn2{continuation_bridge: br} = pin,
+         %NxResume{continuation_bridge: br} = pin,
          [:continuation_bridge | rest]
        )
        when not is_nil(br) do
     length = @prop_header_length + byte_size(br)
-    pad_length = Openflow.Utils.pad_length(length, 8)
-    bridge_bin = <<br::bytes, 0::size(pad_length)-unit(8), acc::bytes>>
-    binary = <<@nxcpt_bridge::16, length::16, bridge_bin::bytes, acc::bytes>>
+    bridge_bin = <<br::16-bytes, acc::bytes>>
+    binary = <<@nxcpt_bridge::16, length::16, bridge_bin::bytes, 0::size(4)-unit(8), acc::bytes>>
+
     encode_continuations(binary, pin, rest)
   end
 
   defp encode_continuations(
          acc,
-         %NxPacketIn2{continuation_stack: stack} = pin,
+         %NxResume{continuation_stack: stack} = pin,
          [:continuation_stack | rest]
        )
        when not is_nil(stack) do
@@ -191,7 +219,7 @@ defmodule Openflow.NxPacketIn2 do
 
   defp encode_continuations(
          acc,
-         %NxPacketIn2{continuation_mirrors: mirrors} = pin,
+         %NxResume{continuation_mirrors: mirrors} = pin,
          [:continuation_mirrors | rest]
        )
        when not is_nil(mirrors) do
@@ -199,24 +227,26 @@ defmodule Openflow.NxPacketIn2 do
     pad_length = Openflow.Utils.pad_length(length, 8)
     mirrors_bin = <<mirrors::bytes, 0::size(pad_length)-unit(8), acc::bytes>>
     binary = <<@nxcpt_mirrors::16, length::16, mirrors_bin::bytes, acc::bytes>>
+
     encode_continuations(binary, pin, rest)
   end
 
   defp encode_continuations(
          acc,
-         %NxPacketIn2{continuation_conntracked: true} = pin,
+         %NxResume{continuation_conntracked: true} = pin,
          [:continuation_conntracked | rest]
        ) do
     length = @prop_header_length + 1
     pad_length = Openflow.Utils.pad_length(length, 8)
     conntracked_bin = <<1::size(1)-unit(8), 0::size(pad_length)-unit(8), acc::bytes>>
     binary = <<@nxcpt_conntracked::16, length::16, conntracked_bin::bytes, acc::bytes>>
+
     encode_continuations(binary, pin, rest)
   end
 
   defp encode_continuations(
          acc,
-         %NxPacketIn2{continuation_table_id: table_id} = pin,
+         %NxResume{continuation_table_id: table_id} = pin,
          [:continuation_table_id | rest]
        )
        when not is_nil(table_id) do
@@ -224,12 +254,13 @@ defmodule Openflow.NxPacketIn2 do
     pad_length = Openflow.Utils.pad_length(length, 8)
     table_id_bin = <<table_id::8, 0::size(pad_length)-unit(8), acc::bytes>>
     binary = <<@nxcpt_table_id::16, length::16, table_id_bin::bytes, acc::bytes>>
+
     encode_continuations(binary, pin, rest)
   end
 
   defp encode_continuations(
          acc,
-         %NxPacketIn2{continuation_cookie: cookie} = pin,
+         %NxResume{continuation_cookie: cookie} = pin,
          [:continuation_cookie | rest]
        )
        when not is_nil(cookie) do
@@ -237,14 +268,16 @@ defmodule Openflow.NxPacketIn2 do
     pad_length = Openflow.Utils.pad_length(length, 8)
     cookie_bin = <<cookie::64, 0::size(pad_length)-unit(8), acc::bytes>>
     binary = <<@nxcpt_cookie::16, length::16, cookie_bin::bytes, acc::bytes>>
+
     encode_continuations(binary, pin, rest)
   end
 
   defp encode_continuations(
          acc,
-         %NxPacketIn2{continuation_actions: actions} = pin,
+         %NxResume{continuation_actions: actions} = pin,
          [:continuation_actions | rest]
-       ) do
+       )
+       when not is_nil(actions) do
     actions_bin = Openflow.Action.to_binary(actions)
     length = @prop_header_length + byte_size(actions_bin)
     pad_length = Openflow.Utils.pad_length(length, 8)
@@ -255,7 +288,7 @@ defmodule Openflow.NxPacketIn2 do
 
   defp encode_continuations(
          acc,
-         %NxPacketIn2{continuation_action_set: action_set} = pin,
+         %NxResume{continuation_action_set: action_set} = pin,
          [:continuation_action_set | rest]
        )
        when not is_nil(action_set) do
@@ -266,7 +299,7 @@ defmodule Openflow.NxPacketIn2 do
     encode_continuations(binary, pin, rest)
   end
 
-  defp encode_continuations(acc, pin, [_ | rest]) do
+  defp encode_continuations(acc, pin, [other | rest]) do
     encode_continuations(acc, pin, rest)
   end
 
