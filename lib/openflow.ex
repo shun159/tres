@@ -15,23 +15,22 @@ defmodule Openflow do
   end
 
   def read(<<ver::8, type::8, len::16, xid::32, binary2::bytes>>) do
-    try do
-      body_len = len - @ofp_header_size
-      <<body_bin::bytes-size(body_len), rest::bytes>> = binary2
+      try do
+        body_len = len - @ofp_header_size
+        <<body_bin::bytes-size(body_len), rest::bytes>> = binary2
 
-      result =
-        type
+        result = type
         |> Openflow.Enums.to_atom(:openflow_codec)
         |> do_read(body_bin)
 
-      case result do
-        {:ok, struct} -> {:ok, %{struct | version: ver, xid: xid}, rest}
-        {:error, reason} -> {:error, reason}
+        case result do
+          {:ok, struct} -> {:ok, %{struct | version: ver, xid: xid}, rest}
+          {:error, reason} -> {:error, reason}
+        end
+      catch
+        _c, _e ->
+          {:error, :malformed_packet}
       end
-    catch
-      _c, reason ->
-        {:error, {:malformed_packet, {reason, __STACKTRACE__}}}
-    end
   end
 
   def to_binary(messages) when is_list(messages) do

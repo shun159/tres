@@ -24,8 +24,8 @@ defmodule Openflow.Hello do
 
   def supported_version?(%Hello{elements: elements}) do
     elements
-    |> Enum.reduce([], fn {:versionbitmap, versions}, acc -> acc ++ versions end)
-    |> Enum.any?(fn version -> version == 4 end)
+    |> Enum.reduce([], fn({:versionbitmap, versions}, acc) -> acc ++ versions end)
+    |> Enum.any?(fn(version) -> version == 4 end)
   end
 
   def read(binary), do: %Hello{elements: decode([], binary)}

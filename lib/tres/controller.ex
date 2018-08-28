@@ -14,7 +14,6 @@ defmodule Tres.Controller do
 
       def handler_spec(dpid) do
         {cb_mod, cb_args} = Tres.Utils.get_callback_module()
-
         %{
           id: {__MODULE__, dpid},
           start: {cb_mod, :start_link, [[dpid, cb_args]]},
