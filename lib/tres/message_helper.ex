@@ -147,15 +147,10 @@ defmodule Tres.MessageHelper do
           Openflow.MeterMod.new(
             xid: options[:xid] || 0,
             command: :delete,
-            meter_id: options[:meter_id] || 0
+            meter_id: options[:meter_id] || 0,
           )
 
         send_message(meter_mod, datapath_id, options[:blocking] || false)
-      end
-
-      defp send_resume(datapath_id, options) do
-        resume = Openflow.NxResume.new(options)
-        send_message(resume, datapath_id, options[:blocking] || false)
       end
     end
   end

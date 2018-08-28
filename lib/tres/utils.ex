@@ -14,11 +14,11 @@ defmodule Tres.Utils do
 
   def start_openflow_listener do
     :ranch.start_listener(
-      _ref = Tres,
-      _trasport = :ranch_tcp,
+      _ref            = Tres,
+      _trasport       = :ranch_tcp,
       _transport_opts = transport_options(),
-      _protocol = @connection_manager,
-      _protocol_opts = []
+      _protocol       = @connection_manager,
+      _protocol_opts  = []
     )
   end
 
