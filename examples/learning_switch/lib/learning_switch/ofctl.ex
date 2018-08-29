@@ -81,12 +81,8 @@ defmodule LearningSwitch.Ofctl do
     packet_out(packet_in, port_no || :flood)
   end
 
-  defp packet_out(%PacketIn{datapath_id: datapath_id, data: data}, port_no) do
-    send_packet_out(
-      datapath_id,
-      data: data,
-      actions: [Output.new(port_no)]
-    )
+  defp packet_out(%PacketIn{} = pin, port_no) do
+    send_packet_out(packet_in: pin, actions: [Output.new(port_no)])
   end
 
   defp add_forwarding_flow_entry(_packet_in, nil), do: :noop

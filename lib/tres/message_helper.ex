@@ -56,7 +56,43 @@ defmodule Tres.MessageHelper do
         send_message(flow_mod, datapath_id, Keyword.get(options, :blocking, false))
       end
 
-      defp send_packet_out(datapath_id, options \\ []) do
+      defp send_packet_out(options \\ []) do
+        case options[:packet_in] do
+          %Openflow.PacketIn{} = pin ->
+            send_packet_out(
+              pin.datapath_id,
+              xid: options[:xid] || 0,
+              buffer_id: options[:buffer_id],
+              in_port: options[:in_port],
+              actions: options[:actions],
+              data: options[:data] || pin.data,
+              blocking: options[:blocking]
+            )
+
+          %Openflow.NxPacketIn2{continuation_bridge: nil} = pin ->
+            send_packet_out(
+              pin.datapath_id,
+              xid: options[:xid] || 0,
+              buffer_id: options[:buffer_id],
+              in_port: options[:in_port],
+              actions: options[:actions],
+              data: options[:data] || pin.packet,
+              blocking: options[:blocking]
+            )
+
+          %Openflow.NxPacketIn2{} = pin ->
+            send_nx_resume(
+              pin.datapath_id,
+              xid: options[:xid] || 0,
+              packet_in: options[:packet_in],
+              packet: options[:data] || pin.packet,
+              metadata: options[:metadata] || pin.metadata,
+              blocking: options[:blocking]
+            )
+        end
+      end
+
+      defp send_packet_out(datapath_id, options) do
         packet_out = %Openflow.PacketOut{
           xid: options[:xid] || 0,
           buffer_id: options[:buffer_id] || :no_buffer,
