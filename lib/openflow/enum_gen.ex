@@ -148,7 +148,15 @@ defmodule Openflow.EnumGen do
       is_slave: 10,
       bad_port: 11,
       bad_packet: 12,
-      multipart_buffer_overflow: 13
+      multipart_buffer_overflow: 13,
+      nxm_invalid: 256,
+      nxm_bad_type: 257,
+      must_be_zero: 515,
+      bad_reason: 516,
+      flow_monitor_bad_event: 520,
+      undecodable_error: 521,
+      resume_not_supported: 533,
+      resume_stale: 534
     ],
     bad_action: [
       bad_type: 0,
@@ -166,7 +174,10 @@ defmodule Openflow.EnumGen do
       bad_tag: 12,
       bad_set_type: 13,
       bad_set_len: 14,
-      bad_set_argument: 15
+      bad_set_argument: 15,
+      must_be_zero: 256,
+      conntrack_not_supported: 265,
+      bad_conjunction: 526
     ],
     bad_instruction: [
       unknown_instruction: 0,

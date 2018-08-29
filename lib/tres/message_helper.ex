@@ -153,7 +153,7 @@ defmodule Tres.MessageHelper do
         send_message(meter_mod, datapath_id, options[:blocking] || false)
       end
 
-      defp send_resume(datapath_id, options) do
+      defp send_nx_resume(datapath_id, options) do
         resume = Openflow.NxResume.new(options)
         send_message(resume, datapath_id, options[:blocking] || false)
       end

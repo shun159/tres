@@ -727,6 +727,18 @@ defmodule Openflow.Enums do
     _class, _reason -> :multipart_buffer_overflow
   end
 
+  def to_int(:resume_not_supported, :bad_request) do
+    bad_request_to_int(:resume_not_supported)
+  catch
+    _class, _reason -> :resume_not_supported
+  end
+
+  def to_int(:resume_stale, :bad_request) do
+    bad_request_to_int(:resume_stale)
+  catch
+    _class, _reason -> :resume_stale
+  end
+
   def to_int(_int, :bad_request) do
     throw(:bad_enum)
   end
@@ -5761,6 +5773,18 @@ defmodule Openflow.Enums do
     _class, _reason -> 13
   end
 
+  def to_atom(0x215, :bad_request) do
+    bad_request_to_atom(0x215)
+  catch
+    _class, _reason -> 533
+  end
+
+  def to_atom(0x216, :bad_request) do
+    bad_request_to_atom(0x216)
+  catch
+    _class, _reason -> 534
+  end
+
   def to_atom(_, :bad_request) do
     throw(:bad_enum)
   end
@@ -10305,6 +10329,8 @@ defmodule Openflow.Enums do
   def bad_request_to_int(:bad_port), do: 0xB
   def bad_request_to_int(:bad_packet), do: 0xC
   def bad_request_to_int(:multipart_buffer_overflow), do: 0xD
+  def bad_request_to_int(:resume_not_supported), do: 0x215
+  def bad_request_to_int(:resume_stale), do: 0x216
   def bad_request_to_int(_), do: throw(:bad_enum)
   def bad_request_to_atom(0x0), do: :bad_version
   def bad_request_to_atom(0x1), do: :bad_type
@@ -10320,6 +10346,8 @@ defmodule Openflow.Enums do
   def bad_request_to_atom(0xB), do: :bad_port
   def bad_request_to_atom(0xC), do: :bad_packet
   def bad_request_to_atom(0xD), do: :multipart_buffer_overflow
+  def bad_request_to_atom(0x215), do: :resume_not_supported
+  def bad_request_to_atom(0x216), do: :resume_stale
   def bad_request_to_atom(_), do: throw(:bad_enum)
   def bad_action_to_int(:bad_type), do: 0x0
   def bad_action_to_int(:bad_len), do: 0x1
@@ -12669,7 +12697,9 @@ defmodule Openflow.Enums do
       is_slave: 10,
       bad_port: 11,
       bad_packet: 12,
-      multipart_buffer_overflow: 13
+      multipart_buffer_overflow: 13,
+      resume_not_supported: 533,
+      resume_stale: 534
     ]
 
   defp enum_of(:bad_action),

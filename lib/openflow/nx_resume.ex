@@ -192,7 +192,7 @@ defmodule Openflow.NxResume do
          [:continuation_bridge | rest]
        )
        when not is_nil(br) do
-    length =  byte_size(br) + @prop_header_length
+    length = byte_size(br) + @prop_header_length
     pad_length = Openflow.Utils.pad_length(length, 8)
     br_bin = <<br::16-bytes, 0::size(pad_length)-unit(8)>>
     binary = <<@nxcpt_bridge::16, length::16, br_bin::bytes, acc::bytes>>
