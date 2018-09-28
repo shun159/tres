@@ -990,6 +990,14 @@ defmodule Openflow.EnumGen do
       apply_setfield_miss: 15,
       experimenter: 0xFFFE,
       experimenter_miss: 0xFFFF
+    ],
+    nx_flow_monitor_flags: [
+      initial: 1 <<< 0,
+      add: 1 <<< 1,
+      delete: 1 <<< 2,
+      modify: 1 <<< 3,
+      action: 1 <<< 4,
+      own: 1 <<< 5
     ]
   ]
 
