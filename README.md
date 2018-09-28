@@ -73,6 +73,6 @@ $ iex -S mix
 
 License
 -------
-Tres is released under the Apache license Version 2.0:
+Tres is released under the __SUSHI-WARE LICENSE__.
 
-* https://www.apache.org/licenses/LICENSE-2.0
+__私に寿司をおごってください__
