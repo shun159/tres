@@ -727,6 +727,42 @@ defmodule Openflow.Enums do
     _class, _reason -> :multipart_buffer_overflow
   end
 
+  def to_int(:nxm_invalid, :bad_request) do
+    bad_request_to_int(:nxm_invalid)
+  catch
+    _class, _reason -> :nxm_invalid
+  end
+
+  def to_int(:nxm_bad_type, :bad_request) do
+    bad_request_to_int(:nxm_bad_type)
+  catch
+    _class, _reason -> :nxm_bad_type
+  end
+
+  def to_int(:must_be_zero, :bad_request) do
+    bad_request_to_int(:must_be_zero)
+  catch
+    _class, _reason -> :must_be_zero
+  end
+
+  def to_int(:bad_reason, :bad_request) do
+    bad_request_to_int(:bad_reason)
+  catch
+    _class, _reason -> :bad_reason
+  end
+
+  def to_int(:flow_monitor_bad_event, :bad_request) do
+    bad_request_to_int(:flow_monitor_bad_event)
+  catch
+    _class, _reason -> :flow_monitor_bad_event
+  end
+
+  def to_int(:undecodable_error, :bad_request) do
+    bad_request_to_int(:undecodable_error)
+  catch
+    _class, _reason -> :undecodable_error
+  end
+
   def to_int(:resume_not_supported, :bad_request) do
     bad_request_to_int(:resume_not_supported)
   catch
@@ -837,6 +873,24 @@ defmodule Openflow.Enums do
     bad_action_to_int(:bad_set_argument)
   catch
     _class, _reason -> :bad_set_argument
+  end
+
+  def to_int(:must_be_zero, :bad_action) do
+    bad_action_to_int(:must_be_zero)
+  catch
+    _class, _reason -> :must_be_zero
+  end
+
+  def to_int(:conntrack_not_supported, :bad_action) do
+    bad_action_to_int(:conntrack_not_supported)
+  catch
+    _class, _reason -> :conntrack_not_supported
+  end
+
+  def to_int(:bad_conjunction, :bad_action) do
+    bad_action_to_int(:bad_conjunction)
+  catch
+    _class, _reason -> :bad_conjunction
   end
 
   def to_int(_int, :bad_action) do
@@ -5773,6 +5827,42 @@ defmodule Openflow.Enums do
     _class, _reason -> 13
   end
 
+  def to_atom(0x100, :bad_request) do
+    bad_request_to_atom(0x100)
+  catch
+    _class, _reason -> 256
+  end
+
+  def to_atom(0x101, :bad_request) do
+    bad_request_to_atom(0x101)
+  catch
+    _class, _reason -> 257
+  end
+
+  def to_atom(0x203, :bad_request) do
+    bad_request_to_atom(0x203)
+  catch
+    _class, _reason -> 515
+  end
+
+  def to_atom(0x204, :bad_request) do
+    bad_request_to_atom(0x204)
+  catch
+    _class, _reason -> 516
+  end
+
+  def to_atom(0x208, :bad_request) do
+    bad_request_to_atom(0x208)
+  catch
+    _class, _reason -> 520
+  end
+
+  def to_atom(0x209, :bad_request) do
+    bad_request_to_atom(0x209)
+  catch
+    _class, _reason -> 521
+  end
+
   def to_atom(0x215, :bad_request) do
     bad_request_to_atom(0x215)
   catch
@@ -5883,6 +5973,24 @@ defmodule Openflow.Enums do
     bad_action_to_atom(0xF)
   catch
     _class, _reason -> 15
+  end
+
+  def to_atom(0x100, :bad_action) do
+    bad_action_to_atom(0x100)
+  catch
+    _class, _reason -> 256
+  end
+
+  def to_atom(0x109, :bad_action) do
+    bad_action_to_atom(0x109)
+  catch
+    _class, _reason -> 265
+  end
+
+  def to_atom(0x20E, :bad_action) do
+    bad_action_to_atom(0x20E)
+  catch
+    _class, _reason -> 526
   end
 
   def to_atom(_, :bad_action) do
@@ -10329,6 +10437,12 @@ defmodule Openflow.Enums do
   def bad_request_to_int(:bad_port), do: 0xB
   def bad_request_to_int(:bad_packet), do: 0xC
   def bad_request_to_int(:multipart_buffer_overflow), do: 0xD
+  def bad_request_to_int(:nxm_invalid), do: 0x100
+  def bad_request_to_int(:nxm_bad_type), do: 0x101
+  def bad_request_to_int(:must_be_zero), do: 0x203
+  def bad_request_to_int(:bad_reason), do: 0x204
+  def bad_request_to_int(:flow_monitor_bad_event), do: 0x208
+  def bad_request_to_int(:undecodable_error), do: 0x209
   def bad_request_to_int(:resume_not_supported), do: 0x215
   def bad_request_to_int(:resume_stale), do: 0x216
   def bad_request_to_int(_), do: throw(:bad_enum)
@@ -10346,6 +10460,12 @@ defmodule Openflow.Enums do
   def bad_request_to_atom(0xB), do: :bad_port
   def bad_request_to_atom(0xC), do: :bad_packet
   def bad_request_to_atom(0xD), do: :multipart_buffer_overflow
+  def bad_request_to_atom(0x100), do: :nxm_invalid
+  def bad_request_to_atom(0x101), do: :nxm_bad_type
+  def bad_request_to_atom(0x203), do: :must_be_zero
+  def bad_request_to_atom(0x204), do: :bad_reason
+  def bad_request_to_atom(0x208), do: :flow_monitor_bad_event
+  def bad_request_to_atom(0x209), do: :undecodable_error
   def bad_request_to_atom(0x215), do: :resume_not_supported
   def bad_request_to_atom(0x216), do: :resume_stale
   def bad_request_to_atom(_), do: throw(:bad_enum)
@@ -10365,6 +10485,9 @@ defmodule Openflow.Enums do
   def bad_action_to_int(:bad_set_type), do: 0xD
   def bad_action_to_int(:bad_set_len), do: 0xE
   def bad_action_to_int(:bad_set_argument), do: 0xF
+  def bad_action_to_int(:must_be_zero), do: 0x100
+  def bad_action_to_int(:conntrack_not_supported), do: 0x109
+  def bad_action_to_int(:bad_conjunction), do: 0x20E
   def bad_action_to_int(_), do: throw(:bad_enum)
   def bad_action_to_atom(0x0), do: :bad_type
   def bad_action_to_atom(0x1), do: :bad_len
@@ -10382,6 +10505,9 @@ defmodule Openflow.Enums do
   def bad_action_to_atom(0xD), do: :bad_set_type
   def bad_action_to_atom(0xE), do: :bad_set_len
   def bad_action_to_atom(0xF), do: :bad_set_argument
+  def bad_action_to_atom(0x100), do: :must_be_zero
+  def bad_action_to_atom(0x109), do: :conntrack_not_supported
+  def bad_action_to_atom(0x20E), do: :bad_conjunction
   def bad_action_to_atom(_), do: throw(:bad_enum)
   def bad_instruction_to_int(:unknown_instruction), do: 0x0
   def bad_instruction_to_int(:unsupported_instruction), do: 0x1
@@ -12698,6 +12824,12 @@ defmodule Openflow.Enums do
       bad_port: 11,
       bad_packet: 12,
       multipart_buffer_overflow: 13,
+      nxm_invalid: 256,
+      nxm_bad_type: 257,
+      must_be_zero: 515,
+      bad_reason: 516,
+      flow_monitor_bad_event: 520,
+      undecodable_error: 521,
       resume_not_supported: 533,
       resume_stale: 534
     ]
@@ -12719,7 +12851,10 @@ defmodule Openflow.Enums do
       bad_tag: 12,
       bad_set_type: 13,
       bad_set_len: 14,
-      bad_set_argument: 15
+      bad_set_argument: 15,
+      must_be_zero: 256,
+      conntrack_not_supported: 265,
+      bad_conjunction: 526
     ]
 
   defp enum_of(:bad_instruction),
