@@ -19,7 +19,9 @@ defmodule Tres.MessageHandlerSup do
   def start_child(dpid) do
     {cb_mod, _cb_args} = Tres.Utils.get_callback_module()
     child_spec = cb_mod.handler_spec(dpid)
-    Supervisor.start_child(__MODULE__, child_spec)
+    {:ok, pid} = Supervisor.start_child(__MODULE__, child_spec)
+    :ok = Tres.SwitchRegistry.register_handler_pid(dpid, pid)
+    {:ok, pid}
   end
 
   def terminate_child(dpid) do
