@@ -3,6 +3,7 @@ defmodule Tres.Controller do
     quote location: :keep do
       import Tres.SwitchRegistry,
         only: [
+          lookup_handler_pid: 1,
           send_message: 2,
           send_message: 3,
           blocking_send_message: 2,

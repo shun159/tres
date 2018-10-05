@@ -609,19 +609,19 @@ defmodule Tres.SecureChannel do
 
   defp close_connection(:handler_error, state_data) do
     debug("connection terminated: Got handler error")
-    Tres.MessageHandlerSup.terminate_child({state_data.datapath_id, state_data.aux_id})
+    _ = send(state_data.handler_pid, {:switch_disconnected, :handler_error})
     {:stop, :normal, %{state_data | socket: nil}}
   end
 
   defp close_connection(:ping_failed, state_data) do
     debug("connection terminated: Exceeded to max_ping_fail_count")
-    Tres.MessageHandlerSup.terminate_child({state_data.datapath_id, state_data.aux_id})
+    _ = send(state_data.handler_pid, {:switch_disconnected, :ping_failed})
     {:stop, :normal, %{state_data | socket: nil}}
   end
 
   defp close_connection({:main_closed, reason}, state_data) do
     debug("connection terminated: Main connection down by #{inspect(reason)}")
-    Tres.MessageHandlerSup.terminate_child({state_data.datapath_id, state_data.aux_id})
+    _ = send(state_data.handler_pid, {:switch_disconnected, :main_closed})
     {:stop, :normal, %{state_data | socket: nil}}
   end
 
@@ -632,19 +632,19 @@ defmodule Tres.SecureChannel do
 
   defp close_connection({:trap_detected, reason}, state_data) do
     debug("connection terminated: Trapped by #{inspect(reason)}")
-    Tres.MessageHandlerSup.terminate_child({state_data.datapath_id, state_data.aux_id})
+    _ = send(state_data.handler_pid, {:switch_disconnected, :trap_detected})
     {:stop, :normal, %{state_data | socket: nil}}
   end
 
   defp close_connection(:tcp_closed, state_data) do
     debug("connection terminated: TCP Closed by peer")
-    Tres.MessageHandlerSup.terminate_child({state_data.datapath_id, state_data.aux_id})
+    _ = send(state_data.handler_pid, {:switch_disconnected, :tcp_closed})
     {:stop, :normal, %{state_data | socket: nil}}
   end
 
   defp close_connection({:tcp_error, reason}, state_data) do
     debug("connection terminated: TCP Error occured: #{inspect(reason)}")
-    Tres.MessageHandlerSup.terminate_child({state_data.datapath_id, state_data.aux_id})
+    _ = send(state_data.handler_pid, {:switch_disconnected, :tcp_error})
     {:stop, :normal, %{state_data | socket: nil}}
   end
 end

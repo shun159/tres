@@ -3,6 +3,29 @@ defmodule Tres.SwitchRegistry do
   Dispatcher
   """
 
+  # For DatapathHandler
+
+  def register_handler_pid({_dpid, _aux_id} = datapath_id, pid) do
+    case Registry.register(Tres.HandlerRegistry, datapath_id, pid) do
+      {:ok, _owner} ->
+        :ok
+      {:error, {:already_registered, _owner}} ->
+        :ok
+    end
+  end
+
+  def lookup_handler_pid({_dpid, _aux_id} = datapath_id) do
+    case Registry.lookup(Tres.HandlerRegistry, datapath_id) do
+      [{_owner, pid}] -> pid
+      [] -> nil
+    end
+  end
+
+  def lookup_handler_pid(datapath_id) when is_binary(datapath_id),
+    do: lookup_handler({datapath_id, 0})
+
+  # For Datapath
+
   def register({_dpid, _aux_id} = datapath_id) do
     {:ok, _} = Registry.register(__MODULE__, datapath_id, [])
   end
