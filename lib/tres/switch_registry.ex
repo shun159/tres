@@ -9,6 +9,7 @@ defmodule Tres.SwitchRegistry do
     case Registry.register(Tres.HandlerRegistry, datapath_id, pid) do
       {:ok, _owner} ->
         :ok
+
       {:error, {:already_registered, _owner}} ->
         :ok
     end
@@ -22,7 +23,7 @@ defmodule Tres.SwitchRegistry do
   end
 
   def lookup_handler_pid(datapath_id) when is_binary(datapath_id),
-    do: lookup_handler({datapath_id, 0})
+    do: lookup_handler_pid({datapath_id, 0})
 
   # For Datapath
 
