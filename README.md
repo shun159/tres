@@ -70,6 +70,7 @@ $ iex -S mix
 - learning-switch: Simple Layer2 switch
 - leader-example: Simple election based multiple controller using Ulf Wiger's Locks Leader
 - patch\_panel: inteligent patch\_panel example
+- simple\_router: An OpenFlow controller that emulates layer 3 switch (router).
 
 License
 -------
