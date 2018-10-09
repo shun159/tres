@@ -28,6 +28,18 @@ defmodule Tres.IPv4Address do
   end
 
   @doc """
+      iex> addr = IPv4Address.parse("192.168.10.1/24")
+      iex> {192, 168, 10, 0} = IPv4Address.to_network(addr)
+  """
+  @spec to_network({in_addr(), in_addr()}) :: in_addr()
+  def to_network({{a1, a2, a3, a4}, {m1, m2, m3, m4}}) do
+    addr_int = :binary.decode_unsigned(<<a1, a2, a3, a4>>, :big)
+    mask_int = :binary.decode_unsigned(<<m1, m2, m3, m4>>, :big)
+    <<n1, n2, n3, n4>> = <<(addr_int &&& mask_int)::32>>
+    {n1, n2, n3, n4}
+  end
+
+  @doc """
       iex> "192.168.0.1" = IPv4Address.to_str({192, 168, 0, 1})
   """
   @spec to_str(in_addr | in_addr_str) :: in_addr_str
