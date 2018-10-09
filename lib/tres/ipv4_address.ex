@@ -21,16 +21,9 @@ defmodule Tres.IPv4Address do
       [netaddr, cidr_str] ->
         cidr = String.to_integer(cidr_str)
         mask = (0xFFFFFFFF >>> (32 - cidr)) <<< (32 - cidr)
-
-        net_mask = {
-          (0xFF000000 &&& mask) >>> 24,
-          (0x00FF0000 &&& mask) >>> 16,
-          (0x0000FF00 &&& mask) >>> 8,
-          (0x000000FF &&& mask)
-        }
-
+        <<m1, m2, m3, m4>> = <<mask::32>>
         {:ok, ipaddr} = netaddr |> to_charlist |> :inet.parse_address()
-        {ipaddr, net_mask}
+        {ipaddr, {m1, m2, m3, m4}}
     end
   end
 
