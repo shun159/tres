@@ -1,17 +1,17 @@
 [package]
-name = "gobgp"
+name = "evpn_router"
 version = "0.1.0"
-authors = ["HansiHE <hansihe@hansihe.com>"]
+build = "build.rs"
+
 
 [lib]
-name = "gobgp"
+name = "evpn_router"
 path = "src/lib.rs"
 crate-type = ["dylib"]
-
-[package.metadata.release]
 
 [dependencies]
 rustler = { git = "https://github.com/hansihe/rustler", branch = "remove_nif_from_types"}
 rustler_codegen = { git = "https://github.com/hansihe/rustler", branch = "remove_nif_from_types"}
 bufstream = "0.1.2" 
 lazy_static = "1.0.0"
+libc = "0.2"

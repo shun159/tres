@@ -30,7 +30,7 @@ defmodule EvpnRouter.MixProject do
   end
 
   defp rustler_crates do
-    [evpn_router: [path: "native/gobgp", mode: rustc_mode(Mix.env)]]
+    [evpn_router: [path: "native/evpn_router", mode: rustc_mode(Mix.env)]]
   end
 
   defp rustc_mode(:prod), do: :release
