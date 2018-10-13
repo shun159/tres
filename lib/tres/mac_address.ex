@@ -41,7 +41,7 @@ defmodule Tres.MacAddress do
     |> check_format()
     |> to_a()
     |> Enum.at(0)
-    |> Kernel.==(0xff)
+    |> Kernel.==(0xFF)
   rescue
     _e in ArgumentError ->
       {:error, :invalid_format}
@@ -63,6 +63,7 @@ defmodule Tres.MacAddress do
   # private functions
 
   defp to_a(<<>>, acc), do: Enum.reverse(acc)
+
   defp to_a(<<octet::2-bytes, rest::bytes>>, acc) do
     to_a(rest, [String.to_integer(octet, 16) | acc])
   end
@@ -81,6 +82,6 @@ defmodule Tres.MacAddress do
   defp check_format(mac) when is_binary(mac) do
     if String.match?(mac, @mac_addr_pattern),
       do: mac,
-      else: raise ArgumentError, message: "MAC address should be 12 letters hex string format"
+      else: raise(ArgumentError, message: "MAC address should be 12 letters hex string format")
   end
 end

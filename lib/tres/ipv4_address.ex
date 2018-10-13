@@ -21,9 +21,10 @@ defmodule Tres.IPv4Address do
       [^addr] ->
         {:ok, ipaddr} = addr |> to_charlist |> :inet.parse_address()
         {ipaddr, {255, 255, 255, 255}}
+
       [netaddr, cidr_str] ->
         cidr = String.to_integer(cidr_str)
-        mask = (0xFFFFFFFF >>> (32 - cidr)) <<< (32 - cidr)
+        mask = 0xFFFFFFFF >>> (32 - cidr) <<< (32 - cidr)
         <<m1, m2, m3, m4>> = <<mask::32>>
         {:ok, ipaddr} = netaddr |> to_charlist |> :inet.parse_address()
         {ipaddr, {m1, m2, m3, m4}}
@@ -38,7 +39,7 @@ defmodule Tres.IPv4Address do
   def to_network({{a1, a2, a3, a4}, {m1, m2, m3, m4}}) do
     addr_int = :binary.decode_unsigned(<<a1, a2, a3, a4>>, :big)
     mask_int = :binary.decode_unsigned(<<m1, m2, m3, m4>>, :big)
-    <<n1, n2, n3, n4>> = <<(addr_int &&& mask_int)::32>>
+    <<n1, n2, n3, n4>> = <<addr_int &&& mask_int::32>>
     {n1, n2, n3, n4}
   end
 
