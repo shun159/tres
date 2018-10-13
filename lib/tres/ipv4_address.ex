@@ -9,10 +9,13 @@ defmodule Tres.IPv4Address do
   @typep in_addr_str :: String.t()
 
   @doc """
+      iex> {{192, 168, 0, 1}, {255, 255, 255, 255}} = IPv4Address.parse(<<192, 168, 0, 1>>)
       iex> {{192, 168, 0, 1}, {255, 255, 255, 255}} = IPv4Address.parse("192.168.0.1")
-      iex> {{192, 168, 0, 1}, {255, 255, 255, 0}} = IPv4Address.parse("192.168.0.1/24")
+      iex> {{192, 168, 0, 1}, {255, 255, 255, 0}}   = IPv4Address.parse("192.168.0.1/24")
   """
-  @spec parse(in_addr_str) :: {in_addr, in_addr}
+  @spec parse(in_addr_str | binary()) :: {in_addr, in_addr}
+  def parse(<<a1, a2, a3, a4>>), do: {{a1, a2, a3, a4}, {255, 255, 255, 255}}
+
   def parse(addr) do
     case String.split(addr, ~r/\//) do
       [^addr] ->
