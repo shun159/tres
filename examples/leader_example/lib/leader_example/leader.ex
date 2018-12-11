@@ -5,7 +5,7 @@ defmodule LeaderExample.Leader do
 
   require Logger
 
-  def start_link([datapath_id, args]) do
+  def start_link(datapath_id, args) do
     :locks_leader.start_link(__MODULE__, [datapath_id, args], [])
   end
 

@@ -21,7 +21,7 @@ defmodule SimpleRouter.Openflow.Controller do
     ]
   end
 
-  def start_link([{datapath_id, _aux_id}, _start_args]) do
+  def start_link({datapath_id, _aux_id}, _start_args) do
     GenServer.start_link(__MODULE__, [datapath_id])
   end
 
