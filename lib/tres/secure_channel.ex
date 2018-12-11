@@ -56,6 +56,7 @@ defmodule Tres.SecureChannel do
   end
 
   def handle_event(:info, {:tcp_closed, socket}, _state, %State{socket: socket} = state_data) do
+    :ok = debug("TCP disconnected with #{state_data.ip_addr}:#{state_data.port}")
     close_connection(:tcp_closed, state_data)
   end
 
@@ -609,7 +610,6 @@ defmodule Tres.SecureChannel do
 
   defp close_connection(:handler_error, state_data) do
     debug("connection terminated: Got handler error")
-    _ = send(state_data.handler_pid, {:switch_disconnected, :handler_error})
     {:stop, :normal, %{state_data | socket: nil}}
   end
 
@@ -627,6 +627,7 @@ defmodule Tres.SecureChannel do
 
   defp close_connection({:handler_down, reason}, state_data) do
     debug("connection terminated: Handler process down by #{inspect(reason)}")
+    _ = send(state_data.handler_pid, {:switch_disconnected, :handler_error})
     {:stop, :normal, %{state_data | socket: nil}}
   end
 
