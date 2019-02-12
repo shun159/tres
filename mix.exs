@@ -16,13 +16,13 @@ defmodule Tres.Mixfile do
 
   # Run "mix help compile.app" to learn about applications.
   def application do
-    [extra_applications: [:logger, :ranch, :eovsdb], mod: {Tres.Application, []}]
+    [extra_applications: [:logger], mod: {Tres.Application, []}]
   end
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ranch, "~> 1.6.0"},
+      {:ranch, "~> 1.7.1"},
       {:eovsdb, github: "shun159/eovsdb", branch: "master"},
       {:jsone, github: "sile/jsone", tag: "1.4.6", override: true},
       {:epcap, github: "msantos/epcap", branch: "master", only: :test}
