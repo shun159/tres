@@ -5101,6 +5101,74 @@ defmodule Openflow.Enums do
     throw(:bad_enum)
   end
 
+  def to_int(:open_request, :bundle_ctrl_type) do
+    bundle_ctrl_type_to_int(:open_request)
+  catch
+    _class, _reason -> :open_request
+  end
+
+  def to_int(:open_reply, :bundle_ctrl_type) do
+    bundle_ctrl_type_to_int(:open_reply)
+  catch
+    _class, _reason -> :open_reply
+  end
+
+  def to_int(:close_request, :bundle_ctrl_type) do
+    bundle_ctrl_type_to_int(:close_request)
+  catch
+    _class, _reason -> :close_request
+  end
+
+  def to_int(:close_reply, :bundle_ctrl_type) do
+    bundle_ctrl_type_to_int(:close_reply)
+  catch
+    _class, _reason -> :close_reply
+  end
+
+  def to_int(:commit_request, :bundle_ctrl_type) do
+    bundle_ctrl_type_to_int(:commit_request)
+  catch
+    _class, _reason -> :commit_request
+  end
+
+  def to_int(:commit_reply, :bundle_ctrl_type) do
+    bundle_ctrl_type_to_int(:commit_reply)
+  catch
+    _class, _reason -> :commit_reply
+  end
+
+  def to_int(:discard_request, :bundle_ctrl_type) do
+    bundle_ctrl_type_to_int(:discard_request)
+  catch
+    _class, _reason -> :discard_request
+  end
+
+  def to_int(:discard_reply, :bundle_ctrl_type) do
+    bundle_ctrl_type_to_int(:discard_reply)
+  catch
+    _class, _reason -> :discard_reply
+  end
+
+  def to_int(_int, :bundle_ctrl_type) do
+    throw(:bad_enum)
+  end
+
+  def to_int(:atomic, :bundle_flags) do
+    bundle_flags_to_int(:atomic)
+  catch
+    _class, _reason -> :atomic
+  end
+
+  def to_int(:ordered, :bundle_flags) do
+    bundle_flags_to_int(:ordered)
+  catch
+    _class, _reason -> :ordered
+  end
+
+  def to_int(_int, :bundle_flags) do
+    throw(:bad_enum)
+  end
+
   def to_atom(0x0, :openflow_codec) do
     openflow_codec_to_atom(0x0)
   catch
@@ -10201,6 +10269,74 @@ defmodule Openflow.Enums do
     throw(:bad_enum)
   end
 
+  def to_atom(0x0, :bundle_ctrl_type) do
+    bundle_ctrl_type_to_atom(0x0)
+  catch
+    _class, _reason -> 0
+  end
+
+  def to_atom(0x1, :bundle_ctrl_type) do
+    bundle_ctrl_type_to_atom(0x1)
+  catch
+    _class, _reason -> 1
+  end
+
+  def to_atom(0x2, :bundle_ctrl_type) do
+    bundle_ctrl_type_to_atom(0x2)
+  catch
+    _class, _reason -> 2
+  end
+
+  def to_atom(0x3, :bundle_ctrl_type) do
+    bundle_ctrl_type_to_atom(0x3)
+  catch
+    _class, _reason -> 3
+  end
+
+  def to_atom(0x4, :bundle_ctrl_type) do
+    bundle_ctrl_type_to_atom(0x4)
+  catch
+    _class, _reason -> 4
+  end
+
+  def to_atom(0x5, :bundle_ctrl_type) do
+    bundle_ctrl_type_to_atom(0x5)
+  catch
+    _class, _reason -> 5
+  end
+
+  def to_atom(0x6, :bundle_ctrl_type) do
+    bundle_ctrl_type_to_atom(0x6)
+  catch
+    _class, _reason -> 6
+  end
+
+  def to_atom(0x7, :bundle_ctrl_type) do
+    bundle_ctrl_type_to_atom(0x7)
+  catch
+    _class, _reason -> 7
+  end
+
+  def to_atom(_, :bundle_ctrl_type) do
+    throw(:bad_enum)
+  end
+
+  def to_atom(0x1, :bundle_flags) do
+    bundle_flags_to_atom(0x1)
+  catch
+    _class, _reason -> 1
+  end
+
+  def to_atom(0x2, :bundle_flags) do
+    bundle_flags_to_atom(0x2)
+  catch
+    _class, _reason -> 2
+  end
+
+  def to_atom(_, :bundle_flags) do
+    throw(:bad_enum)
+  end
+
   def openflow_codec_to_int(Openflow.Hello), do: 0x0
   def openflow_codec_to_int(Openflow.ErrorMsg), do: 0x1
   def openflow_codec_to_int(Openflow.Echo.Request), do: 0x2
@@ -11961,6 +12097,30 @@ defmodule Openflow.Enums do
   def table_feature_prop_type_to_atom(0xFFFE), do: :experimenter
   def table_feature_prop_type_to_atom(0xFFFF), do: :experimenter_miss
   def table_feature_prop_type_to_atom(_), do: throw(:bad_enum)
+  def bundle_ctrl_type_to_int(:open_request), do: 0x0
+  def bundle_ctrl_type_to_int(:open_reply), do: 0x1
+  def bundle_ctrl_type_to_int(:close_request), do: 0x2
+  def bundle_ctrl_type_to_int(:close_reply), do: 0x3
+  def bundle_ctrl_type_to_int(:commit_request), do: 0x4
+  def bundle_ctrl_type_to_int(:commit_reply), do: 0x5
+  def bundle_ctrl_type_to_int(:discard_request), do: 0x6
+  def bundle_ctrl_type_to_int(:discard_reply), do: 0x7
+  def bundle_ctrl_type_to_int(_), do: throw(:bad_enum)
+  def bundle_ctrl_type_to_atom(0x0), do: :open_request
+  def bundle_ctrl_type_to_atom(0x1), do: :open_reply
+  def bundle_ctrl_type_to_atom(0x2), do: :close_request
+  def bundle_ctrl_type_to_atom(0x3), do: :close_reply
+  def bundle_ctrl_type_to_atom(0x4), do: :commit_request
+  def bundle_ctrl_type_to_atom(0x5), do: :commit_reply
+  def bundle_ctrl_type_to_atom(0x6), do: :discard_request
+  def bundle_ctrl_type_to_atom(0x7), do: :discard_reply
+  def bundle_ctrl_type_to_atom(_), do: throw(:bad_enum)
+  def bundle_flags_to_int(:atomic), do: 0x1
+  def bundle_flags_to_int(:ordered), do: 0x2
+  def bundle_flags_to_int(_), do: throw(:bad_enum)
+  def bundle_flags_to_atom(0x1), do: :atomic
+  def bundle_flags_to_atom(0x2), do: :ordered
+  def bundle_flags_to_atom(_), do: throw(:bad_enum)
 
   def int_to_flags(int, :openflow_codec) do
     Openflow.Utils.int_to_flags([], int, enum_of(:openflow_codec))
@@ -12322,6 +12482,14 @@ defmodule Openflow.Enums do
     Openflow.Utils.int_to_flags([], int, enum_of(:table_feature_prop_type))
   end
 
+  def int_to_flags(int, :bundle_ctrl_type) do
+    Openflow.Utils.int_to_flags([], int, enum_of(:bundle_ctrl_type))
+  end
+
+  def int_to_flags(int, :bundle_flags) do
+    Openflow.Utils.int_to_flags([], int, enum_of(:bundle_flags))
+  end
+
   def flags_to_int(flags, :openflow_codec) do
     Openflow.Utils.flags_to_int(0, flags, enum_of(:openflow_codec))
   end
@@ -12680,6 +12848,14 @@ defmodule Openflow.Enums do
 
   def flags_to_int(flags, :table_feature_prop_type) do
     Openflow.Utils.flags_to_int(0, flags, enum_of(:table_feature_prop_type))
+  end
+
+  def flags_to_int(flags, :bundle_ctrl_type) do
+    Openflow.Utils.flags_to_int(0, flags, enum_of(:bundle_ctrl_type))
+  end
+
+  def flags_to_int(flags, :bundle_flags) do
+    Openflow.Utils.flags_to_int(0, flags, enum_of(:bundle_flags))
   end
 
   defp enum_of(:openflow_codec),
@@ -13555,4 +13731,18 @@ defmodule Openflow.Enums do
       experimenter: 65534,
       experimenter_miss: 65535
     ]
+
+  defp enum_of(:bundle_ctrl_type),
+    do: [
+      open_request: 0,
+      open_reply: 1,
+      close_request: 2,
+      close_reply: 3,
+      commit_request: 4,
+      commit_reply: 5,
+      discard_request: 6,
+      discard_reply: 7
+    ]
+
+  defp enum_of(:bundle_flags), do: [atomic: 1, ordered: 2]
 end
