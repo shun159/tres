@@ -990,6 +990,20 @@ defmodule Openflow.EnumGen do
       apply_setfield_miss: 15,
       experimenter: 0xFFFE,
       experimenter_miss: 0xFFFF
+    ],
+    bundle_ctrl_type: [
+      open_request: 0,
+      open_reply: 1,
+      close_request: 2,
+      close_reply: 3,
+      commit_request: 4,
+      commit_reply: 5,
+      discard_request: 6,
+      discard_reply: 7
+    ],
+    bundle_flags: [
+      atomic: 1 <<< 0,
+      ordered: 1 <<< 1
     ]
   ]
 

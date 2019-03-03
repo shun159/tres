@@ -59,7 +59,7 @@ defmodule Tres.SecureChannelState do
 
   @spec get_transaction_id(:counters.counters_ref()) :: integer()
   def get_transaction_id(counter_ref) do
-    :counters.get(counter_ref, 1) &&& 0xffffffff
+    :counters.get(counter_ref, 1) &&& 0xFFFFFFFF
   end
 
   # private functions
