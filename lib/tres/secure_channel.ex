@@ -603,7 +603,7 @@ defmodule Tres.SecureChannel do
     {:stop, :normal, %{state_data | socket: nil}}
   end
 
-  defp close_connection(:features_timeout, state_data) do
+  defp close_connection(:features_handshake_timeout, state_data) do
     debug("connection terminated: Features handshake timed out")
     {:stop, :normal, %{state_data | socket: nil}}
   end
