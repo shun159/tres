@@ -34,10 +34,8 @@ defmodule Openflow do
     end
   end
 
-  def to_binary(messages) when is_list(messages) do
-    binaries = for message <- messages, do: to_binary(message)
-    Enum.join(binaries, "")
-  end
+  def to_binary(messages) when is_list(messages),
+    do: Enum.reduce(messages, "", &(&2 <> to_binary(&1)))
 
   def to_binary(%{__struct__: encoder, version: version, xid: xid} = msg) do
     case encoder.to_binary(msg) do
