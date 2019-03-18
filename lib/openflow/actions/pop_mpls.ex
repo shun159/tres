@@ -3,9 +3,11 @@ defmodule Openflow.Action.PopMpls do
 
   alias __MODULE__
 
+  @eth_p_mpls_uc 0x8847
+
   def ofpat, do: 20
 
-  def new(ethertype) do
+  def new(ethertype \\ @eth_p_mpls_uc) do
     %PopMpls{ethertype: ethertype}
   end
 
