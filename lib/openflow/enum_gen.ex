@@ -800,8 +800,8 @@ defmodule Openflow.EnumGen do
     nicira_ext_action: [
       {Openflow.Action.NxResubmit, 1},
       {Openflow.Action.NxSetTunnel, 2},
-      {Openflow.Action.NxSetQueue, 4},
-      {Openflow.Action.NxPopQueue, 5},
+      # {Openflow.Action.NxSetQueue, 4}, Deprecated
+      # {Openflow.Action.NxPopQueue, 5}, Deprecated
       {Openflow.Action.NxRegMove, 6},
       {Openflow.Action.NxRegLoad, 7},
       {Openflow.Action.NxNote, 8},
@@ -820,13 +820,13 @@ defmodule Openflow.EnumGen do
       {Openflow.Action.NxWriteMetadata, 22},
       {Openflow.Action.NxPushMpls, 23},
       {Openflow.Action.NxPopMpls, 24},
-      {Openflow.Action.NxSetMplsTtl, 25},
-      {Openflow.Action.NxDecMplsTtl, 26},
+      # {Openflow.Action.NxSetMplsTtl, 25}, Deprecated
+      # {Openflow.Action.NxDecMplsTtl, 26}, Deprecated
       {Openflow.Action.NxStackPush, 27},
       {Openflow.Action.NxStackPop, 28},
       {Openflow.Action.NxSample, 29},
-      {Openflow.Action.NxSetMplsLabel, 30},
-      {Openflow.Action.NxSetMplsTc, 31},
+      # {Openflow.Action.NxSetMplsLabel, 30}, Deprecated
+      # {Openflow.Action.NxSetMplsTc, 31}, Deprecated
       {Openflow.Action.NxOutputReg2, 32},
       {Openflow.Action.NxRegLoad2, 33},
       {Openflow.Action.NxConjunction, 34},

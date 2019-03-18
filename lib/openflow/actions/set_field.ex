@@ -7,13 +7,13 @@ defmodule Openflow.Action.SetField do
 
   def ofpat, do: 25
 
-  def new({_field, _value} = oxm_field) do
+  def new([{_field, _value}] = oxm_field) do
     %SetField{field: oxm_field}
   end
 
-  def to_binary(%SetField{field: {field, value}}) do
+  def to_binary(%SetField{field: field}) do
     match_bin =
-      [{field, value}]
+      field
       |> Openflow.Match.new()
       |> Openflow.Match.to_binary()
 
@@ -29,6 +29,6 @@ defmodule Openflow.Action.SetField do
     match_len = 4 + 4 + flen
     match_bin = <<1::16, match_len::16, match_field_bin::bytes>>
     {[field | _], _rest} = Openflow.Match.read(match_bin)
-    %SetField{field: field}
+    %SetField{field: [field]}
   end
 end

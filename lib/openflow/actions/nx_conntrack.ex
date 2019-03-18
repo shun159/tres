@@ -16,6 +16,7 @@ defmodule Openflow.Action.NxConntrack do
   @nxast 35
 
   alias __MODULE__
+  alias Openflow.Action.Experimenter
 
   def new(options \\ []) do
     %NxConntrack{
@@ -30,36 +31,21 @@ defmodule Openflow.Action.NxConntrack do
     }
   end
 
-  def to_binary(%NxConntrack{
-        flags: flags,
-        zone_src: zone_src,
-        zone_offset: zone_ofs,
-        zone_n_bits: zone_n_bits,
-        zone_imm: zone_imm,
-        recirc_table: recirc_table,
-        alg: alg,
-        exec: exec
-      }) do
-    flags_int = Openflow.Enums.flags_to_int(flags, :nx_conntrack_flags)
+  def to_binary(%NxConntrack{} = ct) do
+    flags_int = Openflow.Enums.flags_to_int(ct.flags, :nx_conntrack_flags)
+    ct_context_bin = ct_context_binary(ct)
+    exec_bin = Openflow.Action.to_binary(ct.exec)
 
-    {src_bin, ofs_nbits} =
-      if not is_nil(zone_src) do
-        zone_src_bin = Openflow.Match.codec_header(zone_src)
-        {zone_src_bin, zone_ofs <<< 6 ||| zone_n_bits - 1}
-      else
-        {<<0::32>>, zone_imm}
-      end
-
-    exec_bin = Openflow.Action.to_binary(exec)
-
-    exp_body =
-      <<@experimenter::32, @nxast::16, flags_int::16, src_bin::bytes, ofs_nbits::16,
-        recirc_table::8, 0::size(3)-unit(8), alg::16, exec_bin::bytes>>
-
-    exp_body_size = byte_size(exp_body)
-    padding_length = Openflow.Utils.padding(4 + exp_body_size, 8)
-    length = 4 + exp_body_size + padding_length
-    <<0xFFFF::16, length::16, exp_body::bytes, 0::size(padding_length)-unit(8)>>
+    Experimenter.pack_exp_header(<<
+      @experimenter::32,
+      @nxast::16,
+      flags_int::16,
+      ct_context_bin::bytes,
+      ct.recirc_table::8,
+      0::size(3)-unit(8),
+      ct.alg::16,
+      exec_bin::bytes
+    >>)
   end
 
   def read(
@@ -86,5 +72,16 @@ defmodule Openflow.Action.NxConntrack do
         <<ofs::10, n_bits::6>> = ofs_nbits
         %{ct | zone_src: zone_src, zone_offset: ofs, zone_n_bits: n_bits + 1}
     end
+  end
+
+  # private functions
+
+  defp ct_context_binary(%NxConntrack{zone_src: nil} = ct),
+    do: <<0::32, ct.zone_imm::16>>
+
+  defp ct_context_binary(%NxConntrack{} = ct) do
+    zone_src_bin = Openflow.Match.codec_header(ct.zone_src)
+    ofs_nbits = ct.zone_offset <<< 6 ||| ct.zone_n_bits - 1
+    <<zone_src_bin::bytes, ofs_nbits::16>>
   end
 end

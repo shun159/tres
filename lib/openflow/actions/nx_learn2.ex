@@ -18,6 +18,7 @@ defmodule Openflow.Action.NxLearn2 do
   @nxast 45
 
   alias __MODULE__
+  alias Openflow.Action.Experimenter
 
   def new(options) do
     %NxLearn2{
@@ -36,40 +37,33 @@ defmodule Openflow.Action.NxLearn2 do
     }
   end
 
-  def to_binary(%NxLearn2{
-        idle_timeout: idle,
-        hard_timeout: hard,
-        priority: prio,
-        cookie: cookie,
-        flags: flags,
-        table_id: table_id,
-        fin_idle_timeout: fin_idle,
-        fin_hard_timeout: fin_hard,
-        limit: limit,
-        result_dst_offset: result_dst_ofs,
-        result_dst: result_dst,
-        flow_specs: flow_specs
-      }) do
-    flags_int = Openflow.Enums.flags_to_int(flags, :nx_learn_flag)
+  def to_binary(%NxLearn2{} = learn) do
+    learn_flags_int = Openflow.Enums.flags_to_int(learn.flags, :nx_learn_flag)
+    learn_flow_specs_bin = Openflow.Action.NxFlowSpec.to_binary(learn.flow_specs)
 
-    result_dst_bin =
-      if :write_result in flags do
-        Openflow.Match.codec_header(result_dst)
-      else
-        ""
-      end
+    learn_result_dst_bin =
+      if :write_result in learn.flags,
+        do: Openflow.Match.codec_header(learn.result_dst),
+        else: <<>>
 
-    flow_specs_bin = Openflow.Action.NxFlowSpec.to_binary(flow_specs)
-
-    exp_body =
-      <<@experimenter::32, @nxast::16, idle::16, hard::16, prio::16, cookie::64, flags_int::16,
-        table_id::8, 0::size(1)-unit(8), fin_idle::16, fin_hard::16, limit::32,
-        result_dst_ofs::16, 0::size(2)-unit(8), result_dst_bin::bytes, flow_specs_bin::bitstring>>
-
-    exp_body_size = byte_size(exp_body)
-    padding_length = Openflow.Utils.padding(4 + exp_body_size, 8)
-    length = 4 + exp_body_size + padding_length
-    <<0xFFFF::16, length::16, exp_body::bytes, 0::size(padding_length)-unit(8)>>
+    Experimenter.pack_exp_header(<<
+      @experimenter::32,
+      @nxast::16,
+      learn.idle_timeout::16,
+      learn.hard_timeout::16,
+      learn.priority::16,
+      learn.cookie::64,
+      learn_flags_int::16,
+      learn.table_id::8,
+      0::size(1)-unit(8),
+      learn.fin_idle_timeout::16,
+      learn.fin_hard_timeout::16,
+      learn.limit::32,
+      learn.result_dst_offset::16,
+      0::size(2)-unit(8),
+      learn_result_dst_bin::bytes,
+      learn_flow_specs_bin::bitstring
+    >>)
   end
 
   def read(<<@experimenter::32, @nxast::16, body::bytes>>) do

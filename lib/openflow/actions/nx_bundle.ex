@@ -12,8 +12,9 @@ defmodule Openflow.Action.NxBundle do
   @nxast 12
 
   alias __MODULE__
+  alias Openflow.Action.Experimenter
 
-  def new(options) do
+  def new(options \\ []) do
     slaves = options[:slaves] || []
 
     %NxBundle{
@@ -25,28 +26,25 @@ defmodule Openflow.Action.NxBundle do
     }
   end
 
-  def to_binary(%NxBundle{
-        algorithm: alg,
-        hash_field: hash_field,
-        basis: basis,
-        slave_type: slave_type,
-        n_slaves: n_slaves,
-        slaves: slaves
-      }) do
-    hash_field_int = Openflow.Enums.to_int(hash_field, :nx_hash_fields)
-    alg_int = Openflow.Enums.to_int(alg, :nx_bd_algorithm)
-    slave_type_bin = Openflow.Match.codec_header(slave_type)
-    slaves_bin = codec_slaves(slaves)
+  def to_binary(%NxBundle{} = bundle) do
+    bundle_hash_field_int = Openflow.Enums.to_int(bundle.hash_field, :nx_hash_fields)
+    bundle_alg_int = Openflow.Enums.to_int(bundle.algorithm, :nx_bd_algorithm)
+    bundle_slave_type_bin = Openflow.Match.codec_header(bundle.slave_type)
+    bundle_slaves_bin = codec_slaves(bundle.slaves)
 
-    body =
-      <<alg_int::16, hash_field_int::16, basis::16, slave_type_bin::4-bytes, n_slaves::16, 0::16,
-        0::size(4)-unit(8), 0::32, slaves_bin::bytes>>
-
-    exp_body = <<@experimenter::32, @nxast::16, body::bytes>>
-    exp_body_size = byte_size(exp_body)
-    padding_length = Openflow.Utils.padding(4 + exp_body_size, 8)
-    length = 4 + exp_body_size + padding_length
-    <<0xFFFF::16, length::16, exp_body::bytes, 0::size(padding_length)-unit(8)>>
+    Experimenter.pack_exp_header(<<
+      @experimenter::32,
+      @nxast::16,
+      bundle_alg_int::16,
+      bundle_hash_field_int::16,
+      bundle.basis::16,
+      bundle_slave_type_bin::4-bytes,
+      bundle.n_slaves::16,
+      0::size(2)-unit(8),
+      0::size(4)-unit(8),
+      0::size(4)-unit(8),
+      bundle_slaves_bin::bytes
+    >>)
   end
 
   def read(<<@experimenter::32, @nxast::16, body::bytes>>) do

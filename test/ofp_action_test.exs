@@ -2,37 +2,47 @@ defmodule OfpActionTest do
   use ExUnit.Case
   doctest Openflow
 
-  test "Openflow.Action.NxBundle" do
-    test_file = "test/packet_data/nx_bundle.raw"
-    packet = File.read!(test_file)
-    actions = Openflow.Action.read(packet)
+  describe "Openflow.Action.NxBundle" do
+    test "with a binary" do
+      test_file = "test/packet_data/nx_bundle.raw"
+      packet = File.read!(test_file)
+      actions = Openflow.Action.read(packet)
 
-    bundle =
-      Openflow.Action.NxBundle.new(
-        algorithm: :highest_random_weight,
-        slaves: [4, 8]
-      )
+      bundle =
+        Openflow.Action.NxBundle.new(
+          algorithm: :highest_random_weight,
+          slaves: [4, 8]
+        )
 
-    actions_bin = Openflow.Action.to_binary(bundle)
-    assert actions_bin == packet
-    assert actions == [bundle]
+      actions_bin = Openflow.Action.to_binary(bundle)
+      assert actions_bin == packet
+      assert actions == [bundle]
+    end
   end
 
-  test "Openflow.Action.NxBundleLoad" do
-    test_file = "test/packet_data/nx_bundle_load.raw"
-    packet = File.read!(test_file)
-    actions = Openflow.Action.read(packet)
+  describe "Openflow.Action.NxBundleLoad" do
+    test "with a binary" do
+      test_file = "test/packet_data/nx_bundle_load.raw"
+      packet = File.read!(test_file)
+      actions = Openflow.Action.read(packet)
 
-    bundle_load =
-      Openflow.Action.NxBundleLoad.new(
-        algorithm: :highest_random_weight,
-        slaves: [4, 8],
-        dst_field: :reg0
-      )
+      bundle_load =
+        Openflow.Action.NxBundleLoad.new(
+          algorithm: :highest_random_weight,
+          slaves: [4, 8],
+          dst_field: :reg0
+        )
 
-    actions_bin = Openflow.Action.to_binary(bundle_load)
-    assert actions_bin == packet
-    assert actions == [bundle_load]
+      actions_bin = Openflow.Action.to_binary(bundle_load)
+      assert actions_bin == packet
+      assert actions == [bundle_load]
+    end
+
+    test "with no option" do
+      assert_raise RuntimeError, "dst_field must be specified", fn ->
+        Openflow.Action.NxBundleLoad.new([])
+      end
+    end
   end
 
   test "Openflow.Action.NxController" do
@@ -52,20 +62,30 @@ defmodule OfpActionTest do
     assert actions == [controller]
   end
 
-  test "Openflow.Action.NxController2" do
-    test_file = "test/packet_data/nx_controller2.raw"
-    packet = File.read!(test_file)
-    actions = Openflow.Action.read(packet)
+  describe "Openflow.Action.NxController2" do
+    test "with packet data" do
+      test_file = "test/packet_data/nx_controller2.raw"
+      packet = File.read!(test_file)
+      actions = Openflow.Action.read(packet)
 
-    controller2 =
-      Openflow.Action.NxController2.new(
-        max_len: 1234,
-        reason: :invalid_ttl,
-        userdata: <<1, 2, 3, 4, 5>>,
-        pause: true
-      )
+      controller2 =
+        Openflow.Action.NxController2.new(
+          max_len: 1234,
+          id: 5678,
+          reason: :invalid_ttl,
+          userdata: <<1, 2, 3, 4, 5>>,
+          pause: true
+        )
 
-    assert actions == [controller2]
+      assert actions == [controller2]
+
+      controller2
+      |> Openflow.Action.NxController2.to_binary()
+      |> Openflow.Action.read()
+      |> Enum.at(0)
+      |> Kernel.==(controller2)
+      |> assert()
+    end
   end
 
   describe "Openflow.Action.NxConntrack" do
@@ -412,7 +432,9 @@ defmodule OfpActionTest do
       assert actions_bin == packet
       assert actions == [ct]
     end
+  end
 
+  describe "Openflow.Action.NxCtClear" do
     test "with ct_clear" do
       test_file = "test/packet_data/nx_ct_clear.raw"
       packet = File.read!(test_file)
@@ -422,7 +444,9 @@ defmodule OfpActionTest do
       assert actions_bin == packet
       assert actions == [ct]
     end
+  end
 
+  describe "Openflow.Action.NxDecTtl" do
     test "with dec_ttl" do
       test_file = "test/packet_data/nx_dec_ttl.raw"
       packet = File.read!(test_file)
@@ -432,7 +456,9 @@ defmodule OfpActionTest do
       assert actions_bin == packet
       assert actions == [dec_ttl]
     end
+  end
 
+  describe "Openflow.Action.NxDecTtlCntIds" do
     test "with dec_ttl_cnt_ids" do
       test_file = "test/packet_data/nx_dec_ttl_cnt_ids.raw"
       packet = File.read!(test_file)
@@ -442,7 +468,9 @@ defmodule OfpActionTest do
       assert actions_bin == packet
       assert actions == [dec_ttl]
     end
+  end
 
+  describe "Openflow.Action.NxExit" do
     test "with exit" do
       test_file = "test/packet_data/nx_exit.raw"
       packet = File.read!(test_file)
@@ -452,7 +480,9 @@ defmodule OfpActionTest do
       assert actions_bin == packet
       assert actions == [exit]
     end
+  end
 
+  describe "Openflow.Action.NxFinTimeout" do
     test "with fin_timeout" do
       test_file = "test/packet_data/nx_fin_timeout.raw"
       packet = File.read!(test_file)
@@ -462,7 +492,9 @@ defmodule OfpActionTest do
       assert actions_bin == packet
       assert actions == [fin_timeout]
     end
+  end
 
+  describe "Openflow.Action.NxLearn" do
     test "with learn" do
       test_file = "test/packet_data/nx_learn.raw"
       packet = File.read!(test_file)
@@ -489,7 +521,9 @@ defmodule OfpActionTest do
       assert actions_bin == packet
       assert actions == [learn]
     end
+  end
 
+  describe "Openflow.Action.NxLearn2" do
     test "with learn2" do
       test_file = "test/packet_data/nx_learn2.raw"
       packet = File.read!(test_file)
@@ -519,7 +553,9 @@ defmodule OfpActionTest do
       assert actions_bin == packet
       assert actions == [learn2]
     end
+  end
 
+  describe "Openflow.Action.NxMultipath" do
     test "with multipath" do
       test_file = "test/packet_data/nx_multipath.raw"
       packet = File.read!(test_file)
@@ -536,8 +572,10 @@ defmodule OfpActionTest do
       assert actions_bin == packet
       assert actions == [multipath]
     end
+  end
 
-    test "with note" do
+  describe "Openflow.Action.NxNote" do
+    test "with note binary" do
       test_file = "test/packet_data/nx_note.raw"
       packet = File.read!(test_file)
       actions = Openflow.Action.read(packet)
@@ -546,8 +584,10 @@ defmodule OfpActionTest do
       assert actions_bin == packet
       assert actions == [note]
     end
+  end
 
-    test "with output_reg" do
+  describe "Openflow.Action.NxOutputReg" do
+    test "with output_reg options src_field = reg1, n_bits = 6, offset = 5" do
       test_file = "test/packet_data/nx_output_reg.raw"
       packet = File.read!(test_file)
       actions = Openflow.Action.read(packet)
@@ -556,28 +596,35 @@ defmodule OfpActionTest do
       assert actions_bin == packet
       assert actions == [output_reg]
     end
+  end
 
-    test "with output_trunc" do
+  describe "Openflow.Action.NxOutputReg2" do
+    test "with output_reg options src_field = reg1, n_bits = 6, offset = 5" do
+      output_reg = Openflow.Action.NxOutputReg2.new(src_field: :reg1, n_bits: 6, offset: 5)
+
+      output_reg
+      |> Openflow.Action.to_binary()
+      |> Openflow.Action.read()
+      |> Enum.at(0)
+      |> Kernel.==(output_reg)
+      |> assert()
+    end
+  end
+
+  describe "Openflow.Action.NxOutputTrunc" do
+    test "with output_trunc options: packets output to port1 trunc in 100bytes" do
       test_file = "test/packet_data/nx_output_trunc.raw"
       packet = File.read!(test_file)
       actions = Openflow.Action.read(packet)
-      output_trunc = Openflow.Action.NxOutputTrunc.new(port_number: 1, max_len: 100)
+      output_trunc = Openflow.Action.NxOutputTrunc.new(port_no: 1, max_len: 100)
       actions_bin = Openflow.Action.to_binary(output_trunc)
       assert actions_bin == packet
       assert actions == [output_trunc]
     end
+  end
 
-    test "with pop_queue" do
-      test_file = "test/packet_data/nx_pop_queue.raw"
-      packet = File.read!(test_file)
-      actions = Openflow.Action.read(packet)
-      pop_queue = Openflow.Action.NxPopQueue.new()
-      actions_bin = Openflow.Action.to_binary(pop_queue)
-      assert actions_bin == packet
-      assert actions == [pop_queue]
-    end
-
-    test "with reg_load" do
+  describe "Openflow.Action.NxRegLoad" do
+    test "with options: load 0xf008 to vlan_tci" do
       test_file = "test/packet_data/nx_reg_load.raw"
       packet = File.read!(test_file)
       actions = Openflow.Action.read(packet)
@@ -586,8 +633,10 @@ defmodule OfpActionTest do
       assert actions_bin == packet
       assert actions == [reg_load]
     end
+  end
 
-    test "with reg_move" do
+  describe "Openflow.Action.NxRegMove" do
+    test "with options: move in_port value to vlan_tci field" do
       test_file = "test/packet_data/nx_reg_move.raw"
       packet = File.read!(test_file)
       actions = Openflow.Action.read(packet)
@@ -596,17 +645,21 @@ defmodule OfpActionTest do
       assert actions_bin == packet
       assert actions == [reg_move]
     end
+  end
 
-    test "with resubmit" do
+  describe "Openflow.Action.NxResubmit" do
+    test "with options: resubmit to table, search with the port_no" do
       test_file = "test/packet_data/nx_resubmit.raw"
       packet = File.read!(test_file)
       actions = Openflow.Action.read(packet)
-      resubmit = Openflow.Action.NxResubmit.new(5)
+      resubmit = Openflow.Action.NxResubmit.new(_port_no = 5)
       actions_bin = Openflow.Action.to_binary(resubmit)
       assert actions_bin == packet
       assert actions == [resubmit]
     end
+  end
 
+  describe "Openflow.Action.NxResubmitTable" do
     test "with resubmit_table" do
       test_file = "test/packet_data/nx_resubmit_table.raw"
       packet = File.read!(test_file)
@@ -616,7 +669,9 @@ defmodule OfpActionTest do
       assert actions_bin == packet
       assert actions == [resubmit_table]
     end
+  end
 
+  describe "Openflow.Action.NxResubmitTableCt" do
     test "with resubmit_table_ct" do
       test_file = "test/packet_data/nx_resubmit_table_ct.raw"
       packet = File.read!(test_file)
@@ -626,7 +681,9 @@ defmodule OfpActionTest do
       assert actions_bin == packet
       assert actions == [resubmit_table_ct]
     end
+  end
 
+  describe "Openflow.Action.NxClone" do
     test "with clone(push_vlan:0x8100,set_field:5->vlan_vid,output:10)" do
       test_file = "test/packet_data/nx_clone.raw"
       packet = File.read!(test_file)
@@ -635,13 +692,152 @@ defmodule OfpActionTest do
       clone =
         Openflow.Action.NxClone.new([
           Openflow.Action.PushVlan.new(),
-          Openflow.Action.SetField.new({:vlan_vid, 5}),
+          Openflow.Action.SetField.new(vlan_vid: 5),
           Openflow.Action.Output.new(10)
         ])
 
       actions_bin = Openflow.Action.to_binary(clone)
       assert actions_bin == packet
       assert actions == [clone]
+    end
+  end
+
+  describe "Openflow.Action.NxRegLoad2" do
+    test "with set_field:0x1/0x1->reg1" do
+      reg_load2 = Openflow.Action.NxRegLoad2.new(reg1: {1, 1})
+
+      reg_load2
+      |> Openflow.Action.to_binary()
+      |> Openflow.Action.read()
+      |> Enum.at(0)
+      |> Kernel.==(reg_load2)
+      |> assert()
+    end
+
+    test "with set_field:0x1->reg1" do
+      reg_load2 = Openflow.Action.NxRegLoad2.new(reg1: 1)
+
+      reg_load2
+      |> Openflow.Action.to_binary()
+      |> Openflow.Action.read()
+      |> Enum.at(0)
+      |> Kernel.==(reg_load2)
+      |> assert()
+    end
+  end
+
+  describe "Openflow.Action.NxStackPop" do
+    test "with pop:NXM_NX_REG0[]" do
+      pop = Openflow.Action.NxStackPop.new(field: :reg0)
+
+      assert pop.n_bits == 32
+      assert pop.offset == 0
+
+      pop
+      |> Openflow.Action.to_binary()
+      |> Openflow.Action.read()
+      |> Enum.at(0)
+      |> Kernel.==(pop)
+      |> assert()
+    end
+
+    test "with pop:NXM_NX_REG0[1..31]" do
+      pop = Openflow.Action.NxStackPop.new(field: :reg0, offset: 1, n_bits: 31)
+
+      assert pop.n_bits == 31
+      assert pop.offset == 1
+
+      pop
+      |> Openflow.Action.to_binary()
+      |> Openflow.Action.read()
+      |> Enum.at(0)
+      |> Kernel.==(pop)
+      |> assert()
+    end
+  end
+
+  describe "Openflow.Action.NxSetTunnel" do
+    test "with set_tunnel:0x1" do
+      set_tunnel = Openflow.Action.NxSetTunnel.new(1)
+
+      set_tunnel
+      |> Openflow.Action.to_binary()
+      |> Openflow.Action.read()
+      |> Enum.at(0)
+      |> Kernel.==(set_tunnel)
+      |> assert()
+    end
+  end
+
+  describe "Openflow.Action.NxSetTunnel64" do
+    test "with set_tunnel64:0x1" do
+      set_tunnel = Openflow.Action.NxSetTunnel64.new(1)
+
+      set_tunnel
+      |> Openflow.Action.to_binary()
+      |> Openflow.Action.read()
+      |> Enum.at(0)
+      |> Kernel.==(set_tunnel)
+      |> assert()
+    end
+  end
+
+  describe "Openflow.Action.NxWriteMetadata" do
+    test "with write_metadata:0x1" do
+      write_metadata = Openflow.Action.NxWriteMetadata.new(1)
+
+      write_metadata
+      |> Openflow.Action.to_binary()
+      |> Openflow.Action.read()
+      |> Enum.at(0)
+      |> Kernel.==(write_metadata)
+      |> assert()
+    end
+
+    test "with write_metadata:0x1/0x1" do
+      write_metadata = Openflow.Action.NxWriteMetadata.new(metadata: 0x1, metadata_mask: 0x1)
+
+      write_metadata
+      |> Openflow.Action.to_binary()
+      |> Openflow.Action.read()
+      |> Enum.at(0)
+      |> Kernel.==(write_metadata)
+      |> assert()
+    end
+
+    test "with no options" do
+      assert_raise RuntimeError, "metadata must be specified", fn ->
+        Openflow.Action.NxWriteMetadata.new()
+      end
+    end
+  end
+
+  describe "Openflow.Action.NxConjunction" do
+    test "with conjunction(0,1/2)" do
+      conjunction = Openflow.Action.NxConjunction.new(clause: 0, n_clauses: 2)
+
+      assert conjunction.id == 0
+      assert conjunction.clause == 1
+      assert conjunction.n_clauses == 2
+
+      conjunction
+      |> Openflow.Action.to_binary()
+      |> Openflow.Action.read()
+      |> Enum.at(0)
+      |> Kernel.==(conjunction)
+      |> assert()
+    end
+  end
+
+  test "with no n_clauses option" do
+    assert_raise RuntimeError, "n_clauses must be specified", fn ->
+      Openflow.Action.NxConjunction.new(id: 1, clause: 0)
+    end
+  end
+
+  test "with n_clauses option less than 2" do
+    assert_raise RuntimeError, "n_clauses must be greater than 1", fn ->
+      Openflow.Action.NxConjunction.new(id: 1, clause: 0, n_clauses: 1)
     end
   end
 end

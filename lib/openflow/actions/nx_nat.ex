@@ -13,6 +13,7 @@ defmodule Openflow.Action.NxNat do
   @nxast 36
 
   alias __MODULE__
+  alias Openflow.Action.Experimenter
 
   def new(options \\ []) do
     flags = Keyword.get(options, :flags, [])
@@ -46,14 +47,14 @@ defmodule Openflow.Action.NxNat do
     ranges_bin = encode_ranges("", range_flags, nat)
     range_flags_int = Openflow.Enums.flags_to_int(range_flags, :nx_nat_range)
 
-    exp_body =
-      <<@experimenter::32, @nxast::16, 0::size(2)-unit(8), flags_int::16, range_flags_int::16,
-        ranges_bin::bytes>>
-
-    exp_body_size = byte_size(exp_body)
-    padding_length = Openflow.Utils.padding(4 + exp_body_size, 8)
-    length = 4 + exp_body_size + padding_length
-    <<0xFFFF::16, length::16, exp_body::bytes, 0::size(padding_length)-unit(8)>>
+    Experimenter.pack_exp_header(<<
+      @experimenter::32,
+      @nxast::16,
+      0::size(2)-unit(8),
+      flags_int::16,
+      range_flags_int::16,
+      ranges_bin::bytes
+    >>)
   end
 
   def read(<<@experimenter::32, @nxast::16, body::bytes>>) do

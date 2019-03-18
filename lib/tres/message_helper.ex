@@ -22,7 +22,13 @@ defmodule Tres.MessageHelper do
             send_message(flow_mod, datapath_id, Keyword.get(options, :blocking, false))
 
           bundle_id when is_integer(bundle_id) ->
-            bundle = Openflow.OnfBundleAdd.new(bundle_id: bundle_id, flags: options[:bundle_flags] || [], message: flow_mod)
+            bundle =
+              Openflow.OnfBundleAdd.new(
+                bundle_id: bundle_id,
+                flags: options[:bundle_flags] || [],
+                message: flow_mod
+              )
+
             send_message(bundle, datapath_id, Keyword.get(options, :blocking, false))
         end
       end
@@ -48,7 +54,13 @@ defmodule Tres.MessageHelper do
             send_message(flow_mod, datapath_id, Keyword.get(options, :blocking, false))
 
           bundle_id when is_integer(bundle_id) ->
-            bundle = Openflow.OnfBundleAdd.new(bundle_id: bundle_id, flags: options[:bundle_flags] || [], message: flow_mod)
+            bundle =
+              Openflow.OnfBundleAdd.new(
+                bundle_id: bundle_id,
+                flags: options[:bundle_flags] || [],
+                message: flow_mod
+              )
+
             send_message(bundle, datapath_id, Keyword.get(options, :blocking, false))
         end
       end
@@ -72,7 +84,13 @@ defmodule Tres.MessageHelper do
             send_message(flow_mod, datapath_id, Keyword.get(options, :blocking, false))
 
           bundle_id when is_integer(bundle_id) ->
-            bundle = Openflow.OnfBundleAdd.new(bundle_id: bundle_id, flags: options[:bundle_flags] || [], message: flow_mod)
+            bundle =
+              Openflow.OnfBundleAdd.new(
+                bundle_id: bundle_id,
+                flags: options[:bundle_flags] || [],
+                message: flow_mod
+              )
+
             send_message(bundle, datapath_id, Keyword.get(options, :blocking, false))
         end
       end
@@ -127,7 +145,13 @@ defmodule Tres.MessageHelper do
             send_message(packet_out, datapath_id, Keyword.get(options, :blocking, false))
 
           bundle_id when is_integer(bundle_id) ->
-            bundle = Openflow.OnfBundleAdd.new(bundle_id: bundle_id, flags: options[:bundle_flags], message: packet_out)
+            bundle =
+              Openflow.OnfBundleAdd.new(
+                bundle_id: bundle_id,
+                flags: options[:bundle_flags],
+                message: packet_out
+              )
+
             send_message(bundle, datapath_id, Keyword.get(options, :blocking, false))
         end
       end
@@ -147,7 +171,13 @@ defmodule Tres.MessageHelper do
             send_message(group_mod, datapath_id, Keyword.get(options, :blocking, false))
 
           bundle_id when is_integer(bundle_id) ->
-            bundle = Openflow.OnfBundleAdd.new(bundle_id: bundle_id, flags: options[:bundle_flags] || [], message: group_mod)
+            bundle =
+              Openflow.OnfBundleAdd.new(
+                bundle_id: bundle_id,
+                flags: options[:bundle_flags] || [],
+                message: group_mod
+              )
+
             send_message(bundle, datapath_id, Keyword.get(options, :blocking, false))
         end
       end
@@ -165,7 +195,13 @@ defmodule Tres.MessageHelper do
             send_message(group_mod, datapath_id, Keyword.get(options, :blocking, false))
 
           bundle_id when is_integer(bundle_id) ->
-            bundle = Openflow.OnfBundleAdd.new(bundle_id: bundle_id, flags: options[:bundle_flags] || [], message: group_mod)
+            bundle =
+              Openflow.OnfBundleAdd.new(
+                bundle_id: bundle_id,
+                flags: options[:bundle_flags] || [],
+                message: group_mod
+              )
+
             send_message(bundle, datapath_id, Keyword.get(options, :blocking, false))
         end
       end
@@ -185,7 +221,13 @@ defmodule Tres.MessageHelper do
             send_message(group_mod, datapath_id, Keyword.get(options, :blocking, false))
 
           bundle_id when is_integer(bundle_id) ->
-            bundle = Openflow.OnfBundleAdd.new(bundle_id: bundle_id, flags: options[:bundle_flags] || [], message: group_mod)
+            bundle =
+              Openflow.OnfBundleAdd.new(
+                bundle_id: bundle_id,
+                flags: options[:bundle_flags] || [],
+                message: group_mod
+              )
+
             send_message(bundle, datapath_id, Keyword.get(options, :blocking, false))
         end
       end
@@ -246,25 +288,25 @@ defmodule Tres.MessageHelper do
       # ONF Bundle Control
 
       defp onf_bundle_open(datapath_id, options \\ []) do
-        options2 = Keyword.merge(options, [type: :open_request])
+        options2 = Keyword.merge(options, type: :open_request)
         bundle = Openflow.OnfBundleControl.new(options2)
         send_message(bundle, datapath_id)
       end
 
       defp onf_bundle_close(datapath_id, options) do
-        options2 = Keyword.merge(options, [type: :close_request])
+        options2 = Keyword.merge(options, type: :close_request)
         bundle = Openflow.OnfBundleControl.new(options2)
         send_message(bundle, datapath_id)
       end
 
       defp onf_bundle_commit(datapath_id, options) do
-        options2 = Keyword.merge(options, [type: :commit_request])
+        options2 = Keyword.merge(options, type: :commit_request)
         bundle = Openflow.OnfBundleControl.new(options2)
         send_message(bundle, datapath_id)
       end
 
       defp onf_bundle_discard(datapath_id, options) do
-        options2 = Keyword.merge(options, [type: :discard_request])
+        options2 = Keyword.merge(options, type: :discard_request)
         bundle = Openflow.OnfBundleControl.new(options2)
         send_message(bundle, datapath_id)
       end
