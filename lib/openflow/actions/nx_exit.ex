@@ -5,17 +5,17 @@ defmodule Openflow.Action.NxExit do
   @nxast 17
 
   alias __MODULE__
+  alias Openflow.Action.Experimenter
 
   def new do
     %NxExit{}
   end
 
   def to_binary(%NxExit{}) do
-    exp_body = <<@experimenter::32, @nxast::16, 0::48>>
-    <<0xFFFF::16, 16::16, exp_body::bytes>>
+    Experimenter.pack_exp_header(<<@experimenter::32, @nxast::16, 0::48>>)
   end
 
-  def read(<<@experimenter::32, @nxast::16, 0::48>>) do
+  def read(<<@experimenter::32, @nxast::16, 0::48, _::bytes>>) do
     %NxExit{}
   end
 end

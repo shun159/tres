@@ -17,9 +17,10 @@ defmodule Openflow.Action.NxBundleLoad do
   @nxast 13
 
   alias __MODULE__
+  alias Openflow.Action.Experimenter
 
-  def new(options) do
-    dst_field = options[:dst_field]
+  def new(options \\ []) do
+    dst_field = options[:dst_field] || raise "dst_field must be specified"
     default_n_bits = Openflow.Match.Field.n_bits_of(dst_field)
     slaves = options[:slaves] || []
 
@@ -35,33 +36,27 @@ defmodule Openflow.Action.NxBundleLoad do
     }
   end
 
-  def to_binary(%NxBundleLoad{
-        algorithm: alg,
-        hash_field: hash_field,
-        basis: basis,
-        slave_type: slave_type,
-        n_slaves: n_slaves,
-        slaves: slaves,
-        offset: ofs,
-        n_bits: n_bits,
-        dst_field: dst_field
-      }) do
-    hash_field_int = Openflow.Enums.to_int(hash_field, :nx_hash_fields)
-    alg_int = Openflow.Enums.to_int(alg, :nx_bd_algorithm)
-    slave_type_bin = Openflow.Match.codec_header(slave_type)
-    slaves_bin = codec_slaves(slaves)
-    ofs_nbits = ofs <<< 6 ||| n_bits - 1
-    dst_field_bin = Openflow.Match.codec_header(dst_field)
+  def to_binary(%NxBundleLoad{} = bundle_load) do
+    hash_field_int = Openflow.Enums.to_int(bundle_load.hash_field, :nx_hash_fields)
+    alg_int = Openflow.Enums.to_int(bundle_load.algorithm, :nx_bd_algorithm)
+    slave_type_bin = Openflow.Match.codec_header(bundle_load.slave_type)
+    slaves_bin = codec_slaves(bundle_load.slaves)
+    ofs_nbits = bundle_load.offset <<< 6 ||| bundle_load.n_bits - 1
+    dst_field_bin = Openflow.Match.codec_header(bundle_load.dst_field)
 
-    body =
-      <<alg_int::16, hash_field_int::16, basis::16, slave_type_bin::4-bytes, n_slaves::16,
-        ofs_nbits::16, dst_field_bin::4-bytes, 0::32, slaves_bin::bytes>>
-
-    exp_body = <<@experimenter::32, @nxast::16, body::bytes>>
-    exp_body_size = byte_size(exp_body)
-    padding_length = Openflow.Utils.padding(4 + exp_body_size, 8)
-    length = 4 + exp_body_size + padding_length
-    <<0xFFFF::16, length::16, exp_body::bytes, 0::size(padding_length)-unit(8)>>
+    Experimenter.pack_exp_header(<<
+      @experimenter::32,
+      @nxast::16,
+      alg_int::16,
+      hash_field_int::16,
+      bundle_load.basis::16,
+      slave_type_bin::4-bytes,
+      bundle_load.n_slaves::16,
+      ofs_nbits::16,
+      dst_field_bin::4-bytes,
+      0::32,
+      slaves_bin::bytes
+    >>)
   end
 
   def read(<<@experimenter::32, @nxast::16, body::bytes>>) do

@@ -31,7 +31,7 @@ defmodule OfpFlowModTest do
 
       assert fm.instructions == [
                Openflow.Instruction.WriteActions.new([
-                 Openflow.Action.SetField.new({:vlan_vid, 258}),
+                 Openflow.Action.SetField.new(vlan_vid: 258),
                  Openflow.Action.CopyTtlOut.new(),
                  Openflow.Action.CopyTtlIn.new(),
                  Openflow.Action.CopyTtlIn.new(),
@@ -51,8 +51,8 @@ defmodule OfpFlowModTest do
                  Openflow.Action.Output.new(6)
                ]),
                Openflow.Instruction.ApplyActions.new([
-                 Openflow.Action.SetField.new({:eth_src, "010203040506"}),
-                 Openflow.Action.SetField.new({:onf_pbb_uca, 1})
+                 Openflow.Action.SetField.new(eth_src: "010203040506"),
+                 Openflow.Action.SetField.new(onf_pbb_uca: 1)
                ])
              ]
 
@@ -202,7 +202,7 @@ defmodule OfpFlowModTest do
       assert fm.instructions == [
                Openflow.Instruction.ApplyActions.new([
                  Openflow.Action.PopVlan.new(),
-                 Openflow.Action.SetField.new({:ipv4_dst, {192, 168, 2, 9}}),
+                 Openflow.Action.SetField.new(ipv4_dst: {192, 168, 2, 9}),
                  Openflow.Action.NxLearn.new(
                    hard_timeout: 300,
                    priority: 1,
@@ -263,7 +263,7 @@ defmodule OfpFlowModTest do
 
       assert fm.instructions == [
                Openflow.Instruction.ApplyActions.new([
-                 Openflow.Action.NxConjunction.new(clause: 1, id: 0xABCDEF, n_clauses: 2)
+                 Openflow.Action.NxConjunction.new(clause: 0, id: 0xABCDEF, n_clauses: 2)
                ])
              ]
 
@@ -290,7 +290,7 @@ defmodule OfpFlowModTest do
       assert fm.instructions == [
                Openflow.Instruction.ApplyActions.new([
                  Openflow.Action.PopVlan.new(),
-                 Openflow.Action.SetField.new({:ipv4_dst, {192, 168, 2, 9}})
+                 Openflow.Action.SetField.new(ipv4_dst: {192, 168, 2, 9})
                ]),
                Openflow.Instruction.GotoTable.new(100)
              ]

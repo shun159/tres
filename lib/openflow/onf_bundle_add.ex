@@ -38,11 +38,14 @@ defmodule Openflow.OnfBundleAdd do
     pad_length = Openflow.Utils.pad_length(length, 8)
     flags_int = Openflow.Enums.flags_to_int(bundle_add.flags, :bundle_flags)
 
-    <<@experimenter::32, @onf_type::32, bundle_id::32, 0::2-unit(8),
-      flags_int::16, message_bin::bytes, 0::size(pad_length)-unit(8)>>
+    <<@experimenter::32, @onf_type::32, bundle_id::32, 0::2-unit(8), flags_int::16,
+      message_bin::bytes, 0::size(pad_length)-unit(8)>>
   end
 
-  def read(<<@experimenter::32, @onf_type::32, bundle_id::32, _pad::16, flags_int::16, message_bin::bytes>>) do
+  def read(
+        <<@experimenter::32, @onf_type::32, bundle_id::32, _pad::16, flags_int::16,
+          message_bin::bytes>>
+      ) do
     message = Openflow.read(message_bin)
     flags = Openflow.Enums.int_to_flags(flags_int, :bundle_flags)
     %OnfBundleAdd{bundle_id: bundle_id, flags: flags, message: message}
