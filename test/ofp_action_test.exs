@@ -2,6 +2,173 @@ defmodule OfpActionTest do
   use ExUnit.Case
   doctest Openflow
 
+  describe "Openflow.Action.Output" do
+    test "with output:1" do
+      output = Openflow.Action.Output.new(1)
+
+      output
+      |> Openflow.Action.to_binary()
+      |> Openflow.Action.read()
+      |> Enum.at(0)
+      |> Kernel.==(output)
+      |> assert()
+    end
+
+    test "with CONTROLLER:65509" do
+      output = Openflow.Action.Output.new(port_number: :controller, max_len: :max)
+
+      output
+      |> Openflow.Action.to_binary()
+      |> Openflow.Action.read()
+      |> Enum.at(0)
+      |> Kernel.==(output)
+      |> assert()
+    end
+
+    test "with no port_number option" do
+      assert_raise RuntimeError, "port_number must be specified", fn ->
+        Openflow.Action.Output.new()
+      end
+    end
+  end
+
+  describe "Openflow.Action.DecMplsTtl" do
+    test "with no options" do
+      dec_mpls_ttl = Openflow.Action.DecMplsTtl.new()
+
+      dec_mpls_ttl
+      |> Openflow.Action.to_binary()
+      |> Openflow.Action.read()
+      |> Enum.at(0)
+      |> Kernel.==(dec_mpls_ttl)
+      |> assert()
+    end
+  end
+
+  describe "Openflow.Action.PushVlan" do
+    test "with no options" do
+      push_vlan = Openflow.Action.PushVlan.new()
+
+      push_vlan
+      |> Openflow.Action.to_binary()
+      |> Openflow.Action.read()
+      |> Enum.at(0)
+      |> Kernel.==(push_vlan)
+      |> assert()
+    end
+
+    test "with an ethertype" do
+      push_vlan = Openflow.Action.PushVlan.new(0x8100)
+
+      push_vlan
+      |> Openflow.Action.to_binary()
+      |> Openflow.Action.read()
+      |> Enum.at(0)
+      |> Kernel.==(push_vlan)
+      |> assert()
+    end
+  end
+
+  describe "Openflow.Action.PopVlan" do
+    test "with no options" do
+      pop_vlan = Openflow.Action.PopVlan.new()
+
+      pop_vlan
+      |> Openflow.Action.to_binary()
+      |> Openflow.Action.read()
+      |> Enum.at(0)
+      |> Kernel.==(pop_vlan)
+      |> assert()
+    end
+  end
+
+  describe "Openflow.Action.PushMpls" do
+    test "with no options" do
+      push_vlan = Openflow.Action.PushMpls.new()
+
+      push_vlan
+      |> Openflow.Action.to_binary()
+      |> Openflow.Action.read()
+      |> Enum.at(0)
+      |> Kernel.==(push_vlan)
+      |> assert()
+    end
+
+    test "with an ethertype" do
+      push_vlan = Openflow.Action.PushMpls.new(0x8847)
+
+      push_vlan
+      |> Openflow.Action.to_binary()
+      |> Openflow.Action.read()
+      |> Enum.at(0)
+      |> Kernel.==(push_vlan)
+      |> assert()
+    end
+  end
+
+  describe "Openflow.Action.PopMpls" do
+    test "with no options" do
+      pop_mpls = Openflow.Action.PopMpls.new()
+
+      pop_mpls
+      |> Openflow.Action.to_binary()
+      |> Openflow.Action.read()
+      |> Enum.at(0)
+      |> Kernel.==(pop_mpls)
+      |> assert()
+    end
+
+    test "with an ethertype" do
+      pop_mpls = Openflow.Action.PopMpls.new(0x8847)
+
+      pop_mpls
+      |> Openflow.Action.to_binary()
+      |> Openflow.Action.read()
+      |> Enum.at(0)
+      |> Kernel.==(pop_mpls)
+      |> assert()
+    end
+  end
+
+  describe "Openflow.Action.SetQueue" do
+    test "with set_queue:1" do
+      set_queue = Openflow.Action.SetQueue.new(1)
+
+      set_queue
+      |> Openflow.Action.to_binary()
+      |> Openflow.Action.read()
+      |> Enum.at(0)
+      |> Kernel.==(set_queue)
+      |> assert()
+    end
+  end
+
+  describe "Openflow.Action.Group" do
+    test "with group:1" do
+      group = Openflow.Action.Group.new(1)
+
+      group
+      |> Openflow.Action.to_binary()
+      |> Openflow.Action.read()
+      |> Enum.at(0)
+      |> Kernel.==(group)
+      |> assert()
+    end
+  end
+
+  describe "Openflow.Action.DecNwTtl" do
+    test "with dec_ttl" do
+      dec_nw_ttl = Openflow.Action.DecNwTtl.new()
+
+      dec_nw_ttl
+      |> Openflow.Action.to_binary()
+      |> Openflow.Action.read()
+      |> Enum.at(0)
+      |> Kernel.==(dec_nw_ttl)
+      |> assert()
+    end
+  end
+
   describe "Openflow.Action.NxBundle" do
     test "with a binary" do
       test_file = "test/packet_data/nx_bundle.raw"

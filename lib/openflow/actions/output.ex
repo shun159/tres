@@ -8,13 +8,15 @@ defmodule Openflow.Action.Output do
 
   def ofpat, do: 0
 
+  def new(options \\ [])
+
   def new(port) when not is_list(port) do
     new(port_number: port)
   end
 
   def new(options) when is_list(options) do
-    port_no = Keyword.get(options, :port_number)
-    max_len = Keyword.get(options, :max_len, :no_buffer)
+    port_no = options[:port_number] || raise "port_number must be specified"
+    max_len = options[:max_len] || :no_buffer
     %Output{port_number: port_no, max_len: max_len}
   end
 
