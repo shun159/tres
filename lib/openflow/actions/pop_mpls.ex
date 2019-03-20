@@ -1,12 +1,34 @@
 defmodule Openflow.Action.PopMpls do
+  @moduledoc """
+  Pop the out MPLS label
+
+  note: The one of ETH__P_MPLS_* is needed to be specified to eth_type field
+
+      send_flow_mod_add(
+        datapath_id,
+        match: Match.new(0x8847),
+        instructions: ApplyActions.new(PopMpls.new())
+      )
+  """
+
   defstruct(ethertype: 0x8847)
 
   alias __MODULE__
 
+  @type t :: %PopMpls{}
+
   @eth_p_mpls_uc 0x8847
 
+  @spec ofpat() :: 20
   def ofpat, do: 20
 
+  @doc """
+  Create a new pop_mpls action struct
+
+  0x8847(ETH_P_MPLS_UC) as default value.
+  """
+  @spec new() :: t()
+  @spec new(ethertype :: 0..0xFFFF) :: t()
   def new(ethertype \\ @eth_p_mpls_uc) do
     %PopMpls{ethertype: ethertype}
   end

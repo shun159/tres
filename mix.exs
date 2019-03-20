@@ -36,13 +36,13 @@ defmodule Tres.Mixfile do
   defp docs do
     [
       groups_for_modules: groups_for_modules(),
-      formatters: ["html"],
+      formatters: ["html"]
     ]
   end
 
   defp groups_for_modules do
     [
-      "Actions": [
+      Actions: [
         Openflow.Action.Output,
         Openflow.Action.CopyTtlOut,
         Openflow.Action.CopyTtlIn,
