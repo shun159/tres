@@ -1,4 +1,7 @@
 defmodule Openflow.Action.DecNwTtl do
+  @moduledoc """
+  """
+
   defstruct([])
 
   alias __MODULE__
