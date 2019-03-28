@@ -1,11 +1,6 @@
 defmodule Openflow.Action.PushVlan do
   @moduledoc """
   Push a new VLAN tag
-
-      send_flow_mod_add(
-        datapath_id,
-        instructions: ApplyActions.new(PushVlan.new())
-      )
   """
 
   defstruct(ethertype: 0x8100)

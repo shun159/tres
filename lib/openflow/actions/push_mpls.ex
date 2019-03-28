@@ -1,12 +1,6 @@
 defmodule Openflow.Action.PushMpls do
   @moduledoc """
   Push a new MPLS label
-
-      send_flow_mod_add(
-        datapath_id,
-        match: Match.new(),
-        instruction: ApplyActions.new(PushMpls.new())
-      )
   """
 
   defstruct(ethertype: 0x8847)
