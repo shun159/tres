@@ -31,8 +31,8 @@ defmodule Openflow.Action.Output do
   Create a new output action structure
 
   ## Options:
-    - `port_number`: port number that sends a packet from
-    - `max_len`: byte length of the packet that sends to the controller
+    - `port_number`: Output port
+    - `max_len`: Max length to send to controller
 
   ## Example
 

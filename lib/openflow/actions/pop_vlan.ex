@@ -1,13 +1,6 @@
 defmodule Openflow.Action.PopVlan do
   @moduledoc """
   Pop the outer VLAN tag.
-
-  note: The one of ETH__P_802_* is needed to be specified to eth_type field
-      send_flow_mod_add(
-        datapath_id,
-        match: Match.new(eth_type: 0x8100),
-        instructions: ApplyActions.new(PopVlan.new())
-      )
   """
 
   defstruct([])
@@ -21,6 +14,10 @@ defmodule Openflow.Action.PopVlan do
 
   @doc """
   Create a new pop_vlan action struct
+
+  ````elixir
+  iex> %PopVlan{} = PopVlan.new()
+  ````
   """
   @spec new() :: t()
   def new do

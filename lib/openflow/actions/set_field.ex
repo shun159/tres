@@ -1,12 +1,74 @@
 defmodule Openflow.Action.SetField do
+  @moduledoc """
+  Set a header field using OXM TLV format.
+  """
+
   defstruct(field: nil)
 
   alias __MODULE__
+
+  @type t :: %SetField{field: Keyword.t()}
 
   @set_field_size 8
 
   def ofpat, do: 25
 
+  @doc """
+  Create a new set_field action struct
+
+  note: The following oxm(nxm)_header values are potentially acceptable as `field`:
+
+  - :tun_id
+  - :tun_ipv4_src
+  - :tun_ipv4_dst
+  - :tun_ipv6_src
+  - :tun_ipv6_dst
+  - :tun_flags
+  - :tun_gbp_id
+  - :tun_gbp_flags
+  - :tun_metadata{0..63}
+  - :in_port
+  - :pkt_mark
+  - :ct_mark
+  - :ct_label
+  - :reg{0..15}
+  - :xreg{0..8}
+  - :xxreg{0..4}
+  - :eth_src
+  - :eth_dst
+  - :vlan_tci
+  - :mpls_ttl
+  - :ip_src
+  - :ip_dst
+  - :ipv6_src
+  - :ipv6_dst
+  - :ipv6_label
+  - :ip_tos
+  - :ip_ecn
+  - :ip_ttl
+  - :arp_op
+  - :arp_spa
+  - :arp_tpa
+  - :arp_sha
+  - :arp_tha
+  - :tcp_src
+  - :tcp_dst
+  - :udp_src
+  - :udp_dst
+  - :icmp_type
+  - :icmp_code
+  - :icmpv6_type
+  - :icmpv6_code
+  - :nd_target
+  - :nd_sll
+  - :nd_tll
+  - :metadata
+
+  ```elixir
+  iex> %SetField{field: [reg1: 10]} = SetField.new(reg1: 10)
+  ```
+  """
+  @spec new(Keyword.t()) :: t()
   def new([{_field, _value}] = oxm_field) do
     %SetField{field: oxm_field}
   end

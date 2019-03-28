@@ -1,4 +1,32 @@
 defmodule Openflow.Action.NxRegLoad do
+  @moduledoc """
+  Copies value[0:n_bits] to dst[ofs:ofs+n_bits], where a[b:c] denotes the bits
+  within 'a' numbered 'b' through 'c' (not including bit 'c').  Bit numbering
+  starts at 0 for the least-significant bit, 1 for the next most significant
+  bit, and so on.
+
+  'dst' is an nxm_header with nxm_hasmask=0.  See the documentation for
+  NXAST_REG_MOVE, above, for the permitted fields and for the side effects of
+  loading them.
+
+  The 'ofs' and 'n_bits' fields are combined into a single 'ofs_nbits' field
+  to avoid enlarging the structure by another 8 bytes.  To allow 'n_bits' to
+  take a value between 1 and 64 (inclusive) while taking up only 6 bits, it is
+  also stored as one less than its true value:
+
+  ```
+  15                           6 5                0
+  +------------------------------+------------------+
+  |              ofs             |    n_bits - 1    |
+  +------------------------------+------------------+
+  ```
+
+  The switch will reject actions for which ofs+n_bits is greater than the
+  width of 'dst', or in which any bits in 'value' with value 2n_bits or
+  greater are set to 1, with error type OFPET_BAD_ACTION, code
+  OFPBAC_BAD_ARGUMENT.
+  """
+
   import Bitwise
 
   defstruct(
