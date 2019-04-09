@@ -20,7 +20,7 @@ defmodule Openflow.Action.NxLearn2 do
   alias __MODULE__
   alias Openflow.Action.Experimenter
 
-  def new(options) do
+  def new(options \\ []) do
     %NxLearn2{
       idle_timeout: options[:idle_timeout] || 0,
       hard_timeout: options[:hard_timeout] || 0,

@@ -691,7 +691,7 @@ defmodule OfpActionTest do
   end
 
   describe "Openflow.Action.NxLearn2" do
-    test "with learn2" do
+    test "with learn2 packet" do
       test_file = "test/packet_data/nx_learn2.raw"
       packet = File.read!(test_file)
       actions = Openflow.Action.read(packet)
@@ -719,6 +719,17 @@ defmodule OfpActionTest do
       actions_bin = Openflow.Action.to_binary(learn2)
       assert actions_bin == packet
       assert actions == [learn2]
+    end
+
+    test "with no options" do
+      learn2 = Openflow.Action.NxLearn2.new()
+
+      learn2
+      |> Openflow.Action.to_binary()
+      |> Openflow.Action.read()
+      |> Enum.at(0)
+      |> Kernel.==(learn2)
+      |> assert()
     end
   end
 
@@ -800,6 +811,12 @@ defmodule OfpActionTest do
       assert actions_bin == packet
       assert actions == [reg_load]
     end
+
+    test "with no options" do
+      assert_raise RuntimeError, "dst_field must be specified", fn ->
+        Openflow.Action.NxRegLoad.new()
+      end
+    end
   end
 
   describe "Openflow.Action.NxRegMove" do
@@ -807,10 +824,30 @@ defmodule OfpActionTest do
       test_file = "test/packet_data/nx_reg_move.raw"
       packet = File.read!(test_file)
       actions = Openflow.Action.read(packet)
-      reg_move = Openflow.Action.NxRegMove.new(src_field: :nx_in_port, dst_field: :nx_vlan_tci)
+
+      reg_move =
+        Openflow.Action.NxRegMove.new(
+          src_field: :nx_in_port,
+          dst_field: :nx_vlan_tci,
+          src_offset: 0,
+          dst_offset: 0
+        )
+
       actions_bin = Openflow.Action.to_binary(reg_move)
       assert actions_bin == packet
       assert actions == [reg_move]
+    end
+
+    test "with no options" do
+      assert_raise RuntimeError, "src_field must be specified", fn ->
+        Openflow.Action.NxRegMove.new()
+      end
+    end
+
+    test "with no dst_field options" do
+      assert_raise RuntimeError, "dst_field must be specified", fn ->
+        Openflow.Action.NxRegMove.new(src_field: :reg0)
+      end
     end
   end
 
