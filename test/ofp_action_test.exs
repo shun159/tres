@@ -733,6 +733,72 @@ defmodule OfpActionTest do
     end
   end
 
+  describe "Openflow.Action.NxFlowSpecOutput" do
+    test "with src = :in_port" do
+      flow_spec = Openflow.Action.NxFlowSpecOutput.new(src: :in_port)
+
+      flow_spec
+      |> Openflow.Action.NxFlowSpec.to_binary()
+      |> Openflow.Action.NxFlowSpec.read()
+      |> Enum.at(0)
+      |> Kernel.==(flow_spec)
+      |> assert()
+    end
+
+    test "with no options" do
+      assert_raise RuntimeError, ":src must be specified", fn ->
+        Openflow.Action.NxFlowSpecOutput.new()
+      end
+    end
+  end
+
+  describe "Openflow.Action.NxFlowSpecMatch" do
+    test "with src = 0xdeadbeef and dst: :reg0" do
+      flow_spec = Openflow.Action.NxFlowSpecMatch.new(src: 0xDEADBEEF, dst: :reg0)
+
+      flow_spec
+      |> Openflow.Action.NxFlowSpec.to_binary()
+      |> Openflow.Action.NxFlowSpec.read()
+      |> Enum.at(0)
+      |> Kernel.==(flow_spec)
+      |> assert()
+    end
+
+    test "with src = :in_port and dst: :reg0" do
+      flow_spec =
+        Openflow.Action.NxFlowSpecMatch.new(
+          src: :in_port,
+          dst: :reg0,
+          n_bits: 16
+        )
+
+      flow_spec
+      |> Openflow.Action.NxFlowSpec.to_binary()
+      |> Openflow.Action.NxFlowSpec.read()
+      |> Enum.at(0)
+      |> Kernel.==(flow_spec)
+      |> assert()
+    end
+
+    test "with no option" do
+      assert_raise RuntimeError, ":dst must be specified", fn ->
+        Openflow.Action.NxFlowSpecMatch.new()
+      end
+    end
+
+    test "with no dst option" do
+      assert_raise RuntimeError, ":dst must be specified", fn ->
+        Openflow.Action.NxFlowSpecMatch.new(src: :in_port)
+      end
+    end
+
+    test "with no src option" do
+      assert_raise RuntimeError, ":src must be specified", fn ->
+        Openflow.Action.NxFlowSpecMatch.new(dst: :reg0)
+      end
+    end
+  end
+
   describe "Openflow.Action.NxMultipath" do
     test "with multipath" do
       test_file = "test/packet_data/nx_multipath.raw"

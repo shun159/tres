@@ -13,12 +13,28 @@ defmodule Openflow.Action.NxFlowSpecMatch do
 
   alias __MODULE__
 
-  def new(options) do
-    dst = options[:dst]
+  @type t :: %NxFlowSpecMatch{
+          src: atom(),
+          dst: atom(),
+          n_bits: non_neg_integer(),
+          src_offset: non_neg_integer(),
+          dst_offset: non_neg_integer()
+        }
+
+  @spec new(
+          src: atom(),
+          dst: atom(),
+          n_bits: non_neg_integer(),
+          src_offset: non_neg_integer(),
+          dst_offset: non_neg_integer()
+        ) :: t()
+  def new(options \\ []) do
+    dst = options[:dst] || raise ":dst must be specified"
+    src = options[:src] || raise ":src must be specified"
     n_bits = options[:n_bits] || Openflow.Match.Field.n_bits_of(dst)
 
     %NxFlowSpecMatch{
-      src: options[:src],
+      src: src,
       dst: dst,
       n_bits: n_bits,
       src_offset: options[:src_offset] || 0,
@@ -26,6 +42,7 @@ defmodule Openflow.Action.NxFlowSpecMatch do
     }
   end
 
+  @spec to_binary(t()) :: binary()
   def to_binary(%NxFlowSpecMatch{} = fsm) do
     %NxFlowSpecMatch{
       dst: dst_field,
@@ -48,6 +65,7 @@ defmodule Openflow.Action.NxFlowSpecMatch do
     end
   end
 
+  @spec read(binary()) :: {t(), binary()}
   def read(
         <<_::2, @learn_src_field::1, @learn_dst::2, n_bits::11, src_bin::4-bytes, src_ofs::16,
           dst_bin::4-bytes, dst_ofs::16, rest::bitstring>>
