@@ -14,6 +14,32 @@ defmodule Openflow.Action.NxBundle do
   alias __MODULE__
   alias Openflow.Action.Experimenter
 
+  @type algorithm :: :active_backup | :highest_random_weight
+  @type hash_field ::
+          :eth_src
+          | :symmetric_l4
+          | :symmetric_l3l4
+          | :symmetric_l3l4_udp
+          | :nw_src
+          | :nw_dst
+
+  @type t :: %NxBundle{
+          algorithm: algorithm(),
+          hash_field: hash_field(),
+          basis: non_neg_integer(),
+          slave_type: :nx_in_port,
+          n_slaves: non_neg_integer(),
+          slaves: [pos_integer()]
+        }
+
+  @spec new(
+          algorithm: algorithm(),
+          hash_field: hash_field(),
+          basis: non_neg_integer(),
+          slave_type: :nx_in_port,
+          n_slaves: non_neg_integer(),
+          slaves: [pos_integer()]
+        ) :: t()
   def new(options \\ []) do
     slaves = options[:slaves] || []
 

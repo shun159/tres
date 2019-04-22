@@ -13,12 +13,28 @@ defmodule Openflow.Action.NxFlowSpecLoad do
 
   alias __MODULE__
 
+  @type t :: %NxFlowSpecLoad{
+          src: atom(),
+          dst: atom(),
+          n_bits: non_neg_integer(),
+          src_offset: non_neg_integer(),
+          dst_offset: non_neg_integer()
+        }
+
+  @spec new(
+          src: atom(),
+          dst: atom(),
+          n_bits: non_neg_integer(),
+          src_offset: non_neg_integer(),
+          dst_offset: non_neg_integer()
+        ) :: t()
   def new(options) do
-    dst = options[:dst]
+    dst = options[:dst] || raise(":dst must be specified")
+    src = options[:src] || raise(":src must be specified")
     n_bits = options[:n_bits] || Openflow.Match.Field.n_bits_of(dst)
 
     %NxFlowSpecLoad{
-      src: options[:src],
+      src: src,
       dst: dst,
       n_bits: n_bits,
       src_offset: options[:src_offset] || 0,

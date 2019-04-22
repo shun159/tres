@@ -19,6 +19,38 @@ defmodule Openflow.Action.NxBundleLoad do
   alias __MODULE__
   alias Openflow.Action.Experimenter
 
+  @type algorithm :: :active_backup | :highest_random_weight
+  @type hash_field ::
+          :eth_src
+          | :symmetric_l4
+          | :symmetric_l3l4
+          | :symmetric_l3l4_udp
+          | :nw_src
+          | :nw_dst
+
+  @type t :: %NxBundleLoad{
+          algorithm: algorithm(),
+          hash_field: hash_field(),
+          basis: non_neg_integer(),
+          slave_type: :nx_in_port,
+          n_slaves: non_neg_integer(),
+          slaves: [pos_integer()],
+          offset: non_neg_integer(),
+          n_bits: pos_integer(),
+          dst_field: atom()
+        }
+
+  @spec new(
+          algorithm: algorithm(),
+          hash_field: hash_field(),
+          basis: non_neg_integer(),
+          slave_type: :nx_in_port,
+          n_slaves: non_neg_integer(),
+          slaves: [pos_integer()],
+          offset: non_neg_integer(),
+          n_bits: pos_integer(),
+          dst_field: atom()
+        ) :: t()
   def new(options \\ []) do
     dst_field = options[:dst_field] || raise "dst_field must be specified"
     default_n_bits = Openflow.Match.Field.n_bits_of(dst_field)
@@ -32,7 +64,7 @@ defmodule Openflow.Action.NxBundleLoad do
       slaves: slaves,
       offset: options[:offset] || 0,
       n_bits: options[:n_bits] || default_n_bits,
-      dst_field: options[:dst_field]
+      dst_field: dst_field
     }
   end
 
