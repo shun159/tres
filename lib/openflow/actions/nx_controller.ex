@@ -11,6 +11,20 @@ defmodule Openflow.Action.NxController do
   alias __MODULE__
   alias Openflow.Action.Experimenter
 
+  @type max_len :: :max | :no_buffer | non_neg_integer()
+  @type packet_in_reason ::
+          :no_match | :action | :invalid_ttl | :action_set | :group | :packet_out
+  @type t :: %NxController{
+          max_len: max_len(),
+          id: non_neg_integer(),
+          reason: packet_in_reason()
+        }
+
+  @spec new(
+          max_len: max_len(),
+          id: non_neg_integer(),
+          reason: packet_in_reason()
+        ) :: t()
   def new(options \\ []) do
     %NxController{
       max_len: options[:max_len] || :no_buffer,

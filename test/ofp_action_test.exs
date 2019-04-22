@@ -32,6 +32,14 @@ defmodule OfpActionTest do
     end
   end
 
+  describe "Openflow.Action.Experimenter" do
+    test "with exp_id and data" do
+      experimenter = Openflow.Action.Experimenter.new(0xDEADBEEF)
+      assert experimenter.exp_id == 0xDEADBEEF
+      assert experimenter.data == ""
+    end
+  end
+
   describe "Openflow.Action.DecMplsTtl" do
     test "with no options" do
       dec_mpls_ttl = Openflow.Action.DecMplsTtl.new()
@@ -226,21 +234,30 @@ defmodule OfpActionTest do
     end
   end
 
-  test "Openflow.Action.NxController" do
-    test_file = "test/packet_data/nx_controller.raw"
-    packet = File.read!(test_file)
-    actions = Openflow.Action.read(packet)
+  describe "Openflow.Action.NxController" do
+    test "with packet_data" do
+      test_file = "test/packet_data/nx_controller.raw"
+      packet = File.read!(test_file)
+      actions = Openflow.Action.read(packet)
 
-    controller =
-      Openflow.Action.NxController.new(
-        max_len: 1234,
-        reason: :invalid_ttl,
-        id: 5678
-      )
+      controller =
+        Openflow.Action.NxController.new(
+          max_len: 1234,
+          reason: :invalid_ttl,
+          id: 5678
+        )
 
-    actions_bin = Openflow.Action.to_binary(controller)
-    assert actions_bin == packet
-    assert actions == [controller]
+      actions_bin = Openflow.Action.to_binary(controller)
+      assert actions_bin == packet
+      assert actions == [controller]
+    end
+
+    test "with no options" do
+      controller = Openflow.Action.NxController.new()
+      assert controller.max_len == :no_buffer
+      assert controller.id == 0
+      assert controller.reason == :action
+    end
   end
 
   describe "Openflow.Action.NxController2" do
@@ -898,8 +915,12 @@ defmodule OfpActionTest do
 
       multipath =
         Openflow.Action.NxMultipath.new(
+          hash_field: :eth_src,
           algorithm: :modulo_n,
           basis: 50,
+          max_link: 0,
+          offset: 0,
+          argument: 0,
           dst_field: :reg0
         )
 
@@ -926,16 +947,36 @@ defmodule OfpActionTest do
       test_file = "test/packet_data/nx_output_reg.raw"
       packet = File.read!(test_file)
       actions = Openflow.Action.read(packet)
-      output_reg = Openflow.Action.NxOutputReg.new(src_field: :reg1, n_bits: 6, offset: 5)
+
+      output_reg =
+        Openflow.Action.NxOutputReg.new(
+          src_field: :reg1,
+          n_bits: 6,
+          offset: 5,
+          max_len: :no_buffer
+        )
+
       actions_bin = Openflow.Action.to_binary(output_reg)
       assert actions_bin == packet
       assert actions == [output_reg]
+    end
+
+    test "with no src_field option" do
+      assert_raise RuntimeError, "src_field must be specified", fn ->
+        Openflow.Action.NxOutputReg.new(n_bits: 6)
+      end
     end
   end
 
   describe "Openflow.Action.NxOutputReg2" do
     test "with output_reg options src_field = reg1, n_bits = 6, offset = 5" do
-      output_reg = Openflow.Action.NxOutputReg2.new(src_field: :reg1, n_bits: 6, offset: 5)
+      output_reg =
+        Openflow.Action.NxOutputReg2.new(
+          src_field: :reg1,
+          n_bits: 6,
+          offset: 5,
+          max_len: :no_buffer
+        )
 
       output_reg
       |> Openflow.Action.to_binary()

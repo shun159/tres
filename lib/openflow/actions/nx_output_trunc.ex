@@ -10,7 +10,8 @@ defmodule Openflow.Action.NxOutputTrunc do
   alias __MODULE__
   alias Openflow.Action.Experimenter
 
-  def new(options \\ []) do
+  @spec new(Keyword.t()) :: %NxOutputTrunc{}
+  def new(options) do
     port_no = options[:port_no] || raise "port_no must be specified"
     max_len = options[:max_len] || raise "max_len must be specified"
 

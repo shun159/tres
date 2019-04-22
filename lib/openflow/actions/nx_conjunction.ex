@@ -11,7 +11,8 @@ defmodule Openflow.Action.NxConjunction do
   alias __MODULE__
   alias Openflow.Action.Experimenter
 
-  def new(options \\ []) do
+  @spec new(Keyword.t()) :: %NxConjunction{}
+  def new(options) do
     n_clauses = options[:n_clauses] || raise "n_clauses must be specified"
     n_clauses >= 2 || raise "n_clauses must be greater than 1"
 
