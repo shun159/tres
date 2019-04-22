@@ -25,7 +25,31 @@ defmodule Openflow.Action.NxController2 do
   alias __MODULE__
   alias Openflow.Action.Experimenter
 
-  def new(options \\ []) do
+  @type max_len :: pos_integer() | :max | :no_buffer
+  @type packet_in_reason ::
+          :no_match | :action | :invalid_ttl | :action_set | :group | :packet_out
+  @type meter_id :: pos_integer() | :max | :slowpath | :controller | :all
+
+  @type t :: %NxController2{
+          max_len: max_len(),
+          id: non_neg_integer(),
+          reason: packet_in_reason(),
+          userdata: binary(),
+          pause: boolean(),
+          meter_id: meter_id()
+        }
+
+  @spec new(
+          max_len: max_len(),
+          id: non_neg_integer(),
+          reason: packet_in_reason(),
+          userdata: binary(),
+          pause: boolean(),
+          meter_id: meter_id()
+        ) :: t()
+  def new(options \\ [])
+
+  def new(options) when is_list(options) do
     %NxController2{
       max_len: options[:max_len] || :no_buffer,
       id: options[:id] || 0,
