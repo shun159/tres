@@ -7,7 +7,10 @@ defmodule Openflow.Action.NxDecTtlCntIds do
   alias __MODULE__
   alias Openflow.Action.Experimenter
 
-  def new(ids \\ []) do
+  @type t :: %NxDecTtlCntIds{ids: [non_neg_integer()]}
+
+  @spec new(ids :: [non_neg_integer()]) :: t()
+  def new(ids) do
     %NxDecTtlCntIds{ids: ids}
   end
 

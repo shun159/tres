@@ -10,7 +10,8 @@ defmodule Openflow.Action.NxFinTimeout do
   alias __MODULE__
   alias Openflow.Action.Experimenter
 
-  def new(options \\ []) do
+  @spec new(Keyword.t()) :: %NxFinTimeout{}
+  def new(options) do
     %NxFinTimeout{
       idle_timeout: options[:idle_timeout] || 0,
       hard_timeout: options[:hard_timeout] || 0

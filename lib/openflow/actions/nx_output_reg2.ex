@@ -14,7 +14,21 @@ defmodule Openflow.Action.NxOutputReg2 do
   alias __MODULE__
   alias Openflow.Action.Experimenter
 
-  def new(options \\ []) do
+  @type max_len :: :no_buffer | :max | non_neg_integer()
+  @type t :: %NxOutputReg2{
+          n_bits: pos_integer(),
+          offset: non_neg_integer(),
+          src_field: atom(),
+          max_len: max_len()
+        }
+
+  @spec new(
+          n_bits: pos_integer(),
+          offset: non_neg_integer(),
+          src_field: atom(),
+          max_len: max_len()
+        ) :: t()
+  def new(options) do
     src_field = options[:src_field] || raise "src_field must be specified"
     default_n_bits = Openflow.Match.Field.n_bits_of(src_field)
 
