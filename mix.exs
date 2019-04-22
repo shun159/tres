@@ -11,7 +11,14 @@ defmodule Tres.Mixfile do
       compilers: [:erlang] ++ Mix.compilers(),
       deps: deps(),
       aliases: [test: "test --no-start", compile: ["escript.build"]],
-      docs: docs()
+      docs: docs(),
+      # test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: [
+        coveralls: :test,
+        "coveralls.detail": :test,
+        "coveralls.post": :test,
+        "coveralls.html": :test
+      ]
     ]
   end
 
@@ -27,6 +34,7 @@ defmodule Tres.Mixfile do
       {:eovsdb, github: "shun159/eovsdb", branch: "master"},
       {:jsone, github: "sile/jsone", tag: "1.4.6", override: true},
       {:epcap, github: "msantos/epcap", branch: "master", only: :test},
+      {:excoveralls, "~> 0.10", only: :test},
       # Document
       {:earmark, "~> 1.2.6", only: :dev, runtime: false},
       {:ex_doc, "~> 0.19", only: :dev, runtime: false}

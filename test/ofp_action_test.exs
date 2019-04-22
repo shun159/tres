@@ -255,7 +255,8 @@ defmodule OfpActionTest do
           id: 5678,
           reason: :invalid_ttl,
           userdata: <<1, 2, 3, 4, 5>>,
-          pause: true
+          pause: true,
+          meter_id: 0
         )
 
       assert actions == [controller2]
@@ -266,6 +267,37 @@ defmodule OfpActionTest do
       |> Enum.at(0)
       |> Kernel.==(controller2)
       |> assert()
+    end
+
+    test "with meter_id" do
+      controller2 =
+        [meter_id: 0xFACE]
+        |> Openflow.Action.NxController2.new()
+        |> Openflow.Action.NxController2.to_binary()
+        |> Openflow.Action.read()
+        |> Enum.at(0)
+
+      assert controller2.max_len == :no_buffer
+      assert controller2.id == 0
+      assert controller2.reason == :action
+      assert controller2.userdata == ""
+      assert controller2.pause == false
+      assert controller2.meter_id == 0xFACE
+    end
+
+    test "with no options" do
+      controller2 =
+        Openflow.Action.NxController2.new()
+        |> Openflow.Action.NxController2.to_binary()
+        |> Openflow.Action.read()
+        |> Enum.at(0)
+
+      assert controller2.max_len == :no_buffer
+      assert controller2.id == 0
+      assert controller2.reason == :action
+      assert controller2.userdata == ""
+      assert controller2.pause == false
+      assert controller2.meter_id == 0
     end
   end
 
