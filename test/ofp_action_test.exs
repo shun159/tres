@@ -178,12 +178,23 @@ defmodule OfpActionTest do
       bundle =
         Openflow.Action.NxBundle.new(
           algorithm: :highest_random_weight,
+          hash_field: :eth_src,
+          basis: 0,
           slaves: [4, 8]
         )
 
       actions_bin = Openflow.Action.to_binary(bundle)
       assert actions_bin == packet
       assert actions == [bundle]
+    end
+
+    test "with no option" do
+      bundle = Openflow.Action.NxBundle.new()
+      assert bundle.algorithm == :active_backup
+      assert bundle.hash_field == :eth_src
+      assert bundle.basis == 0
+      assert bundle.n_slaves == 0
+      assert bundle.slaves == []
     end
   end
 
@@ -196,7 +207,10 @@ defmodule OfpActionTest do
       bundle_load =
         Openflow.Action.NxBundleLoad.new(
           algorithm: :highest_random_weight,
+          hash_field: :eth_src,
+          basis: 0,
           slaves: [4, 8],
+          offset: 0,
           dst_field: :reg0
         )
 
@@ -769,6 +783,8 @@ defmodule OfpActionTest do
         Openflow.Action.NxFlowSpecMatch.new(
           src: :in_port,
           dst: :reg0,
+          src_offset: 0,
+          dst_offset: 0,
           n_bits: 16
         )
 
@@ -795,6 +811,49 @@ defmodule OfpActionTest do
     test "with no src option" do
       assert_raise RuntimeError, ":src must be specified", fn ->
         Openflow.Action.NxFlowSpecMatch.new(dst: :reg0)
+      end
+    end
+  end
+
+  describe "Openflow.Action.NxFlowSpecLoad" do
+    test "with src = 0xdeadbeef and dst: :reg0" do
+      flow_spec = Openflow.Action.NxFlowSpecLoad.new(src: 0xDEADBEEF, dst: :reg0)
+
+      flow_spec
+      |> Openflow.Action.NxFlowSpec.to_binary()
+      |> Openflow.Action.NxFlowSpec.read()
+      |> Enum.at(0)
+      |> Kernel.==(flow_spec)
+      |> assert()
+    end
+
+    test "with src = :in_port and dst: :reg0" do
+      flow_spec =
+        Openflow.Action.NxFlowSpecLoad.new(
+          src: :in_port,
+          dst: :reg0,
+          src_offset: 0,
+          dst_offset: 0,
+          n_bits: 16
+        )
+
+      flow_spec
+      |> Openflow.Action.NxFlowSpec.to_binary()
+      |> Openflow.Action.NxFlowSpec.read()
+      |> Enum.at(0)
+      |> Kernel.==(flow_spec)
+      |> assert()
+    end
+
+    test "with no dst option" do
+      assert_raise RuntimeError, ":dst must be specified", fn ->
+        Openflow.Action.NxFlowSpecLoad.new(src: :in_port)
+      end
+    end
+
+    test "with no src option" do
+      assert_raise RuntimeError, ":src must be specified", fn ->
+        Openflow.Action.NxFlowSpecLoad.new(dst: :reg0)
       end
     end
   end
