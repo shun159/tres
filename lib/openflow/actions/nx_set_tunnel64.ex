@@ -7,7 +7,9 @@ defmodule Openflow.Action.NxSetTunnel64 do
   alias __MODULE__
   alias Openflow.Action.Experimenter
 
-  @spec new(tunnel_id :: 0..0xFFFFFFFFFFFFFFFF) :: %NxSetTunnel64{tunnel_id: 0..0xFFFFFFFFFFFFFFFF}
+  @spec new(tunnel_id :: 0..0xFFFFFFFFFFFFFFFF) :: %NxSetTunnel64{
+          tunnel_id: 0..0xFFFFFFFFFFFFFFFF
+        }
   def new(tunnel_id) do
     %NxSetTunnel64{tunnel_id: tunnel_id}
   end

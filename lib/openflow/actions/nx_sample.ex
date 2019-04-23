@@ -13,6 +13,9 @@ defmodule Openflow.Action.NxSample do
   alias Openflow.Action.Experimenter
 
   def new(options \\ []) do
+    (is_integer(options[:probability]) and options[:probability] > 0) ||
+      raise("probability must be greater than 0")
+
     %NxSample{
       probability: options[:probability] || 0,
       collector_set_id: options[:collector_set_id] || 0,

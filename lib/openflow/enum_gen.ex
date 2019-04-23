@@ -818,8 +818,8 @@ defmodule Openflow.EnumGen do
       {Openflow.Action.NxController, 20},
       {Openflow.Action.NxDecTtlCntIds, 21},
       {Openflow.Action.NxWriteMetadata, 22},
-      {Openflow.Action.NxPushMpls, 23},
-      {Openflow.Action.NxPopMpls, 24},
+      # {Openflow.Action.NxPushMpls, 23}, # Deprecated
+      # {Openflow.Action.NxPopMpls, 24}, # Deprecated
       # {Openflow.Action.NxSetMplsTtl, 25}, Deprecated
       # {Openflow.Action.NxDecMplsTtl, 26}, Deprecated
       {Openflow.Action.NxStackPush, 27},
