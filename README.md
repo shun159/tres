@@ -1,6 +1,7 @@
 # Tres - an Elixir OpenFlow development platform
 
-[![Build Status](https://travis-ci.org/shun159/tres.svg?branch=develop)](https://travis-ci.org/shun159/tres)
+[![Build Status](https://travis-ci.org/shun159/tres.svg?branch=develop)](https://travis-ci.org/shun159/tres) 
+[![codecov](https://codecov.io/gh/shun159/tres/branch/develop/graph/badge.svg)](https://codecov.io/gh/shun159/tres)
 
 ## Overview
 
