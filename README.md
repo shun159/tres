@@ -1,5 +1,7 @@
 # Tres - an Elixir OpenFlow development platform
 
+[![Build Status](https://travis-ci.org/shun159/tres.svg?branch=develop)](https://travis-ci.org/shun159/tres)
+
 ## Overview
 
 Tres is a framework and set of helper libraries to develop OpenFlow controllers in Elixir.
