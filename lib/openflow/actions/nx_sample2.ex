@@ -18,7 +18,7 @@ defmodule Openflow.Action.NxSample2 do
       raise("probability must be greater than 0")
 
     %NxSample2{
-      probability: options[:probability] || 0,
+      probability: options[:probability],
       collector_set_id: options[:collector_set_id] || 0,
       obs_domain_id: options[:obs_domain_id] || 0,
       obs_point_id: options[:obs_point_id] || 0,

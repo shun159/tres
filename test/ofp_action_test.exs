@@ -1242,4 +1242,64 @@ defmodule OfpActionTest do
       Openflow.Action.NxConjunction.new(id: 1, clause: 0, n_clauses: 1)
     end
   end
+
+  describe "Opefnlow.Action.NxSample" do
+    test "with sample(probability=1,collector_set_id=0,obs_domain_id=0,obs_point_id=0)" do
+      sample =
+        Openflow.Action.NxSample.new(
+          probability: 1,
+          collector_set_id: 0,
+          obs_domain_id: 0,
+          obs_point_id: 0
+        )
+
+      sample
+      |> Openflow.Action.to_binary()
+      |> Openflow.Action.read()
+      |> Enum.at(0)
+      |> Kernel.==(sample)
+      |> assert()
+    end
+  end
+
+  describe "Opefnlow.Action.NxSample2" do
+    test "with sample(probability=1,collector_set_id=0,obs_domain_id=0,obs_point_id=0, sampling_port=100)" do
+      sample =
+        Openflow.Action.NxSample2.new(
+          probability: 1,
+          collector_set_id: 0,
+          obs_domain_id: 0,
+          obs_point_id: 0,
+          sampling_port: 100
+        )
+
+      sample
+      |> Openflow.Action.to_binary()
+      |> Openflow.Action.read()
+      |> Enum.at(0)
+      |> Kernel.==(sample)
+      |> assert()
+    end
+  end
+
+  describe "Opefnlow.Action.NxSample3" do
+    test "with sample(probability=1,collector_set_id=0,obs_domain_id=0,obs_point_id=0, sampling_port=100,egress)" do
+      sample =
+        Openflow.Action.NxSample3.new(
+          probability: 1,
+          collector_set_id: 0,
+          obs_domain_id: 0,
+          obs_point_id: 0,
+          sampling_port: 100,
+          direction: :egress
+        )
+
+      sample
+      |> Openflow.Action.to_binary()
+      |> Openflow.Action.read()
+      |> Enum.at(0)
+      |> Kernel.==(sample)
+      |> assert()
+    end
+  end
 end
