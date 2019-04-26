@@ -1158,6 +1158,36 @@ defmodule OfpActionTest do
     end
   end
 
+  describe "Openflow.Action.NxStackPush" do
+    test "with push:NXM_NX_REG0[]" do
+      push = Openflow.Action.NxStackPush.new(field: :reg0)
+
+      assert push.n_bits == 32
+      assert push.offset == 0
+
+      push
+      |> Openflow.Action.to_binary()
+      |> Openflow.Action.read()
+      |> Enum.at(0)
+      |> Kernel.==(push)
+      |> assert()
+    end
+
+    test "with push:NXM_NX_REG0[1..31]" do
+      push = Openflow.Action.NxStackPush.new(field: :reg0, offset: 1, n_bits: 31)
+
+      assert push.n_bits == 31
+      assert push.offset == 1
+
+      push
+      |> Openflow.Action.to_binary()
+      |> Openflow.Action.read()
+      |> Enum.at(0)
+      |> Kernel.==(push)
+      |> assert()
+    end
+  end
+
   describe "Openflow.Action.NxSetTunnel" do
     test "with set_tunnel:0x1" do
       set_tunnel = Openflow.Action.NxSetTunnel.new(1)

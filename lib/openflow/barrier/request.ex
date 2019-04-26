@@ -10,17 +10,22 @@ defmodule Openflow.Barrier.Request do
 
   alias __MODULE__
 
+  @type t :: %Request{
+          version: 4,
+          xid: 0..0xFFFFFFFF,
+          datapath_id: String.t() | nil,
+          aux_id: non_neg_integer() | nil
+        }
+
+  @spec ofp_type() :: 20
   def ofp_type, do: 20
 
-  def new(xid \\ 0) do
-    %Request{xid: xid}
-  end
+  @spec new(xid :: 0..0xFFFFFFFF) :: t()
+  def new(xid \\ 0), do: %Request{xid: xid}
 
-  def read(_) do
-    %Request{}
-  end
+  @spec read(binary()) :: t()
+  def read(_), do: %Request{}
 
-  def to_binary(%Request{}) do
-    <<>>
-  end
+  @spec to_binary(t()) :: binary()
+  def to_binary(%Request{}), do: <<>>
 end
