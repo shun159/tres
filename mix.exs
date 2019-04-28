@@ -11,7 +11,10 @@ defmodule Tres.Mixfile do
       deps: deps(),
       aliases: [
         test: "test --no-start",
-        compile: ["run priv/openflow_enum_gen.exs"]
+        compile: [
+          "run priv/openflow_enum_gen.exs",
+          "format"
+        ]
       ],
       docs: docs(),
       test_coverage: [tool: ExCoveralls],
@@ -105,6 +108,52 @@ defmodule Tres.Mixfile do
         Openflow.Action.NxCtClear,
         Openflow.Action.NxResubmitTableCt,
         Openflow.Action.NxLearn2
+      ],
+      OpenflowStandardMessages: [
+        Openflow.Hello,
+        Openflow.ErrorMsg,
+        Openflow.Echo.Request,
+        Openflow.Echo.Reply,
+        Openflow.Experimenter,
+        Openflow.Features.Request,
+        Openflow.Features.Reply,
+        Openflow.GetConfig.Request,
+        Openflow.GetConfig.Reply,
+        Openflow.SetConfig,
+        Openflow.PacketIn,
+        Openflow.FlowRemoved,
+        Openflow.PortStatus,
+        Openflow.PacketOut,
+        Openflow.FlowMod,
+        Openflow.GroupMod,
+        Openflow.PortMod,
+        Openflow.TableMod,
+        Openflow.Multipart.Request,
+        Openflow.Multipart.Reply,
+        Openflow.Barrier.Request,
+        Openflow.Barrier.Reply,
+        Openflow.Role.Request,
+        Openflow.Role.Reply,
+        Openflow.GetAsync.Request,
+        Openflow.GetAsync.Reply,
+        Openflow.SetAsync,
+        Openflow.MeterMod
+      ],
+      ExtendedOpenflowMessages: [
+        Openflow.NxSetPacketInFormat,
+        Openflow.NxSetControllerId,
+        Openflow.NxFlowMonitor.Cancel,
+        Openflow.NxFlowMonitor.Paused,
+        Openflow.NxFlowMonitor.Resumed,
+        Openflow.NxTLVTableMod,
+        Openflow.NxTLVTable.Request,
+        Openflow.NxTLVTable.Reply,
+        Openflow.NxSetAsyncConfig2,
+        Openflow.NxResume,
+        Openflow.NxCtFlushZone,
+        Openflow.NxPacketIn2,
+        Openflow.OnfBundleControl,
+        Openflow.OnfBundleAddMessage
       ]
     ]
   end
