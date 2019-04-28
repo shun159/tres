@@ -3,17 +3,17 @@ defmodule Openflow.Instruction.ClearActions do
 
   alias __MODULE__
 
-  def new do
-    %ClearActions{}
-  end
+  @type t :: %ClearActions{}
 
-  def to_binary(%ClearActions{}) do
-    actions_bin = ""
-    length = 8 + byte_size(actions_bin)
-    <<5::16, length::16, 0::size(4)-unit(8), actions_bin::bytes>>
-  end
+  @spec new() :: t()
+  def new,
+    do: %ClearActions{}
 
-  def read(<<5::16, _length::16, _::size(4)-unit(8), _::bytes>>) do
-    %ClearActions{}
-  end
+  @spec to_binary(t()) :: <<_::64>>
+  def to_binary(%ClearActions{}),
+    do: <<5::16, 8::16, 0::32>>
+
+  @spec read(<<_::64, _::_*8>>) :: t()
+  def read(<<5::16, _length::16, _::size(4)-unit(8), _::bytes>>),
+    do: %ClearActions{}
 end
