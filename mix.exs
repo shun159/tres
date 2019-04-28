@@ -10,10 +10,12 @@ defmodule Tres.Mixfile do
       compilers: [:erlang] ++ Mix.compilers(),
       deps: deps(),
       aliases: [
-        test: "test --no-start",
+        test: [
+          "compile",
+          "test --no-start"
+        ],
         compile: [
-          "run priv/openflow_enum_gen.exs",
-          "format"
+          "run priv/openflow_enum_gen.exs"
         ]
       ],
       docs: docs(),
