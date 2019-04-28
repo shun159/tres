@@ -26,12 +26,14 @@ defmodule Openflow.GetConfig.Reply do
   @spec ofp_type() :: t()
   def ofp_type, do: 8
 
+  @spec read(<<_::32>>) :: t()
   def read(<<flags_int::16, miss_send_len0::16>>) do
     flags = Openflow.Enums.int_to_flags(flags_int, :config_flags)
     miss_send_len = Openflow.Utils.get_enum(miss_send_len0, :controller_max_len)
     %Reply{flags: flags, miss_send_len: miss_send_len}
   end
 
+  @spec to_binary(t()) :: <<_::32>>
   def to_binary(%Reply{flags: flags, miss_send_len: miss_send_len0}) do
     flags_int = Openflow.Enums.flags_to_int(flags, :config_flags)
     miss_send_len = Openflow.Utils.get_enum(miss_send_len0, :controller_max_len)

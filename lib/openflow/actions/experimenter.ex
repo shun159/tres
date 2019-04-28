@@ -3,6 +3,8 @@ defmodule Openflow.Action.Experimenter do
 
   alias __MODULE__
 
+  @type t :: %Experimenter{exp_id: 0..0xFFFFFFFF, data: binary()}
+
   @experimter_size 8
 
   def ofpat, do: 0xFFFF

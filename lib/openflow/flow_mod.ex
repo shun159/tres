@@ -25,10 +25,9 @@ defmodule Openflow.FlowMod do
 
   @type command :: :add | :modify | :modify_strict | :delete | :delete_strict
 
-  @type out_port ::
-          0..0xFFFFFFFF | :max | :table | :normal | :flood | :all | :controller | :local | :any
+  @type out_port :: Openflow.Port.number()
 
-  @type out_group :: 0..0xFFFFFFFF | :max | :all | :any
+  @type out_group :: Openflow.GroupMod.id()
 
   @type flags :: [
           :send_flow_rem | :check_overlap | :reset_counts | :no_packet_counts | :no_byte_counts

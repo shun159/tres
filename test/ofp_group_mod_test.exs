@@ -5,7 +5,17 @@ defmodule OfpGroupModTest do
   describe "Openflow.read/1" do
     test "with OFP_GROUP_MOD packet" do
       binary = File.read!("test/packet_data/4-21-ofp_group_mod.packet")
-      {:ok, group_mod, ""} = Openflow.read(binary)
+      {:ok, _group_mod, ""} = Openflow.read(binary)
+
+      group_mod =
+        binary
+        |> Openflow.read()
+        |> elem(1)
+        |> Map.to_list()
+        |> Openflow.GroupMod.new()
+        |> Openflow.to_binary()
+        |> Openflow.read()
+        |> elem(1)
 
       assert group_mod.version == 4
       assert group_mod.xid == 0

@@ -17,6 +17,17 @@ defmodule Openflow.Port do
 
   alias __MODULE__
 
+  @type no ::
+          0..0xFFFFFFFF
+          | :max
+          | :table
+          | :normal
+          | :flood
+          | :all
+          | :controller
+          | :local
+          | :any
+
   def read(
         <<port_no_int::32, _::size(4)-unit(8), hw_addr_bin::6-bytes, _::size(2)-unit(8),
           name_bin::size(@ofp_max_port_name_len)-bytes, config_int::32, state_int::32,
