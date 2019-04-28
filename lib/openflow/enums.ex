@@ -3597,6 +3597,46 @@ defmodule Openflow.Enums do
     throw(:bad_enum)
   end
 
+  def to_int(:no_match, :packet_in_reason_mask) do
+    packet_in_reason_mask_to_int(:no_match)
+  catch
+    _class, _reason -> :no_match
+  end
+
+  def to_int(:action, :packet_in_reason_mask) do
+    packet_in_reason_mask_to_int(:action)
+  catch
+    _class, _reason -> :action
+  end
+
+  def to_int(:invalid_ttl, :packet_in_reason_mask) do
+    packet_in_reason_mask_to_int(:invalid_ttl)
+  catch
+    _class, _reason -> :invalid_ttl
+  end
+
+  def to_int(:action_set, :packet_in_reason_mask) do
+    packet_in_reason_mask_to_int(:action_set)
+  catch
+    _class, _reason -> :action_set
+  end
+
+  def to_int(:group, :packet_in_reason_mask) do
+    packet_in_reason_mask_to_int(:group)
+  catch
+    _class, _reason -> :group
+  end
+
+  def to_int(:packet_out, :packet_in_reason_mask) do
+    packet_in_reason_mask_to_int(:packet_out)
+  catch
+    _class, _reason -> :packet_out
+  end
+
+  def to_int(_int, :packet_in_reason_mask) do
+    throw(:bad_enum)
+  end
+
   def to_int(:add, :flow_mod_command) do
     flow_mod_command_to_int(:add)
   catch
@@ -3705,6 +3745,46 @@ defmodule Openflow.Enums do
     throw(:bad_enum)
   end
 
+  def to_int(:idle_timeout, :flow_removed_reason_mask) do
+    flow_removed_reason_mask_to_int(:idle_timeout)
+  catch
+    _class, _reason -> :idle_timeout
+  end
+
+  def to_int(:hard_timeout, :flow_removed_reason_mask) do
+    flow_removed_reason_mask_to_int(:hard_timeout)
+  catch
+    _class, _reason -> :hard_timeout
+  end
+
+  def to_int(:delete, :flow_removed_reason_mask) do
+    flow_removed_reason_mask_to_int(:delete)
+  catch
+    _class, _reason -> :delete
+  end
+
+  def to_int(:group_delete, :flow_removed_reason_mask) do
+    flow_removed_reason_mask_to_int(:group_delete)
+  catch
+    _class, _reason -> :group_delete
+  end
+
+  def to_int(:meter_delete, :flow_removed_reason_mask) do
+    flow_removed_reason_mask_to_int(:meter_delete)
+  catch
+    _class, _reason -> :meter_delete
+  end
+
+  def to_int(:eviction, :flow_removed_reason_mask) do
+    flow_removed_reason_mask_to_int(:eviction)
+  catch
+    _class, _reason -> :eviction
+  end
+
+  def to_int(_int, :flow_removed_reason_mask) do
+    throw(:bad_enum)
+  end
+
   def to_int(:add, :port_reason) do
     port_reason_to_int(:add)
   catch
@@ -3724,6 +3804,28 @@ defmodule Openflow.Enums do
   end
 
   def to_int(_int, :port_reason) do
+    throw(:bad_enum)
+  end
+
+  def to_int(:add, :port_reason_mask) do
+    port_reason_mask_to_int(:add)
+  catch
+    _class, _reason -> :add
+  end
+
+  def to_int(:delete, :port_reason_mask) do
+    port_reason_mask_to_int(:delete)
+  catch
+    _class, _reason -> :delete
+  end
+
+  def to_int(:modify, :port_reason_mask) do
+    port_reason_mask_to_int(:modify)
+  catch
+    _class, _reason -> :modify
+  end
+
+  def to_int(_int, :port_reason_mask) do
     throw(:bad_enum)
   end
 
@@ -8753,6 +8855,46 @@ defmodule Openflow.Enums do
     throw(:bad_enum)
   end
 
+  def to_atom(0x1, :packet_in_reason_mask) do
+    packet_in_reason_mask_to_atom(0x1)
+  catch
+    _class, _reason -> 1
+  end
+
+  def to_atom(0x2, :packet_in_reason_mask) do
+    packet_in_reason_mask_to_atom(0x2)
+  catch
+    _class, _reason -> 2
+  end
+
+  def to_atom(0x4, :packet_in_reason_mask) do
+    packet_in_reason_mask_to_atom(0x4)
+  catch
+    _class, _reason -> 4
+  end
+
+  def to_atom(0x8, :packet_in_reason_mask) do
+    packet_in_reason_mask_to_atom(0x8)
+  catch
+    _class, _reason -> 8
+  end
+
+  def to_atom(0x10, :packet_in_reason_mask) do
+    packet_in_reason_mask_to_atom(0x10)
+  catch
+    _class, _reason -> 16
+  end
+
+  def to_atom(0x20, :packet_in_reason_mask) do
+    packet_in_reason_mask_to_atom(0x20)
+  catch
+    _class, _reason -> 32
+  end
+
+  def to_atom(_, :packet_in_reason_mask) do
+    throw(:bad_enum)
+  end
+
   def to_atom(0x0, :flow_mod_command) do
     flow_mod_command_to_atom(0x0)
   catch
@@ -8861,6 +9003,46 @@ defmodule Openflow.Enums do
     throw(:bad_enum)
   end
 
+  def to_atom(0x1, :flow_removed_reason_mask) do
+    flow_removed_reason_mask_to_atom(0x1)
+  catch
+    _class, _reason -> 1
+  end
+
+  def to_atom(0x2, :flow_removed_reason_mask) do
+    flow_removed_reason_mask_to_atom(0x2)
+  catch
+    _class, _reason -> 2
+  end
+
+  def to_atom(0x4, :flow_removed_reason_mask) do
+    flow_removed_reason_mask_to_atom(0x4)
+  catch
+    _class, _reason -> 4
+  end
+
+  def to_atom(0x8, :flow_removed_reason_mask) do
+    flow_removed_reason_mask_to_atom(0x8)
+  catch
+    _class, _reason -> 8
+  end
+
+  def to_atom(0x10, :flow_removed_reason_mask) do
+    flow_removed_reason_mask_to_atom(0x10)
+  catch
+    _class, _reason -> 16
+  end
+
+  def to_atom(0x20, :flow_removed_reason_mask) do
+    flow_removed_reason_mask_to_atom(0x20)
+  catch
+    _class, _reason -> 32
+  end
+
+  def to_atom(_, :flow_removed_reason_mask) do
+    throw(:bad_enum)
+  end
+
   def to_atom(0x0, :port_reason) do
     port_reason_to_atom(0x0)
   catch
@@ -8880,6 +9062,28 @@ defmodule Openflow.Enums do
   end
 
   def to_atom(_, :port_reason) do
+    throw(:bad_enum)
+  end
+
+  def to_atom(0x1, :port_reason_mask) do
+    port_reason_mask_to_atom(0x1)
+  catch
+    _class, _reason -> 1
+  end
+
+  def to_atom(0x2, :port_reason_mask) do
+    port_reason_mask_to_atom(0x2)
+  catch
+    _class, _reason -> 2
+  end
+
+  def to_atom(0x4, :port_reason_mask) do
+    port_reason_mask_to_atom(0x4)
+  catch
+    _class, _reason -> 4
+  end
+
+  def to_atom(_, :port_reason_mask) do
     throw(:bad_enum)
   end
 
@@ -11545,6 +11749,20 @@ defmodule Openflow.Enums do
   def packet_in_reason_to_atom(0x4), do: :group
   def packet_in_reason_to_atom(0x5), do: :packet_out
   def packet_in_reason_to_atom(_), do: throw(:bad_enum)
+  def packet_in_reason_mask_to_int(:no_match), do: 0x1
+  def packet_in_reason_mask_to_int(:action), do: 0x2
+  def packet_in_reason_mask_to_int(:invalid_ttl), do: 0x4
+  def packet_in_reason_mask_to_int(:action_set), do: 0x8
+  def packet_in_reason_mask_to_int(:group), do: 0x10
+  def packet_in_reason_mask_to_int(:packet_out), do: 0x20
+  def packet_in_reason_mask_to_int(_), do: throw(:bad_enum)
+  def packet_in_reason_mask_to_atom(0x1), do: :no_match
+  def packet_in_reason_mask_to_atom(0x2), do: :action
+  def packet_in_reason_mask_to_atom(0x4), do: :invalid_ttl
+  def packet_in_reason_mask_to_atom(0x8), do: :action_set
+  def packet_in_reason_mask_to_atom(0x10), do: :group
+  def packet_in_reason_mask_to_atom(0x20), do: :packet_out
+  def packet_in_reason_mask_to_atom(_), do: throw(:bad_enum)
   def flow_mod_command_to_int(:add), do: 0x0
   def flow_mod_command_to_int(:modify), do: 0x1
   def flow_mod_command_to_int(:modify_strict), do: 0x2
@@ -11583,6 +11801,20 @@ defmodule Openflow.Enums do
   def flow_removed_reason_to_atom(0x4), do: :meter_delete
   def flow_removed_reason_to_atom(0x5), do: :eviction
   def flow_removed_reason_to_atom(_), do: throw(:bad_enum)
+  def flow_removed_reason_mask_to_int(:idle_timeout), do: 0x1
+  def flow_removed_reason_mask_to_int(:hard_timeout), do: 0x2
+  def flow_removed_reason_mask_to_int(:delete), do: 0x4
+  def flow_removed_reason_mask_to_int(:group_delete), do: 0x8
+  def flow_removed_reason_mask_to_int(:meter_delete), do: 0x10
+  def flow_removed_reason_mask_to_int(:eviction), do: 0x20
+  def flow_removed_reason_mask_to_int(_), do: throw(:bad_enum)
+  def flow_removed_reason_mask_to_atom(0x1), do: :idle_timeout
+  def flow_removed_reason_mask_to_atom(0x2), do: :hard_timeout
+  def flow_removed_reason_mask_to_atom(0x4), do: :delete
+  def flow_removed_reason_mask_to_atom(0x8), do: :group_delete
+  def flow_removed_reason_mask_to_atom(0x10), do: :meter_delete
+  def flow_removed_reason_mask_to_atom(0x20), do: :eviction
+  def flow_removed_reason_mask_to_atom(_), do: throw(:bad_enum)
   def port_reason_to_int(:add), do: 0x0
   def port_reason_to_int(:delete), do: 0x1
   def port_reason_to_int(:modify), do: 0x2
@@ -11591,6 +11823,14 @@ defmodule Openflow.Enums do
   def port_reason_to_atom(0x1), do: :delete
   def port_reason_to_atom(0x2), do: :modify
   def port_reason_to_atom(_), do: throw(:bad_enum)
+  def port_reason_mask_to_int(:add), do: 0x1
+  def port_reason_mask_to_int(:delete), do: 0x2
+  def port_reason_mask_to_int(:modify), do: 0x4
+  def port_reason_mask_to_int(_), do: throw(:bad_enum)
+  def port_reason_mask_to_atom(0x1), do: :add
+  def port_reason_mask_to_atom(0x2), do: :delete
+  def port_reason_mask_to_atom(0x4), do: :modify
+  def port_reason_mask_to_atom(_), do: throw(:bad_enum)
   def group_mod_command_to_int(:add), do: 0x0
   def group_mod_command_to_int(:modify), do: 0x1
   def group_mod_command_to_int(:delete), do: 0x2
@@ -12294,6 +12534,10 @@ defmodule Openflow.Enums do
     Openflow.Utils.int_to_flags([], int, enum_of(:packet_in_reason))
   end
 
+  def int_to_flags(int, :packet_in_reason_mask) do
+    Openflow.Utils.int_to_flags([], int, enum_of(:packet_in_reason_mask))
+  end
+
   def int_to_flags(int, :flow_mod_command) do
     Openflow.Utils.int_to_flags([], int, enum_of(:flow_mod_command))
   end
@@ -12306,8 +12550,16 @@ defmodule Openflow.Enums do
     Openflow.Utils.int_to_flags([], int, enum_of(:flow_removed_reason))
   end
 
+  def int_to_flags(int, :flow_removed_reason_mask) do
+    Openflow.Utils.int_to_flags([], int, enum_of(:flow_removed_reason_mask))
+  end
+
   def int_to_flags(int, :port_reason) do
     Openflow.Utils.int_to_flags([], int, enum_of(:port_reason))
+  end
+
+  def int_to_flags(int, :port_reason_mask) do
+    Openflow.Utils.int_to_flags([], int, enum_of(:port_reason_mask))
   end
 
   def int_to_flags(int, :group_mod_command) do
@@ -12662,6 +12914,10 @@ defmodule Openflow.Enums do
     Openflow.Utils.flags_to_int(0, flags, enum_of(:packet_in_reason))
   end
 
+  def flags_to_int(flags, :packet_in_reason_mask) do
+    Openflow.Utils.flags_to_int(0, flags, enum_of(:packet_in_reason_mask))
+  end
+
   def flags_to_int(flags, :flow_mod_command) do
     Openflow.Utils.flags_to_int(0, flags, enum_of(:flow_mod_command))
   end
@@ -12674,8 +12930,16 @@ defmodule Openflow.Enums do
     Openflow.Utils.flags_to_int(0, flags, enum_of(:flow_removed_reason))
   end
 
+  def flags_to_int(flags, :flow_removed_reason_mask) do
+    Openflow.Utils.flags_to_int(0, flags, enum_of(:flow_removed_reason_mask))
+  end
+
   def flags_to_int(flags, :port_reason) do
     Openflow.Utils.flags_to_int(0, flags, enum_of(:port_reason))
+  end
+
+  def flags_to_int(flags, :port_reason_mask) do
+    Openflow.Utils.flags_to_int(0, flags, enum_of(:port_reason_mask))
   end
 
   def flags_to_int(flags, :group_mod_command) do
@@ -13462,6 +13726,16 @@ defmodule Openflow.Enums do
   defp enum_of(:packet_in_reason),
     do: [no_match: 0, action: 1, invalid_ttl: 2, action_set: 3, group: 4, packet_out: 5]
 
+  defp enum_of(:packet_in_reason_mask),
+    do: [
+      no_match: 1,
+      action: 2,
+      invalid_ttl: 4,
+      action_set: 8,
+      group: 16,
+      packet_out: 32
+    ]
+
   defp enum_of(:flow_mod_command),
     do: [add: 0, modify: 1, modify_strict: 2, delete: 3, delete_strict: 4]
 
@@ -13484,7 +13758,18 @@ defmodule Openflow.Enums do
       eviction: 5
     ]
 
+  defp enum_of(:flow_removed_reason_mask),
+    do: [
+      idle_timeout: 1,
+      hard_timeout: 2,
+      delete: 4,
+      group_delete: 8,
+      meter_delete: 16,
+      eviction: 32
+    ]
+
   defp enum_of(:port_reason), do: [add: 0, delete: 1, modify: 2]
+  defp enum_of(:port_reason_mask), do: [add: 1, delete: 2, modify: 4]
   defp enum_of(:group_mod_command), do: [add: 0, modify: 1, delete: 2]
   defp enum_of(:group_type), do: [all: 0, select: 1, indirect: 2, fast_failover: 3]
   defp enum_of(:group_id), do: [max: 4_294_967_040, all: 4_294_967_292, any: 4_294_967_295]

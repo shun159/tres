@@ -10,6 +10,8 @@ defmodule Openflow.PortStatus do
 
   alias __MODULE__
 
+  @type reason :: :add | :delete | :modify
+
   def ofp_type, do: 12
 
   def read(<<reason_int::8, _pad::size(7)-unit(8), port_bin::64-bytes>>) do

@@ -686,6 +686,14 @@ gtpu_extn_sci: 67
     group: 4,
     packet_out: 5
   ],
+  packet_in_reason_mask: [
+    no_match: 1 <<< 0,
+    action: 1 <<< 1,
+    invalid_ttl: 1 <<< 2,
+    action_set: 1 <<< 3,
+    group: 1 <<< 4,
+    packet_out: 1 <<< 5
+  ],
   flow_mod_command: [
     add: 0,
     modify: 1,
@@ -708,10 +716,23 @@ gtpu_extn_sci: 67
     meter_delete: 4,
     eviction: 5
   ],
+  flow_removed_reason_mask: [
+    idle_timeout: 1 <<< 0,
+    hard_timeout: 1 <<< 1,
+    delete: 1 <<< 2,
+    group_delete: 1 <<< 3,
+    meter_delete: 1 <<< 4,
+    eviction: 1 <<< 5
+  ],
   port_reason: [
     add: 0,
     delete: 1,
     modify: 2
+  ],
+  port_reason_mask: [
+    add: 1 <<< 0,
+    delete: 1 <<< 1,
+    modify: 1 <<< 2
   ],
   group_mod_command: [
     add: 0,

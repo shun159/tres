@@ -16,6 +16,8 @@ defmodule Openflow.PacketIn do
 
   alias __MODULE__
 
+  @type reason :: :no_match | :action | :invalid_ttl | :action_set | :group | :packet_out
+
   def ofp_type, do: 10
 
   def read(
