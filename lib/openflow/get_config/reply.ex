@@ -11,6 +11,19 @@ defmodule Openflow.GetConfig.Reply do
 
   alias __MODULE__
 
+  @type flags :: [:drop | :reasm]
+  @type max_len :: :max | :no_buffer | 0..0xFFFF
+
+  @type t :: %Reply{
+          version: 4,
+          xid: 0..0xFFFFFFFF,
+          datapath_id: String.t() | nil,
+          aux_id: 0..0xF | nil,
+          flags: flags(),
+          miss_send_len: max_len()
+        }
+
+  @spec ofp_type() :: t()
   def ofp_type, do: 8
 
   def read(<<flags_int::16, miss_send_len0::16>>) do

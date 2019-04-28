@@ -28,10 +28,7 @@ defmodule OfpGetConfigTest do
 
   describe "Openflow.to_binary/1" do
     test "with %Openflow.GetConfig.Request{}" do
-      config = %Openflow.GetConfig.Request{
-        version: 4,
-        xid: 0
-      }
+      config = Openflow.GetConfig.Request.new(0)
 
       expect =
         "test/packet_data/ofp_get_config_request.raw"

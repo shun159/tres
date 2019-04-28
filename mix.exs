@@ -11,10 +11,9 @@ defmodule Tres.Mixfile do
       deps: deps(),
       aliases: [
         test: [
-          "compile",
           "test --no-start"
         ],
-        compile: [
+        generate_enum: [
           "run priv/openflow_enum_gen.exs"
         ]
       ],
