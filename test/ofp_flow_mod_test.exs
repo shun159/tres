@@ -14,7 +14,16 @@ defmodule OfpFlowModTest do
   describe "Openflow.read/1" do
     test "with OFP_FLOW_MOD packet(1)" do
       binary = File.read!(@flow_mod1)
-      {:ok, fm, ""} = Openflow.read(binary)
+
+      fm =
+        binary
+        |> Openflow.read()
+        |> elem(1)
+        |> Map.to_list()
+        |> Openflow.FlowMod.new()
+        |> Openflow.to_binary()
+        |> Openflow.read()
+        |> elem(1)
 
       assert fm.cookie == 0
       assert fm.cookie_mask == 0
