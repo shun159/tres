@@ -7,10 +7,12 @@ defmodule Tres.Mixfile do
       version: "0.1.0",
       elixir: "~> 1.8",
       start_permanent: Mix.env() == :prod,
-      escript: [main_module: Openflow.EnumGen, name: :enum_gen, path: "bin/enum_gen"],
       compilers: [:erlang] ++ Mix.compilers(),
       deps: deps(),
-      aliases: [test: "test --no-start", compile: ["escript.build"]],
+      aliases: [
+        test: "test --no-start",
+        compile: ["run priv/openflow_enum_gen.exs"]
+      ],
       docs: docs(),
       test_coverage: [tool: ExCoveralls],
       preferred_cli_env: [

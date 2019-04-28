@@ -9,8 +9,10 @@ defmodule OfpFeaturesTest do
         |> File.read!()
         |> Openflow.read()
 
-      assert features.version == 4
-      assert features.xid == 0
+      expect = Openflow.Features.Request.new(0)
+
+      assert features.version == expect.version
+      assert features.xid == expect.xid
     end
 
     test "with OFP_FEATURES_REPLY packet" do

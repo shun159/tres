@@ -727,6 +727,18 @@ defmodule Openflow.Enums do
     _class, _reason -> :multipart_buffer_overflow
   end
 
+  def to_int(:multipart_request_timeout, :bad_request) do
+    bad_request_to_int(:multipart_request_timeout)
+  catch
+    _class, _reason -> :multipart_request_timeout
+  end
+
+  def to_int(:multipart_reply_timeout, :bad_request) do
+    bad_request_to_int(:multipart_reply_timeout)
+  catch
+    _class, _reason -> :multipart_reply_timeout
+  end
+
   def to_int(:nxm_invalid, :bad_request) do
     bad_request_to_int(:nxm_invalid)
   catch
@@ -881,10 +893,10 @@ defmodule Openflow.Enums do
     _class, _reason -> :must_be_zero
   end
 
-  def to_int(:conntrack_not_supported, :bad_action) do
-    bad_action_to_int(:conntrack_not_supported)
+  def to_int(:conntrack_datapath_support, :bad_action) do
+    bad_action_to_int(:conntrack_datapath_support)
   catch
-    _class, _reason -> :conntrack_not_supported
+    _class, _reason -> :conntrack_datapath_support
   end
 
   def to_int(:bad_conjunction, :bad_action) do
@@ -949,6 +961,12 @@ defmodule Openflow.Enums do
     bad_instruction_to_int(:eperm)
   catch
     _class, _reason -> :eperm
+  end
+
+  def to_int(:dup_inst, :bad_instruction) do
+    bad_instruction_to_int(:dup_inst)
+  catch
+    _class, _reason -> :dup_inst
   end
 
   def to_int(_int, :bad_instruction) do
@@ -1025,6 +1043,12 @@ defmodule Openflow.Enums do
     bad_match_to_int(:eperm)
   catch
     _class, _reason -> :eperm
+  end
+
+  def to_int(:conntrack_datapath_support, :bad_match) do
+    bad_match_to_int(:conntrack_datapath_support)
+  catch
+    _class, _reason -> :conntrack_datapath_support
   end
 
   def to_int(_int, :bad_match) do
@@ -1171,6 +1195,18 @@ defmodule Openflow.Enums do
     group_mod_failed_to_int(:eperm)
   catch
     _class, _reason -> :eperm
+  end
+
+  def to_int(:unknown_bucket, :group_mod_failed) do
+    group_mod_failed_to_int(:unknown_bucket)
+  catch
+    _class, _reason -> :unknown_bucket
+  end
+
+  def to_int(:bucket_exists, :group_mod_failed) do
+    group_mod_failed_to_int(:bucket_exists)
+  catch
+    _class, _reason -> :bucket_exists
   end
 
   def to_int(_int, :group_mod_failed) do
@@ -4125,18 +4161,6 @@ defmodule Openflow.Enums do
     _class, _reason -> Openflow.Action.NxSetTunnel
   end
 
-  def to_int(Openflow.Action.NxSetQueue, :nicira_ext_action) do
-    nicira_ext_action_to_int(Openflow.Action.NxSetQueue)
-  catch
-    _class, _reason -> Openflow.Action.NxSetQueue
-  end
-
-  def to_int(Openflow.Action.NxPopQueue, :nicira_ext_action) do
-    nicira_ext_action_to_int(Openflow.Action.NxPopQueue)
-  catch
-    _class, _reason -> Openflow.Action.NxPopQueue
-  end
-
   def to_int(Openflow.Action.NxRegMove, :nicira_ext_action) do
     nicira_ext_action_to_int(Openflow.Action.NxRegMove)
   catch
@@ -4233,30 +4257,6 @@ defmodule Openflow.Enums do
     _class, _reason -> Openflow.Action.NxWriteMetadata
   end
 
-  def to_int(Openflow.Action.NxPushMpls, :nicira_ext_action) do
-    nicira_ext_action_to_int(Openflow.Action.NxPushMpls)
-  catch
-    _class, _reason -> Openflow.Action.NxPushMpls
-  end
-
-  def to_int(Openflow.Action.NxPopMpls, :nicira_ext_action) do
-    nicira_ext_action_to_int(Openflow.Action.NxPopMpls)
-  catch
-    _class, _reason -> Openflow.Action.NxPopMpls
-  end
-
-  def to_int(Openflow.Action.NxSetMplsTtl, :nicira_ext_action) do
-    nicira_ext_action_to_int(Openflow.Action.NxSetMplsTtl)
-  catch
-    _class, _reason -> Openflow.Action.NxSetMplsTtl
-  end
-
-  def to_int(Openflow.Action.NxDecMplsTtl, :nicira_ext_action) do
-    nicira_ext_action_to_int(Openflow.Action.NxDecMplsTtl)
-  catch
-    _class, _reason -> Openflow.Action.NxDecMplsTtl
-  end
-
   def to_int(Openflow.Action.NxStackPush, :nicira_ext_action) do
     nicira_ext_action_to_int(Openflow.Action.NxStackPush)
   catch
@@ -4273,18 +4273,6 @@ defmodule Openflow.Enums do
     nicira_ext_action_to_int(Openflow.Action.NxSample)
   catch
     _class, _reason -> Openflow.Action.NxSample
-  end
-
-  def to_int(Openflow.Action.NxSetMplsLabel, :nicira_ext_action) do
-    nicira_ext_action_to_int(Openflow.Action.NxSetMplsLabel)
-  catch
-    _class, _reason -> Openflow.Action.NxSetMplsLabel
-  end
-
-  def to_int(Openflow.Action.NxSetMplsTc, :nicira_ext_action) do
-    nicira_ext_action_to_int(Openflow.Action.NxSetMplsTc)
-  catch
-    _class, _reason -> Openflow.Action.NxSetMplsTc
   end
 
   def to_int(Openflow.Action.NxOutputReg2, :nicira_ext_action) do
@@ -5895,6 +5883,18 @@ defmodule Openflow.Enums do
     _class, _reason -> 13
   end
 
+  def to_atom(0xE, :bad_request) do
+    bad_request_to_atom(0xE)
+  catch
+    _class, _reason -> 14
+  end
+
+  def to_atom(0xF, :bad_request) do
+    bad_request_to_atom(0xF)
+  catch
+    _class, _reason -> 15
+  end
+
   def to_atom(0x100, :bad_request) do
     bad_request_to_atom(0x100)
   catch
@@ -6119,6 +6119,12 @@ defmodule Openflow.Enums do
     _class, _reason -> 8
   end
 
+  def to_atom(0x100, :bad_instruction) do
+    bad_instruction_to_atom(0x100)
+  catch
+    _class, _reason -> 256
+  end
+
   def to_atom(_, :bad_instruction) do
     throw(:bad_enum)
   end
@@ -6193,6 +6199,12 @@ defmodule Openflow.Enums do
     bad_match_to_atom(0xB)
   catch
     _class, _reason -> 11
+  end
+
+  def to_atom(0x108, :bad_match) do
+    bad_match_to_atom(0x108)
+  catch
+    _class, _reason -> 264
   end
 
   def to_atom(_, :bad_match) do
@@ -6339,6 +6351,18 @@ defmodule Openflow.Enums do
     group_mod_failed_to_atom(0xE)
   catch
     _class, _reason -> 14
+  end
+
+  def to_atom(0xF, :group_mod_failed) do
+    group_mod_failed_to_atom(0xF)
+  catch
+    _class, _reason -> 15
+  end
+
+  def to_atom(0x10, :group_mod_failed) do
+    group_mod_failed_to_atom(0x10)
+  catch
+    _class, _reason -> 16
   end
 
   def to_atom(_, :group_mod_failed) do
@@ -9293,18 +9317,6 @@ defmodule Openflow.Enums do
     _class, _reason -> 2
   end
 
-  def to_atom(0x4, :nicira_ext_action) do
-    nicira_ext_action_to_atom(0x4)
-  catch
-    _class, _reason -> 4
-  end
-
-  def to_atom(0x5, :nicira_ext_action) do
-    nicira_ext_action_to_atom(0x5)
-  catch
-    _class, _reason -> 5
-  end
-
   def to_atom(0x6, :nicira_ext_action) do
     nicira_ext_action_to_atom(0x6)
   catch
@@ -9401,30 +9413,6 @@ defmodule Openflow.Enums do
     _class, _reason -> 22
   end
 
-  def to_atom(0x17, :nicira_ext_action) do
-    nicira_ext_action_to_atom(0x17)
-  catch
-    _class, _reason -> 23
-  end
-
-  def to_atom(0x18, :nicira_ext_action) do
-    nicira_ext_action_to_atom(0x18)
-  catch
-    _class, _reason -> 24
-  end
-
-  def to_atom(0x19, :nicira_ext_action) do
-    nicira_ext_action_to_atom(0x19)
-  catch
-    _class, _reason -> 25
-  end
-
-  def to_atom(0x1A, :nicira_ext_action) do
-    nicira_ext_action_to_atom(0x1A)
-  catch
-    _class, _reason -> 26
-  end
-
   def to_atom(0x1B, :nicira_ext_action) do
     nicira_ext_action_to_atom(0x1B)
   catch
@@ -9441,18 +9429,6 @@ defmodule Openflow.Enums do
     nicira_ext_action_to_atom(0x1D)
   catch
     _class, _reason -> 29
-  end
-
-  def to_atom(0x1E, :nicira_ext_action) do
-    nicira_ext_action_to_atom(0x1E)
-  catch
-    _class, _reason -> 30
-  end
-
-  def to_atom(0x1F, :nicira_ext_action) do
-    nicira_ext_action_to_atom(0x1F)
-  catch
-    _class, _reason -> 31
   end
 
   def to_atom(0x20, :nicira_ext_action) do
@@ -10573,6 +10549,8 @@ defmodule Openflow.Enums do
   def bad_request_to_int(:bad_port), do: 0xB
   def bad_request_to_int(:bad_packet), do: 0xC
   def bad_request_to_int(:multipart_buffer_overflow), do: 0xD
+  def bad_request_to_int(:multipart_request_timeout), do: 0xE
+  def bad_request_to_int(:multipart_reply_timeout), do: 0xF
   def bad_request_to_int(:nxm_invalid), do: 0x100
   def bad_request_to_int(:nxm_bad_type), do: 0x101
   def bad_request_to_int(:must_be_zero), do: 0x203
@@ -10596,6 +10574,8 @@ defmodule Openflow.Enums do
   def bad_request_to_atom(0xB), do: :bad_port
   def bad_request_to_atom(0xC), do: :bad_packet
   def bad_request_to_atom(0xD), do: :multipart_buffer_overflow
+  def bad_request_to_atom(0xE), do: :multipart_request_timeout
+  def bad_request_to_atom(0xF), do: :multipart_reply_timeout
   def bad_request_to_atom(0x100), do: :nxm_invalid
   def bad_request_to_atom(0x101), do: :nxm_bad_type
   def bad_request_to_atom(0x203), do: :must_be_zero
@@ -10622,7 +10602,7 @@ defmodule Openflow.Enums do
   def bad_action_to_int(:bad_set_len), do: 0xE
   def bad_action_to_int(:bad_set_argument), do: 0xF
   def bad_action_to_int(:must_be_zero), do: 0x100
-  def bad_action_to_int(:conntrack_not_supported), do: 0x109
+  def bad_action_to_int(:conntrack_datapath_support), do: 0x109
   def bad_action_to_int(:bad_conjunction), do: 0x20E
   def bad_action_to_int(_), do: throw(:bad_enum)
   def bad_action_to_atom(0x0), do: :bad_type
@@ -10642,7 +10622,7 @@ defmodule Openflow.Enums do
   def bad_action_to_atom(0xE), do: :bad_set_len
   def bad_action_to_atom(0xF), do: :bad_set_argument
   def bad_action_to_atom(0x100), do: :must_be_zero
-  def bad_action_to_atom(0x109), do: :conntrack_not_supported
+  def bad_action_to_atom(0x109), do: :conntrack_datapath_support
   def bad_action_to_atom(0x20E), do: :bad_conjunction
   def bad_action_to_atom(_), do: throw(:bad_enum)
   def bad_instruction_to_int(:unknown_instruction), do: 0x0
@@ -10654,6 +10634,7 @@ defmodule Openflow.Enums do
   def bad_instruction_to_int(:bad_exp_type), do: 0x6
   def bad_instruction_to_int(:bad_len), do: 0x7
   def bad_instruction_to_int(:eperm), do: 0x8
+  def bad_instruction_to_int(:dup_inst), do: 0x100
   def bad_instruction_to_int(_), do: throw(:bad_enum)
   def bad_instruction_to_atom(0x0), do: :unknown_instruction
   def bad_instruction_to_atom(0x1), do: :unsupported_instruction
@@ -10664,6 +10645,7 @@ defmodule Openflow.Enums do
   def bad_instruction_to_atom(0x6), do: :bad_exp_type
   def bad_instruction_to_atom(0x7), do: :bad_len
   def bad_instruction_to_atom(0x8), do: :eperm
+  def bad_instruction_to_atom(0x100), do: :dup_inst
   def bad_instruction_to_atom(_), do: throw(:bad_enum)
   def bad_match_to_int(:bad_type), do: 0x0
   def bad_match_to_int(:bad_len), do: 0x1
@@ -10677,6 +10659,7 @@ defmodule Openflow.Enums do
   def bad_match_to_int(:bad_prereq), do: 0x9
   def bad_match_to_int(:dup_field), do: 0xA
   def bad_match_to_int(:eperm), do: 0xB
+  def bad_match_to_int(:conntrack_datapath_support), do: 0x108
   def bad_match_to_int(_), do: throw(:bad_enum)
   def bad_match_to_atom(0x0), do: :bad_type
   def bad_match_to_atom(0x1), do: :bad_len
@@ -10690,6 +10673,7 @@ defmodule Openflow.Enums do
   def bad_match_to_atom(0x9), do: :bad_prereq
   def bad_match_to_atom(0xA), do: :dup_field
   def bad_match_to_atom(0xB), do: :eperm
+  def bad_match_to_atom(0x108), do: :conntrack_datapath_support
   def bad_match_to_atom(_), do: throw(:bad_enum)
   def flow_mod_failed_to_int(:unknown), do: 0x0
   def flow_mod_failed_to_int(:table_full), do: 0x1
@@ -10724,6 +10708,8 @@ defmodule Openflow.Enums do
   def group_mod_failed_to_int(:bad_bucket), do: 0xC
   def group_mod_failed_to_int(:bad_watch), do: 0xD
   def group_mod_failed_to_int(:eperm), do: 0xE
+  def group_mod_failed_to_int(:unknown_bucket), do: 0xF
+  def group_mod_failed_to_int(:bucket_exists), do: 0x10
   def group_mod_failed_to_int(_), do: throw(:bad_enum)
   def group_mod_failed_to_atom(0x0), do: :group_exists
   def group_mod_failed_to_atom(0x1), do: :invalid_group
@@ -10740,6 +10726,8 @@ defmodule Openflow.Enums do
   def group_mod_failed_to_atom(0xC), do: :bad_bucket
   def group_mod_failed_to_atom(0xD), do: :bad_watch
   def group_mod_failed_to_atom(0xE), do: :eperm
+  def group_mod_failed_to_atom(0xF), do: :unknown_bucket
+  def group_mod_failed_to_atom(0x10), do: :bucket_exists
   def group_mod_failed_to_atom(_), do: throw(:bad_enum)
   def port_mod_failed_to_int(:bad_port), do: 0x0
   def port_mod_failed_to_int(:bad_hw_addr), do: 0x1
@@ -11755,8 +11743,6 @@ defmodule Openflow.Enums do
   def onf_ext_action_to_atom(_), do: throw(:bad_enum)
   def nicira_ext_action_to_int(Openflow.Action.NxResubmit), do: 0x1
   def nicira_ext_action_to_int(Openflow.Action.NxSetTunnel), do: 0x2
-  def nicira_ext_action_to_int(Openflow.Action.NxSetQueue), do: 0x4
-  def nicira_ext_action_to_int(Openflow.Action.NxPopQueue), do: 0x5
   def nicira_ext_action_to_int(Openflow.Action.NxRegMove), do: 0x6
   def nicira_ext_action_to_int(Openflow.Action.NxRegLoad), do: 0x7
   def nicira_ext_action_to_int(Openflow.Action.NxNote), do: 0x8
@@ -11773,15 +11759,9 @@ defmodule Openflow.Enums do
   def nicira_ext_action_to_int(Openflow.Action.NxController), do: 0x14
   def nicira_ext_action_to_int(Openflow.Action.NxDecTtlCntIds), do: 0x15
   def nicira_ext_action_to_int(Openflow.Action.NxWriteMetadata), do: 0x16
-  def nicira_ext_action_to_int(Openflow.Action.NxPushMpls), do: 0x17
-  def nicira_ext_action_to_int(Openflow.Action.NxPopMpls), do: 0x18
-  def nicira_ext_action_to_int(Openflow.Action.NxSetMplsTtl), do: 0x19
-  def nicira_ext_action_to_int(Openflow.Action.NxDecMplsTtl), do: 0x1A
   def nicira_ext_action_to_int(Openflow.Action.NxStackPush), do: 0x1B
   def nicira_ext_action_to_int(Openflow.Action.NxStackPop), do: 0x1C
   def nicira_ext_action_to_int(Openflow.Action.NxSample), do: 0x1D
-  def nicira_ext_action_to_int(Openflow.Action.NxSetMplsLabel), do: 0x1E
-  def nicira_ext_action_to_int(Openflow.Action.NxSetMplsTc), do: 0x1F
   def nicira_ext_action_to_int(Openflow.Action.NxOutputReg2), do: 0x20
   def nicira_ext_action_to_int(Openflow.Action.NxRegLoad2), do: 0x21
   def nicira_ext_action_to_int(Openflow.Action.NxConjunction), do: 0x22
@@ -11802,8 +11782,6 @@ defmodule Openflow.Enums do
   def nicira_ext_action_to_int(_), do: throw(:bad_enum)
   def nicira_ext_action_to_atom(0x1), do: Openflow.Action.NxResubmit
   def nicira_ext_action_to_atom(0x2), do: Openflow.Action.NxSetTunnel
-  def nicira_ext_action_to_atom(0x4), do: Openflow.Action.NxSetQueue
-  def nicira_ext_action_to_atom(0x5), do: Openflow.Action.NxPopQueue
   def nicira_ext_action_to_atom(0x6), do: Openflow.Action.NxRegMove
   def nicira_ext_action_to_atom(0x7), do: Openflow.Action.NxRegLoad
   def nicira_ext_action_to_atom(0x8), do: Openflow.Action.NxNote
@@ -11820,15 +11798,9 @@ defmodule Openflow.Enums do
   def nicira_ext_action_to_atom(0x14), do: Openflow.Action.NxController
   def nicira_ext_action_to_atom(0x15), do: Openflow.Action.NxDecTtlCntIds
   def nicira_ext_action_to_atom(0x16), do: Openflow.Action.NxWriteMetadata
-  def nicira_ext_action_to_atom(0x17), do: Openflow.Action.NxPushMpls
-  def nicira_ext_action_to_atom(0x18), do: Openflow.Action.NxPopMpls
-  def nicira_ext_action_to_atom(0x19), do: Openflow.Action.NxSetMplsTtl
-  def nicira_ext_action_to_atom(0x1A), do: Openflow.Action.NxDecMplsTtl
   def nicira_ext_action_to_atom(0x1B), do: Openflow.Action.NxStackPush
   def nicira_ext_action_to_atom(0x1C), do: Openflow.Action.NxStackPop
   def nicira_ext_action_to_atom(0x1D), do: Openflow.Action.NxSample
-  def nicira_ext_action_to_atom(0x1E), do: Openflow.Action.NxSetMplsLabel
-  def nicira_ext_action_to_atom(0x1F), do: Openflow.Action.NxSetMplsTc
   def nicira_ext_action_to_atom(0x20), do: Openflow.Action.NxOutputReg2
   def nicira_ext_action_to_atom(0x21), do: Openflow.Action.NxRegLoad2
   def nicira_ext_action_to_atom(0x22), do: Openflow.Action.NxConjunction
@@ -13000,6 +12972,8 @@ defmodule Openflow.Enums do
       bad_port: 11,
       bad_packet: 12,
       multipart_buffer_overflow: 13,
+      multipart_request_timeout: 14,
+      multipart_reply_timeout: 15,
       nxm_invalid: 256,
       nxm_bad_type: 257,
       must_be_zero: 515,
@@ -13029,7 +13003,7 @@ defmodule Openflow.Enums do
       bad_set_len: 14,
       bad_set_argument: 15,
       must_be_zero: 256,
-      conntrack_not_supported: 265,
+      conntrack_datapath_support: 265,
       bad_conjunction: 526
     ]
 
@@ -13043,7 +13017,8 @@ defmodule Openflow.Enums do
       bad_experimeter: 5,
       bad_exp_type: 6,
       bad_len: 7,
-      eperm: 8
+      eperm: 8,
+      dup_inst: 256
     ]
 
   defp enum_of(:bad_match),
@@ -13059,7 +13034,8 @@ defmodule Openflow.Enums do
       bad_mask: 8,
       bad_prereq: 9,
       dup_field: 10,
-      eperm: 11
+      eperm: 11,
+      conntrack_datapath_support: 264
     ]
 
   defp enum_of(:flow_mod_failed),
@@ -13090,7 +13066,9 @@ defmodule Openflow.Enums do
       bad_command: 11,
       bad_bucket: 12,
       bad_watch: 13,
-      eperm: 14
+      eperm: 14,
+      unknown_bucket: 15,
+      bucket_exists: 16
     ]
 
   defp enum_of(:port_mod_failed),
@@ -13577,8 +13555,6 @@ defmodule Openflow.Enums do
     do: [
       {Openflow.Action.NxResubmit, 1},
       {Openflow.Action.NxSetTunnel, 2},
-      {Openflow.Action.NxSetQueue, 4},
-      {Openflow.Action.NxPopQueue, 5},
       {Openflow.Action.NxRegMove, 6},
       {Openflow.Action.NxRegLoad, 7},
       {Openflow.Action.NxNote, 8},
@@ -13595,15 +13571,9 @@ defmodule Openflow.Enums do
       {Openflow.Action.NxController, 20},
       {Openflow.Action.NxDecTtlCntIds, 21},
       {Openflow.Action.NxWriteMetadata, 22},
-      {Openflow.Action.NxPushMpls, 23},
-      {Openflow.Action.NxPopMpls, 24},
-      {Openflow.Action.NxSetMplsTtl, 25},
-      {Openflow.Action.NxDecMplsTtl, 26},
       {Openflow.Action.NxStackPush, 27},
       {Openflow.Action.NxStackPop, 28},
       {Openflow.Action.NxSample, 29},
-      {Openflow.Action.NxSetMplsLabel, 30},
-      {Openflow.Action.NxSetMplsTc, 31},
       {Openflow.Action.NxOutputReg2, 32},
       {Openflow.Action.NxRegLoad2, 33},
       {Openflow.Action.NxConjunction, 34},

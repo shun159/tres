@@ -13,11 +13,15 @@ defmodule Openflow.Action.NxConjunction do
 
   @spec new(Keyword.t()) :: %NxConjunction{}
   def new(options) do
+    clause = (options[:clause] || 0) + 1
     n_clauses = options[:n_clauses] || raise "n_clauses must be specified"
     n_clauses >= 2 || raise "n_clauses must be greater than 1"
 
+    (1 <= clause and clause <= n_clauses and 2 <= n_clauses and n_clauses <= 64) ||
+      raise "conjunction(id, k/n) must satisfy 1 <= k <= n and 2 <= n <= 64"
+
     %NxConjunction{
-      clause: (options[:clause] || 0) + 1,
+      clause: clause,
       n_clauses: n_clauses,
       id: options[:id] || 0
     }

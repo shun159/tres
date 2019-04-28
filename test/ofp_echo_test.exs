@@ -2,6 +2,54 @@ defmodule OfpEchoTest do
   use ExUnit.Case
   doctest Openflow
 
+  describe "Openflow.Echo.Request" do
+    test "with xid and data options" do
+      echo = Openflow.Echo.Request.new(xid: 1, data: "echo")
+
+      echo
+      |> Openflow.to_binary()
+      |> Openflow.read()
+      |> Kernel.elem(1)
+      |> Kernel.==(echo)
+      |> assert()
+    end
+
+    test "with data options" do
+      echo = Openflow.Echo.Request.new("echo")
+
+      echo
+      |> Openflow.to_binary()
+      |> Openflow.read()
+      |> Kernel.elem(1)
+      |> Kernel.==(echo)
+      |> assert()
+    end
+  end
+
+  describe "Openflow.Echo.Reply" do
+    test "with xid and data options" do
+      echo = Openflow.Echo.Reply.new(xid: 1, data: "echo")
+
+      echo
+      |> Openflow.to_binary()
+      |> Openflow.read()
+      |> Kernel.elem(1)
+      |> Kernel.==(echo)
+      |> assert()
+    end
+
+    test "with data options" do
+      echo = Openflow.Echo.Reply.new("echo")
+
+      echo
+      |> Openflow.to_binary()
+      |> Openflow.read()
+      |> Kernel.elem(1)
+      |> Kernel.==(echo)
+      |> assert()
+    end
+  end
+
   describe "Openflow.read/1" do
     test "with OFP_ECHO_REQUEST packet" do
       {:ok, %Openflow.Echo.Request{} = echo, ""} =
@@ -9,9 +57,11 @@ defmodule OfpEchoTest do
         |> File.read!()
         |> Openflow.read()
 
-      assert echo.version == 4
-      assert echo.xid == 0
-      assert echo.data == ""
+      expect = Openflow.Echo.Request.new()
+
+      assert echo.version == expect.version
+      assert echo.xid == expect.xid
+      assert echo.data == expect.data
     end
 
     test "with OFP_ECHO_REPLY packet" do
@@ -20,9 +70,11 @@ defmodule OfpEchoTest do
         |> File.read!()
         |> Openflow.read()
 
-      assert echo.version == 4
-      assert echo.xid == 0
-      assert echo.data == ""
+      expect = Openflow.Echo.Reply.new()
+
+      assert echo.version == expect.version
+      assert echo.xid == expect.xid
+      assert echo.data == expect.data
     end
   end
 
