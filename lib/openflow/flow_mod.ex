@@ -40,7 +40,7 @@ defmodule Openflow.FlowMod do
           aux_id: 0..0xF | nil,
           cookie: 0..0xFFFFFFFFFFFFFFFF,
           cookie_mask: 0..0xFFFFFFFFFFFFFFFF,
-          table_id: 0..0xF,
+          table_id: 0..0xFF,
           command: command(),
           idle_timeout: 0..0xFFFF,
           hard_timeout: 0..0xFFFF,
