@@ -4,22 +4,28 @@ defmodule Openflow.Multipart.Desc.Request do
     xid: 0,
     # virtual field
     datapath_id: nil,
+    aux_id: nil,
     flags: []
   )
 
   alias __MODULE__
 
+  @type t :: %Request{
+          version: 4,
+          datapath_id: String.t(),
+          aux_id: 0..0xFF | nil,
+          xid: 0..0xFFFFFFFF
+        }
+
+  @spec ofp_type() :: 18
   def ofp_type, do: 18
 
-  def new(xid \\ 0) do
-    %Request{xid: xid}
-  end
+  @spec new(0..0xFFFFFFFF) :: t()
+  def new(xid \\ 0), do: %Request{xid: xid}
 
-  def read("") do
-    %Request{}
-  end
+  @spec read(<<>>) :: t()
+  def read(""), do: %Request{}
 
-  def to_binary(%Request{} = msg) do
-    Openflow.Multipart.Request.header(msg)
-  end
+  @spec to_binary(t()) :: <<_::64>>
+  def to_binary(%Request{} = msg), do: Openflow.Multipart.Request.header(msg)
 end

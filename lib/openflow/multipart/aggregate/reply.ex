@@ -44,7 +44,7 @@ defmodule Openflow.Multipart.Aggregate.Reply do
     }
   end
 
-  @spec to_binary(t()) :: <<_::192>>
+  @spec to_binary(t()) :: <<_::64, _::_*8>>
   def to_binary(aggregate) do
     <<
       Openflow.Multipart.Reply.header(aggregate)::bytes,
