@@ -3879,6 +3879,34 @@ defmodule Openflow.Enums do
     throw(:bad_enum)
   end
 
+  def to_int(:all, :group_type_flags) do
+    group_type_flags_to_int(:all)
+  catch
+    _class, _reason -> :all
+  end
+
+  def to_int(:select, :group_type_flags) do
+    group_type_flags_to_int(:select)
+  catch
+    _class, _reason -> :select
+  end
+
+  def to_int(:indirect, :group_type_flags) do
+    group_type_flags_to_int(:indirect)
+  catch
+    _class, _reason -> :indirect
+  end
+
+  def to_int(:fast_failover, :group_type_flags) do
+    group_type_flags_to_int(:fast_failover)
+  catch
+    _class, _reason -> :fast_failover
+  end
+
+  def to_int(_int, :group_type_flags) do
+    throw(:bad_enum)
+  end
+
   def to_int(:max, :group_id) do
     group_id_to_int(:max)
   catch
@@ -4222,6 +4250,136 @@ defmodule Openflow.Enums do
   end
 
   def to_int(_int, :action_type) do
+    throw(:bad_enum)
+  end
+
+  def to_int(Openflow.Action.Output, :action_flags) do
+    action_flags_to_int(Openflow.Action.Output)
+  catch
+    _class, _reason -> Openflow.Action.Output
+  end
+
+  def to_int(Openflow.Action.CopyTtlOut, :action_flags) do
+    action_flags_to_int(Openflow.Action.CopyTtlOut)
+  catch
+    _class, _reason -> Openflow.Action.CopyTtlOut
+  end
+
+  def to_int(Openflow.Action.CopyTtlIn, :action_flags) do
+    action_flags_to_int(Openflow.Action.CopyTtlIn)
+  catch
+    _class, _reason -> Openflow.Action.CopyTtlIn
+  end
+
+  def to_int(Openflow.Action.SetMplsTtl, :action_flags) do
+    action_flags_to_int(Openflow.Action.SetMplsTtl)
+  catch
+    _class, _reason -> Openflow.Action.SetMplsTtl
+  end
+
+  def to_int(Openflow.Action.DecMplsTtl, :action_flags) do
+    action_flags_to_int(Openflow.Action.DecMplsTtl)
+  catch
+    _class, _reason -> Openflow.Action.DecMplsTtl
+  end
+
+  def to_int(Openflow.Action.PushVlan, :action_flags) do
+    action_flags_to_int(Openflow.Action.PushVlan)
+  catch
+    _class, _reason -> Openflow.Action.PushVlan
+  end
+
+  def to_int(Openflow.Action.PopVlan, :action_flags) do
+    action_flags_to_int(Openflow.Action.PopVlan)
+  catch
+    _class, _reason -> Openflow.Action.PopVlan
+  end
+
+  def to_int(Openflow.Action.PushMpls, :action_flags) do
+    action_flags_to_int(Openflow.Action.PushMpls)
+  catch
+    _class, _reason -> Openflow.Action.PushMpls
+  end
+
+  def to_int(Openflow.Action.PopMpls, :action_flags) do
+    action_flags_to_int(Openflow.Action.PopMpls)
+  catch
+    _class, _reason -> Openflow.Action.PopMpls
+  end
+
+  def to_int(Openflow.Action.SetQueue, :action_flags) do
+    action_flags_to_int(Openflow.Action.SetQueue)
+  catch
+    _class, _reason -> Openflow.Action.SetQueue
+  end
+
+  def to_int(Openflow.Action.Group, :action_flags) do
+    action_flags_to_int(Openflow.Action.Group)
+  catch
+    _class, _reason -> Openflow.Action.Group
+  end
+
+  def to_int(Openflow.Action.SetNwTtl, :action_flags) do
+    action_flags_to_int(Openflow.Action.SetNwTtl)
+  catch
+    _class, _reason -> Openflow.Action.SetNwTtl
+  end
+
+  def to_int(Openflow.Action.DecNwTtl, :action_flags) do
+    action_flags_to_int(Openflow.Action.DecNwTtl)
+  catch
+    _class, _reason -> Openflow.Action.DecNwTtl
+  end
+
+  def to_int(Openflow.Action.SetField, :action_flags) do
+    action_flags_to_int(Openflow.Action.SetField)
+  catch
+    _class, _reason -> Openflow.Action.SetField
+  end
+
+  def to_int(Openflow.Action.PushPbb, :action_flags) do
+    action_flags_to_int(Openflow.Action.PushPbb)
+  catch
+    _class, _reason -> Openflow.Action.PushPbb
+  end
+
+  def to_int(Openflow.Action.PopPbb, :action_flags) do
+    action_flags_to_int(Openflow.Action.PopPbb)
+  catch
+    _class, _reason -> Openflow.Action.PopPbb
+  end
+
+  def to_int(Openflow.Action.Encap, :action_flags) do
+    action_flags_to_int(Openflow.Action.Encap)
+  catch
+    _class, _reason -> Openflow.Action.Encap
+  end
+
+  def to_int(Openflow.Action.Decap, :action_flags) do
+    action_flags_to_int(Openflow.Action.Decap)
+  catch
+    _class, _reason -> Openflow.Action.Decap
+  end
+
+  def to_int(Openflow.Action.SetSequence, :action_flags) do
+    action_flags_to_int(Openflow.Action.SetSequence)
+  catch
+    _class, _reason -> Openflow.Action.SetSequence
+  end
+
+  def to_int(Openflow.Action.ValidateSequence, :action_flags) do
+    action_flags_to_int(Openflow.Action.ValidateSequence)
+  catch
+    _class, _reason -> Openflow.Action.ValidateSequence
+  end
+
+  def to_int(Openflow.Action.Experimenter, :action_flags) do
+    action_flags_to_int(Openflow.Action.Experimenter)
+  catch
+    _class, _reason -> Openflow.Action.Experimenter
+  end
+
+  def to_int(_int, :action_flags) do
     throw(:bad_enum)
   end
 
@@ -9137,6 +9295,34 @@ defmodule Openflow.Enums do
     throw(:bad_enum)
   end
 
+  def to_atom(0x1, :group_type_flags) do
+    group_type_flags_to_atom(0x1)
+  catch
+    _class, _reason -> 1
+  end
+
+  def to_atom(0x2, :group_type_flags) do
+    group_type_flags_to_atom(0x2)
+  catch
+    _class, _reason -> 2
+  end
+
+  def to_atom(0x4, :group_type_flags) do
+    group_type_flags_to_atom(0x4)
+  catch
+    _class, _reason -> 4
+  end
+
+  def to_atom(0x8, :group_type_flags) do
+    group_type_flags_to_atom(0x8)
+  catch
+    _class, _reason -> 8
+  end
+
+  def to_atom(_, :group_type_flags) do
+    throw(:bad_enum)
+  end
+
   def to_atom(0xFFFFFF00, :group_id) do
     group_id_to_atom(0xFFFFFF00)
   catch
@@ -9480,6 +9666,136 @@ defmodule Openflow.Enums do
   end
 
   def to_atom(_, :action_type) do
+    throw(:bad_enum)
+  end
+
+  def to_atom(0x1, :action_flags) do
+    action_flags_to_atom(0x1)
+  catch
+    _class, _reason -> 1
+  end
+
+  def to_atom(0x800, :action_flags) do
+    action_flags_to_atom(0x800)
+  catch
+    _class, _reason -> 2048
+  end
+
+  def to_atom(0x1000, :action_flags) do
+    action_flags_to_atom(0x1000)
+  catch
+    _class, _reason -> 4096
+  end
+
+  def to_atom(0x8000, :action_flags) do
+    action_flags_to_atom(0x8000)
+  catch
+    _class, _reason -> 32768
+  end
+
+  def to_atom(0x10000, :action_flags) do
+    action_flags_to_atom(0x10000)
+  catch
+    _class, _reason -> 65536
+  end
+
+  def to_atom(0x20000, :action_flags) do
+    action_flags_to_atom(0x20000)
+  catch
+    _class, _reason -> 131_072
+  end
+
+  def to_atom(0x40000, :action_flags) do
+    action_flags_to_atom(0x40000)
+  catch
+    _class, _reason -> 262_144
+  end
+
+  def to_atom(0x80000, :action_flags) do
+    action_flags_to_atom(0x80000)
+  catch
+    _class, _reason -> 524_288
+  end
+
+  def to_atom(0x100000, :action_flags) do
+    action_flags_to_atom(0x100000)
+  catch
+    _class, _reason -> 1_048_576
+  end
+
+  def to_atom(0x200000, :action_flags) do
+    action_flags_to_atom(0x200000)
+  catch
+    _class, _reason -> 2_097_152
+  end
+
+  def to_atom(0x400000, :action_flags) do
+    action_flags_to_atom(0x400000)
+  catch
+    _class, _reason -> 4_194_304
+  end
+
+  def to_atom(0x800000, :action_flags) do
+    action_flags_to_atom(0x800000)
+  catch
+    _class, _reason -> 8_388_608
+  end
+
+  def to_atom(0x1000000, :action_flags) do
+    action_flags_to_atom(0x1000000)
+  catch
+    _class, _reason -> 16_777_216
+  end
+
+  def to_atom(0x2000000, :action_flags) do
+    action_flags_to_atom(0x2000000)
+  catch
+    _class, _reason -> 33_554_432
+  end
+
+  def to_atom(0x4000000, :action_flags) do
+    action_flags_to_atom(0x4000000)
+  catch
+    _class, _reason -> 67_108_864
+  end
+
+  def to_atom(0x8000000, :action_flags) do
+    action_flags_to_atom(0x8000000)
+  catch
+    _class, _reason -> 134_217_728
+  end
+
+  def to_atom(0x10000000, :action_flags) do
+    action_flags_to_atom(0x10000000)
+  catch
+    _class, _reason -> 268_435_456
+  end
+
+  def to_atom(0x20000000, :action_flags) do
+    action_flags_to_atom(0x20000000)
+  catch
+    _class, _reason -> 536_870_912
+  end
+
+  def to_atom(0x40000000, :action_flags) do
+    action_flags_to_atom(0x40000000)
+  catch
+    _class, _reason -> 1_073_741_824
+  end
+
+  def to_atom(0x80000000, :action_flags) do
+    action_flags_to_atom(0x80000000)
+  catch
+    _class, _reason -> 2_147_483_648
+  end
+
+  def to_atom(0xFFFF, :action_flags) do
+    action_flags_to_atom(0xFFFF)
+  catch
+    _class, _reason -> 65535
+  end
+
+  def to_atom(_, :action_flags) do
     throw(:bad_enum)
   end
 
@@ -11849,6 +12165,16 @@ defmodule Openflow.Enums do
   def group_type_to_atom(0x2), do: :indirect
   def group_type_to_atom(0x3), do: :fast_failover
   def group_type_to_atom(_), do: throw(:bad_enum)
+  def group_type_flags_to_int(:all), do: 0x1
+  def group_type_flags_to_int(:select), do: 0x2
+  def group_type_flags_to_int(:indirect), do: 0x4
+  def group_type_flags_to_int(:fast_failover), do: 0x8
+  def group_type_flags_to_int(_), do: throw(:bad_enum)
+  def group_type_flags_to_atom(0x1), do: :all
+  def group_type_flags_to_atom(0x2), do: :select
+  def group_type_flags_to_atom(0x4), do: :indirect
+  def group_type_flags_to_atom(0x8), do: :fast_failover
+  def group_type_flags_to_atom(_), do: throw(:bad_enum)
   def group_id_to_int(:max), do: 0xFFFFFF00
   def group_id_to_int(:all), do: 0xFFFFFFFC
   def group_id_to_int(:any), do: 0xFFFFFFFF
@@ -11971,6 +12297,50 @@ defmodule Openflow.Enums do
   def action_type_to_atom(0x1F), do: Openflow.Action.ValidateSequence
   def action_type_to_atom(0xFFFF), do: Openflow.Action.Experimenter
   def action_type_to_atom(_), do: throw(:bad_enum)
+  def action_flags_to_int(Openflow.Action.Output), do: 0x1
+  def action_flags_to_int(Openflow.Action.CopyTtlOut), do: 0x800
+  def action_flags_to_int(Openflow.Action.CopyTtlIn), do: 0x1000
+  def action_flags_to_int(Openflow.Action.SetMplsTtl), do: 0x8000
+  def action_flags_to_int(Openflow.Action.DecMplsTtl), do: 0x10000
+  def action_flags_to_int(Openflow.Action.PushVlan), do: 0x20000
+  def action_flags_to_int(Openflow.Action.PopVlan), do: 0x40000
+  def action_flags_to_int(Openflow.Action.PushMpls), do: 0x80000
+  def action_flags_to_int(Openflow.Action.PopMpls), do: 0x100000
+  def action_flags_to_int(Openflow.Action.SetQueue), do: 0x200000
+  def action_flags_to_int(Openflow.Action.Group), do: 0x400000
+  def action_flags_to_int(Openflow.Action.SetNwTtl), do: 0x800000
+  def action_flags_to_int(Openflow.Action.DecNwTtl), do: 0x1000000
+  def action_flags_to_int(Openflow.Action.SetField), do: 0x2000000
+  def action_flags_to_int(Openflow.Action.PushPbb), do: 0x4000000
+  def action_flags_to_int(Openflow.Action.PopPbb), do: 0x8000000
+  def action_flags_to_int(Openflow.Action.Encap), do: 0x10000000
+  def action_flags_to_int(Openflow.Action.Decap), do: 0x20000000
+  def action_flags_to_int(Openflow.Action.SetSequence), do: 0x40000000
+  def action_flags_to_int(Openflow.Action.ValidateSequence), do: 0x80000000
+  def action_flags_to_int(Openflow.Action.Experimenter), do: 0xFFFF
+  def action_flags_to_int(_), do: throw(:bad_enum)
+  def action_flags_to_atom(0x1), do: Openflow.Action.Output
+  def action_flags_to_atom(0x800), do: Openflow.Action.CopyTtlOut
+  def action_flags_to_atom(0x1000), do: Openflow.Action.CopyTtlIn
+  def action_flags_to_atom(0x8000), do: Openflow.Action.SetMplsTtl
+  def action_flags_to_atom(0x10000), do: Openflow.Action.DecMplsTtl
+  def action_flags_to_atom(0x20000), do: Openflow.Action.PushVlan
+  def action_flags_to_atom(0x40000), do: Openflow.Action.PopVlan
+  def action_flags_to_atom(0x80000), do: Openflow.Action.PushMpls
+  def action_flags_to_atom(0x100000), do: Openflow.Action.PopMpls
+  def action_flags_to_atom(0x200000), do: Openflow.Action.SetQueue
+  def action_flags_to_atom(0x400000), do: Openflow.Action.Group
+  def action_flags_to_atom(0x800000), do: Openflow.Action.SetNwTtl
+  def action_flags_to_atom(0x1000000), do: Openflow.Action.DecNwTtl
+  def action_flags_to_atom(0x2000000), do: Openflow.Action.SetField
+  def action_flags_to_atom(0x4000000), do: Openflow.Action.PushPbb
+  def action_flags_to_atom(0x8000000), do: Openflow.Action.PopPbb
+  def action_flags_to_atom(0x10000000), do: Openflow.Action.Encap
+  def action_flags_to_atom(0x20000000), do: Openflow.Action.Decap
+  def action_flags_to_atom(0x40000000), do: Openflow.Action.SetSequence
+  def action_flags_to_atom(0x80000000), do: Openflow.Action.ValidateSequence
+  def action_flags_to_atom(0xFFFF), do: Openflow.Action.Experimenter
+  def action_flags_to_atom(_), do: throw(:bad_enum)
   def action_vendor_to_int(:nicira_ext_action), do: 0x2320
   def action_vendor_to_int(:onf_ext_action), do: 0x4F4E4600
   def action_vendor_to_int(_), do: throw(:bad_enum)
@@ -12570,6 +12940,10 @@ defmodule Openflow.Enums do
     Openflow.Utils.int_to_flags([], int, enum_of(:group_type))
   end
 
+  def int_to_flags(int, :group_type_flags) do
+    Openflow.Utils.int_to_flags([], int, enum_of(:group_type_flags))
+  end
+
   def int_to_flags(int, :group_id) do
     Openflow.Utils.int_to_flags([], int, enum_of(:group_id))
   end
@@ -12608,6 +12982,10 @@ defmodule Openflow.Enums do
 
   def int_to_flags(int, :action_type) do
     Openflow.Utils.int_to_flags([], int, enum_of(:action_type))
+  end
+
+  def int_to_flags(int, :action_flags) do
+    Openflow.Utils.int_to_flags([], int, enum_of(:action_flags))
   end
 
   def int_to_flags(int, :action_vendor) do
@@ -12950,6 +13328,10 @@ defmodule Openflow.Enums do
     Openflow.Utils.flags_to_int(0, flags, enum_of(:group_type))
   end
 
+  def flags_to_int(flags, :group_type_flags) do
+    Openflow.Utils.flags_to_int(0, flags, enum_of(:group_type_flags))
+  end
+
   def flags_to_int(flags, :group_id) do
     Openflow.Utils.flags_to_int(0, flags, enum_of(:group_id))
   end
@@ -12988,6 +13370,10 @@ defmodule Openflow.Enums do
 
   def flags_to_int(flags, :action_type) do
     Openflow.Utils.flags_to_int(0, flags, enum_of(:action_type))
+  end
+
+  def flags_to_int(flags, :action_flags) do
+    Openflow.Utils.flags_to_int(0, flags, enum_of(:action_flags))
   end
 
   def flags_to_int(flags, :action_vendor) do
@@ -13772,6 +14158,7 @@ defmodule Openflow.Enums do
   defp enum_of(:port_reason_mask), do: [add: 1, delete: 2, modify: 4]
   defp enum_of(:group_mod_command), do: [add: 0, modify: 1, delete: 2]
   defp enum_of(:group_type), do: [all: 0, select: 1, indirect: 2, fast_failover: 3]
+  defp enum_of(:group_type_flags), do: [all: 1, select: 2, indirect: 4, fast_failover: 8]
   defp enum_of(:group_id), do: [max: 4_294_967_040, all: 4_294_967_292, any: 4_294_967_295]
 
   defp enum_of(:group_capabilities),
@@ -13830,6 +14217,31 @@ defmodule Openflow.Enums do
       {Openflow.Action.Decap, 29},
       {Openflow.Action.SetSequence, 30},
       {Openflow.Action.ValidateSequence, 31},
+      {Openflow.Action.Experimenter, 65535}
+    ]
+
+  defp enum_of(:action_flags),
+    do: [
+      {Openflow.Action.Output, 1},
+      {Openflow.Action.CopyTtlOut, 2048},
+      {Openflow.Action.CopyTtlIn, 4096},
+      {Openflow.Action.SetMplsTtl, 32768},
+      {Openflow.Action.DecMplsTtl, 65536},
+      {Openflow.Action.PushVlan, 131_072},
+      {Openflow.Action.PopVlan, 262_144},
+      {Openflow.Action.PushMpls, 524_288},
+      {Openflow.Action.PopMpls, 1_048_576},
+      {Openflow.Action.SetQueue, 2_097_152},
+      {Openflow.Action.Group, 4_194_304},
+      {Openflow.Action.SetNwTtl, 8_388_608},
+      {Openflow.Action.DecNwTtl, 16_777_216},
+      {Openflow.Action.SetField, 33_554_432},
+      {Openflow.Action.PushPbb, 67_108_864},
+      {Openflow.Action.PopPbb, 134_217_728},
+      {Openflow.Action.Encap, 268_435_456},
+      {Openflow.Action.Decap, 536_870_912},
+      {Openflow.Action.SetSequence, 1_073_741_824},
+      {Openflow.Action.ValidateSequence, 2_147_483_648},
       {Openflow.Action.Experimenter, 65535}
     ]
 

@@ -4,6 +4,7 @@ defmodule Openflow.Multipart.GroupDesc.Reply do
     xid: 0,
     # virtual field
     datapath_id: nil,
+    aux_id: nil,
     flags: [],
     groups: []
   )

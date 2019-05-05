@@ -399,73 +399,73 @@ enums = [
     tun_metadata16: 56,
     tun_metadata17: 57,
     tun_metadata18: 58,
-tun_metadata19: 59,
-tun_metadata20: 60,
-tun_metadata21: 61,
-tun_metadata22: 62,
-tun_metadata23: 63,
-tun_metadata24: 64,
-tun_metadata25: 65,
-tun_metadata26: 66,
-tun_metadata27: 67,
-tun_metadata28: 68,
-tun_metadata29: 69,
-tun_metadata30: 70,
-tun_metadata31: 71,
-tun_metadata32: 72,
-tun_metadata33: 73,
-tun_metadata34: 74,
-tun_metadata35: 75,
-tun_metadata36: 76,
-tun_metadata37: 77,
-tun_metadata38: 78,
-tun_metadata39: 79,
-tun_metadata40: 80,
-tun_metadata41: 81,
-tun_metadata42: 82,
-tun_metadata43: 83,
-tun_metadata44: 84,
-tun_metadata45: 85,
-tun_metadata46: 86,
-tun_metadata47: 87,
-tun_metadata48: 88,
-tun_metadata49: 89,
-tun_metadata50: 90,
-tun_metadata51: 91,
-tun_metadata52: 92,
-tun_metadata53: 93,
-tun_metadata54: 94,
-tun_metadata55: 95,
-tun_metadata56: 96,
-tun_metadata57: 97,
-tun_metadata58: 98,
-tun_metadata59: 99,
-tun_metadata60: 100,
-tun_metadata61: 101,
-tun_metadata62: 102,
-tun_metadata63: 103,
-tun_flags: 104,
-ct_state: 105,
-ct_zone: 106,
-ct_mark: 107,
-ct_label: 108,
-tun_ipv6_src: 109,
-tun_ipv6_dst: 110,
-xxreg0: 111,
-xxreg1: 112,
-xxreg2: 113,
-xxreg3: 114,
-xxreg4: 115,
-xxreg5: 116,
-xxreg6: 117,
-xxreg7: 118,
-ct_nw_proto: 119,
-ct_nw_src: 120,
-ct_nw_dst: 121,
-ct_ipv6_src: 122,
-ct_ipv6_dst: 123,
-ct_tp_src: 124,
-ct_tp_dst: 125
+    tun_metadata19: 59,
+    tun_metadata20: 60,
+    tun_metadata21: 61,
+    tun_metadata22: 62,
+    tun_metadata23: 63,
+    tun_metadata24: 64,
+    tun_metadata25: 65,
+    tun_metadata26: 66,
+    tun_metadata27: 67,
+    tun_metadata28: 68,
+    tun_metadata29: 69,
+    tun_metadata30: 70,
+    tun_metadata31: 71,
+    tun_metadata32: 72,
+    tun_metadata33: 73,
+    tun_metadata34: 74,
+    tun_metadata35: 75,
+    tun_metadata36: 76,
+    tun_metadata37: 77,
+    tun_metadata38: 78,
+    tun_metadata39: 79,
+    tun_metadata40: 80,
+    tun_metadata41: 81,
+    tun_metadata42: 82,
+    tun_metadata43: 83,
+    tun_metadata44: 84,
+    tun_metadata45: 85,
+    tun_metadata46: 86,
+    tun_metadata47: 87,
+    tun_metadata48: 88,
+    tun_metadata49: 89,
+    tun_metadata50: 90,
+    tun_metadata51: 91,
+    tun_metadata52: 92,
+    tun_metadata53: 93,
+    tun_metadata54: 94,
+    tun_metadata55: 95,
+    tun_metadata56: 96,
+    tun_metadata57: 97,
+    tun_metadata58: 98,
+    tun_metadata59: 99,
+    tun_metadata60: 100,
+    tun_metadata61: 101,
+    tun_metadata62: 102,
+    tun_metadata63: 103,
+    tun_flags: 104,
+    ct_state: 105,
+    ct_zone: 106,
+    ct_mark: 107,
+    ct_label: 108,
+    tun_ipv6_src: 109,
+    tun_ipv6_dst: 110,
+    xxreg0: 111,
+    xxreg1: 112,
+    xxreg2: 113,
+    xxreg3: 114,
+    xxreg4: 115,
+    xxreg5: 116,
+    xxreg6: 117,
+    xxreg7: 118,
+    ct_nw_proto: 119,
+    ct_nw_src: 120,
+    ct_nw_dst: 121,
+    ct_ipv6_src: 122,
+    ct_ipv6_dst: 123,
+    ct_tp_src: 124,
+    ct_tp_dst: 125
   ],
   openflow_basic: [
     in_port: 0,
@@ -528,15 +528,15 @@ ct_tp_dst: 125
     mpls_pw_metadata: 56,
     mpls_cw_flags: 57,
     mpls_cw_fragment: 58,
-mpls_cw_len: 59,
-mpls_cw_seq_num: 60,
-gtpu_flags: 61,
-gtpu_ver: 62,
-gtpu_msg_type: 63,
-gtpu_teid: 64,
-gtpu_extn_hdr: 65,
-gtpu_extn_udp_port: 66,
-gtpu_extn_sci: 67
+    mpls_cw_len: 59,
+    mpls_cw_seq_num: 60,
+    gtpu_flags: 61,
+    gtpu_ver: 62,
+    gtpu_msg_type: 63,
+    gtpu_teid: 64,
+    gtpu_extn_hdr: 65,
+    gtpu_extn_udp_port: 66,
+    gtpu_extn_sci: 67
   ],
   vlan_id: [
     present: 0x1000,
@@ -745,6 +745,12 @@ gtpu_extn_sci: 67
     indirect: 2,
     fast_failover: 3
   ],
+  group_type_flags: [
+    all: 1 <<< 0,
+    select: 1 <<< 1,
+    indirect: 1 <<< 2,
+    fast_failover: 1 <<< 3
+  ],
   group_id: [
     max: 0xFFFFFF00,
     all: 0xFFFFFFFC,
@@ -756,281 +762,304 @@ gtpu_extn_sci: 67
     chaining: 1 <<< 2,
     chaining_checks: 1 <<< 3
   ],
-table_id: [
-  max: 0xFE,
-  all: 0xFF
-],
-queue_id: [
-  all: 0xFFFFFFFF
-],
-meter_mod_command: [
-  add: 0,
-  modify: 1,
-  delete: 2
-],
-meter_id: [
-  max: 0xFFFF0000,
-  slowpath: 0xFFFFFFFD,
-  controller: 0xFFFFFFFE,
-  all: 0xFFFFFFFF
-],
-meter_flags: [
-  kbps: 1 <<< 0,
-  pktps: 1 <<< 1,
-  burst: 1 <<< 2,
-  stats: 1 <<< 3
-],
-meter_band_type: [
-  {Openflow.MeterBand.Drop, 1},
-  {Openflow.MeterBand.Remark, 2},
-  {Openflow.MeterBand.Experimenter, 0xFFFF}
-],
-table_config: [
-  table_miss_controller: 0 <<< 0,
-  table_miss_continue: 1 <<< 0,
-  table_miss_drop: 2 <<< 0,
-  table_miss_mask: 3 <<< 0,
-  eviction: 1 <<< 2,
-  vacancy_events: 1 <<< 3
-],
-action_type: [
-  {Openflow.Action.Output, 0},
-  {Openflow.Action.CopyTtlOut, 11},
-  {Openflow.Action.CopyTtlIn, 12},
-  {Openflow.Action.SetMplsTtl, 15},
-  {Openflow.Action.DecMplsTtl, 16},
-  {Openflow.Action.PushVlan, 17},
-  {Openflow.Action.PopVlan, 18},
-  {Openflow.Action.PushMpls, 19},
-  {Openflow.Action.PopMpls, 20},
-  {Openflow.Action.SetQueue, 21},
-  {Openflow.Action.Group, 22},
-  {Openflow.Action.SetNwTtl, 23},
-  {Openflow.Action.DecNwTtl, 24},
-  {Openflow.Action.SetField, 25},
-  {Openflow.Action.PushPbb, 26},
-  {Openflow.Action.PopPbb, 27},
-  {Openflow.Action.Encap, 28},
-  {Openflow.Action.Decap, 29},
-  {Openflow.Action.SetSequence, 30},
-  {Openflow.Action.ValidateSequence, 31},
-  {Openflow.Action.Experimenter, 0xFFFF}
-],
-action_vendor: [
-  nicira_ext_action: 0x00002320,
-  onf_ext_action: 0x4F4E4600
-],
-onf_ext_action: [
-  {Openflow.Action.OnfCopyField, 3200}
-],
-nicira_ext_action: [
-  {Openflow.Action.NxResubmit, 1},
-  {Openflow.Action.NxSetTunnel, 2},
-  # {Openflow.Action.NxSetQueue, 4}, Deprecated
-  # {Openflow.Action.NxPopQueue, 5}, Deprecated
-  {Openflow.Action.NxRegMove, 6},
-  {Openflow.Action.NxRegLoad, 7},
-  {Openflow.Action.NxNote, 8},
-  {Openflow.Action.NxSetTunnel64, 9},
-  {Openflow.Action.NxMultipath, 10},
-  {Openflow.Action.NxBundle, 12},
-  {Openflow.Action.NxBundleLoad, 13},
-  {Openflow.Action.NxResubmitTable, 14},
-  {Openflow.Action.NxOutputReg, 15},
-  {Openflow.Action.NxLearn, 16},
-  {Openflow.Action.NxExit, 17},
-  {Openflow.Action.NxDecTtl, 18},
-  {Openflow.Action.NxFinTimeout, 19},
-  {Openflow.Action.NxController, 20},
-  {Openflow.Action.NxDecTtlCntIds, 21},
-  {Openflow.Action.NxWriteMetadata, 22},
-  # {Openflow.Action.NxPushMpls, 23}, # Deprecated
-  # {Openflow.Action.NxPopMpls, 24}, # Deprecated
-  # {Openflow.Action.NxSetMplsTtl, 25}, Deprecated
-  # {Openflow.Action.NxDecMplsTtl, 26}, Deprecated
-  {Openflow.Action.NxStackPush, 27},
-  {Openflow.Action.NxStackPop, 28},
-  {Openflow.Action.NxSample, 29},
-  # {Openflow.Action.NxSetMplsLabel, 30}, Deprecated
-  # {Openflow.Action.NxSetMplsTc, 31}, Deprecated
-  {Openflow.Action.NxOutputReg2, 32},
-  {Openflow.Action.NxRegLoad2, 33},
-  {Openflow.Action.NxConjunction, 34},
-  {Openflow.Action.NxConntrack, 35},
-  {Openflow.Action.NxNat, 36},
-  {Openflow.Action.NxController2, 37},
-  {Openflow.Action.NxSample2, 38},
-  {Openflow.Action.NxOutputTrunc, 39},
-  {Openflow.Action.NxGroup, 40},
-  {Openflow.Action.NxSample3, 41},
-  {Openflow.Action.NxClone, 42},
-  {Openflow.Action.NxCtClear, 43},
-  {Openflow.Action.NxResubmitTableCt, 44},
-  {Openflow.Action.NxLearn2, 45},
-  {Openflow.Action.NxEncap, 46},
-  {Openflow.Action.NxDecap, 47},
-  {Openflow.Action.NxDebugRecirc, 0xFF}
-],
-nx_mp_algorithm: [
-  modulo_n: 0,
-  hash_threshold: 1,
-  highest_random_weight: 2,
-  iterative_hash: 3
-],
-nx_hash_fields: [
-  eth_src: 0,
-  symmetric_l4: 1,
-  symmetric_l3l4: 2,
-  symmetric_l3l4_udp: 3,
-  nw_src: 4,
-  nw_dst: 5
-],
-nx_bd_algorithm: [
-  active_backup: 0,
-  highest_random_weight: 1
-],
-nx_learn_flag: [
-  send_flow_rem: 1 <<< 0,
-  delete_learned: 1 <<< 1,
-  write_result: 1 <<< 2
-],
-nx_conntrack_flags: [
-  commit: 1 <<< 0,
-  force: 1 <<< 1
-],
-nx_nat_flags: [
-  src: 1 <<< 0,
-  dst: 1 <<< 1,
-  persistent: 1 <<< 2,
-  protocol_hash: 1 <<< 3,
-  protocol_random: 1 <<< 4
-],
-nx_nat_range: [
-  ipv4_min: 1 <<< 0,
-  ipv4_max: 1 <<< 1,
-  ipv6_min: 1 <<< 2,
-  ipv6_max: 1 <<< 3,
-  proto_min: 1 <<< 4,
-  proto_max: 1 <<< 5
-],
-nx_action_controller2_prop_type: [
-  max_len: 0,
-  controller_id: 1,
-  reason: 2,
-  userdata: 3,
-  pause: 4
-],
-nx_action_sample_direction: [
-  default: 0,
-  ingress: 1,
-  egress: 2
-],
-nx_flow_spec_type: [
-  {Openflow.Action.NxFlowSpecMatch, 0},
-  {Openflow.Action.NxFlowSpecLoad, 1},
-  {Openflow.Action.NxFlowSpecOutput, 2}
-],
-instruction_type: [
-  {Openflow.Instruction.GotoTable, 1},
-  {Openflow.Instruction.WriteMetadata, 2},
-  {Openflow.Instruction.WriteActions, 3},
-  {Openflow.Instruction.ApplyActions, 4},
-  {Openflow.Instruction.ClearActions, 5},
-  {Openflow.Instruction.Meter, 6},
-  {Openflow.Instruction.Experimenter, 0xFFFF}
-],
-controller_role: [
-  nochange: 0,
-  equal: 1,
-  master: 2,
-  slave: 3
-],
-nx_role: [
-  other: 0,
-  master: 1,
-  slave: 2
-],
-packet_in_format: [
-  standard: 0,
-  nxt_packet_in: 1,
-  nxt_packet_in2: 2
-],
-flow_format: [
-  openflow10: 0,
-  nxm: 1
-],
-packet_in2_prop_type: [
-  packet: 0,
-  full_len: 1,
-  buffer_id: 2,
-  table_id: 3,
-  cookie: 4,
-  reason: 5,
-  metadata: 6,
-  userdata: 7,
-  continuation: 8
-],
-continuation_prop_type: [
-  bridge: 0x8000,
-  stack: 0x8001,
-  mirrors: 0x8002,
-  conntracked: 0x8003,
-  table_id: 0x8004,
-  cookie: 0x8005,
-  actions: 0x8006,
-  action_set: 0x8007
-],
-flow_monitor_flag: [
-  initial: 1 <<< 0,
-  add: 1 <<< 1,
-  delete: 1 <<< 2,
-  modify: 1 <<< 3,
-  actions: 1 <<< 4,
-  own: 1 <<< 5
-],
-flow_update_event: [
-  added: 0,
-  deleted: 1,
-  modified: 2,
-  abbrev: 3
-],
-tlv_table_mod_command: [
-  add: 0,
-  delete: 1,
-  clear: 2
-],
-table_feature_prop_type: [
-  instructions: 0,
-  instructions_miss: 1,
-  next_tables: 2,
-  next_tables_miss: 3,
-  write_actions: 4,
-  write_actions_miss: 5,
-  apply_actions: 6,
-  apply_actions_miss: 7,
-  match: 8,
-  wildcards: 10,
-  write_setfield: 12,
-  write_setfield_miss: 13,
-  apply_setfield: 14,
-  apply_setfield_miss: 15,
-  experimenter: 0xFFFE,
-  experimenter_miss: 0xFFFF
-],
-bundle_ctrl_type: [
-  open_request: 0,
-  open_reply: 1,
-  close_request: 2,
-  close_reply: 3,
-  commit_request: 4,
-  commit_reply: 5,
-  discard_request: 6,
-  discard_reply: 7
-],
-bundle_flags: [
-  atomic: 1 <<< 0,
-  ordered: 1 <<< 1
-]
+  table_id: [
+    max: 0xFE,
+    all: 0xFF
+  ],
+  queue_id: [
+    all: 0xFFFFFFFF
+  ],
+  meter_mod_command: [
+    add: 0,
+    modify: 1,
+    delete: 2
+  ],
+  meter_id: [
+    max: 0xFFFF0000,
+    slowpath: 0xFFFFFFFD,
+    controller: 0xFFFFFFFE,
+    all: 0xFFFFFFFF
+  ],
+  meter_flags: [
+    kbps: 1 <<< 0,
+    pktps: 1 <<< 1,
+    burst: 1 <<< 2,
+    stats: 1 <<< 3
+  ],
+  meter_band_type: [
+    {Openflow.MeterBand.Drop, 1},
+    {Openflow.MeterBand.Remark, 2},
+    {Openflow.MeterBand.Experimenter, 0xFFFF}
+  ],
+  table_config: [
+    table_miss_controller: 0 <<< 0,
+    table_miss_continue: 1 <<< 0,
+    table_miss_drop: 2 <<< 0,
+    table_miss_mask: 3 <<< 0,
+    eviction: 1 <<< 2,
+    vacancy_events: 1 <<< 3
+  ],
+  action_type: [
+    {Openflow.Action.Output, 0},
+    {Openflow.Action.CopyTtlOut, 11},
+    {Openflow.Action.CopyTtlIn, 12},
+    {Openflow.Action.SetMplsTtl, 15},
+    {Openflow.Action.DecMplsTtl, 16},
+    {Openflow.Action.PushVlan, 17},
+    {Openflow.Action.PopVlan, 18},
+    {Openflow.Action.PushMpls, 19},
+    {Openflow.Action.PopMpls, 20},
+    {Openflow.Action.SetQueue, 21},
+    {Openflow.Action.Group, 22},
+    {Openflow.Action.SetNwTtl, 23},
+    {Openflow.Action.DecNwTtl, 24},
+    {Openflow.Action.SetField, 25},
+    {Openflow.Action.PushPbb, 26},
+    {Openflow.Action.PopPbb, 27},
+    {Openflow.Action.Encap, 28},
+    {Openflow.Action.Decap, 29},
+    {Openflow.Action.SetSequence, 30},
+    {Openflow.Action.ValidateSequence, 31},
+    {Openflow.Action.Experimenter, 0xFFFF}
+  ],
+  action_flags: [
+    {Openflow.Action.Output, 1 <<< 0},
+    {Openflow.Action.CopyTtlOut, 1 <<< 11},
+    {Openflow.Action.CopyTtlIn, 1 <<< 12},
+    {Openflow.Action.SetMplsTtl, 1 <<< 15},
+    {Openflow.Action.DecMplsTtl, 1 <<< 16},
+    {Openflow.Action.PushVlan, 1 <<< 17},
+    {Openflow.Action.PopVlan, 1 <<< 18},
+    {Openflow.Action.PushMpls, 1 <<< 19},
+    {Openflow.Action.PopMpls, 1 <<< 20},
+    {Openflow.Action.SetQueue, 1 <<< 21},
+    {Openflow.Action.Group, 1 <<< 22},
+    {Openflow.Action.SetNwTtl, 1 <<< 23},
+    {Openflow.Action.DecNwTtl, 1 <<< 24},
+    {Openflow.Action.SetField, 1 <<< 25},
+    {Openflow.Action.PushPbb, 1 <<< 26},
+    {Openflow.Action.PopPbb, 1 <<< 27},
+    {Openflow.Action.Encap, 1 <<< 28},
+    {Openflow.Action.Decap, 1 <<< 29},
+    {Openflow.Action.SetSequence, 1 <<< 30},
+    {Openflow.Action.ValidateSequence, 1 <<< 31},
+    {Openflow.Action.Experimenter, 0xFFFF}
+  ],
+  action_vendor: [
+    nicira_ext_action: 0x00002320,
+    onf_ext_action: 0x4F4E4600
+  ],
+  onf_ext_action: [
+    {Openflow.Action.OnfCopyField, 3200}
+  ],
+  nicira_ext_action: [
+    {Openflow.Action.NxResubmit, 1},
+    {Openflow.Action.NxSetTunnel, 2},
+    # {Openflow.Action.NxSetQueue, 4}, Deprecated
+    # {Openflow.Action.NxPopQueue, 5}, Deprecated
+    {Openflow.Action.NxRegMove, 6},
+    {Openflow.Action.NxRegLoad, 7},
+    {Openflow.Action.NxNote, 8},
+    {Openflow.Action.NxSetTunnel64, 9},
+    {Openflow.Action.NxMultipath, 10},
+    {Openflow.Action.NxBundle, 12},
+    {Openflow.Action.NxBundleLoad, 13},
+    {Openflow.Action.NxResubmitTable, 14},
+    {Openflow.Action.NxOutputReg, 15},
+    {Openflow.Action.NxLearn, 16},
+    {Openflow.Action.NxExit, 17},
+    {Openflow.Action.NxDecTtl, 18},
+    {Openflow.Action.NxFinTimeout, 19},
+    {Openflow.Action.NxController, 20},
+    {Openflow.Action.NxDecTtlCntIds, 21},
+    {Openflow.Action.NxWriteMetadata, 22},
+    # {Openflow.Action.NxPushMpls, 23}, # Deprecated
+    # {Openflow.Action.NxPopMpls, 24}, # Deprecated
+    # {Openflow.Action.NxSetMplsTtl, 25}, Deprecated
+    # {Openflow.Action.NxDecMplsTtl, 26}, Deprecated
+    {Openflow.Action.NxStackPush, 27},
+    {Openflow.Action.NxStackPop, 28},
+    {Openflow.Action.NxSample, 29},
+    # {Openflow.Action.NxSetMplsLabel, 30}, Deprecated
+    # {Openflow.Action.NxSetMplsTc, 31}, Deprecated
+    {Openflow.Action.NxOutputReg2, 32},
+    {Openflow.Action.NxRegLoad2, 33},
+    {Openflow.Action.NxConjunction, 34},
+    {Openflow.Action.NxConntrack, 35},
+    {Openflow.Action.NxNat, 36},
+    {Openflow.Action.NxController2, 37},
+    {Openflow.Action.NxSample2, 38},
+    {Openflow.Action.NxOutputTrunc, 39},
+    {Openflow.Action.NxGroup, 40},
+    {Openflow.Action.NxSample3, 41},
+    {Openflow.Action.NxClone, 42},
+    {Openflow.Action.NxCtClear, 43},
+    {Openflow.Action.NxResubmitTableCt, 44},
+    {Openflow.Action.NxLearn2, 45},
+    {Openflow.Action.NxEncap, 46},
+    {Openflow.Action.NxDecap, 47},
+    {Openflow.Action.NxDebugRecirc, 0xFF}
+  ],
+  nx_mp_algorithm: [
+    modulo_n: 0,
+    hash_threshold: 1,
+    highest_random_weight: 2,
+    iterative_hash: 3
+  ],
+  nx_hash_fields: [
+    eth_src: 0,
+    symmetric_l4: 1,
+    symmetric_l3l4: 2,
+    symmetric_l3l4_udp: 3,
+    nw_src: 4,
+    nw_dst: 5
+  ],
+  nx_bd_algorithm: [
+    active_backup: 0,
+    highest_random_weight: 1
+  ],
+  nx_learn_flag: [
+    send_flow_rem: 1 <<< 0,
+    delete_learned: 1 <<< 1,
+    write_result: 1 <<< 2
+  ],
+  nx_conntrack_flags: [
+    commit: 1 <<< 0,
+    force: 1 <<< 1
+  ],
+  nx_nat_flags: [
+    src: 1 <<< 0,
+    dst: 1 <<< 1,
+    persistent: 1 <<< 2,
+    protocol_hash: 1 <<< 3,
+    protocol_random: 1 <<< 4
+  ],
+  nx_nat_range: [
+    ipv4_min: 1 <<< 0,
+    ipv4_max: 1 <<< 1,
+    ipv6_min: 1 <<< 2,
+    ipv6_max: 1 <<< 3,
+    proto_min: 1 <<< 4,
+    proto_max: 1 <<< 5
+  ],
+  nx_action_controller2_prop_type: [
+    max_len: 0,
+    controller_id: 1,
+    reason: 2,
+    userdata: 3,
+    pause: 4
+  ],
+  nx_action_sample_direction: [
+    default: 0,
+    ingress: 1,
+    egress: 2
+  ],
+  nx_flow_spec_type: [
+    {Openflow.Action.NxFlowSpecMatch, 0},
+    {Openflow.Action.NxFlowSpecLoad, 1},
+    {Openflow.Action.NxFlowSpecOutput, 2}
+  ],
+  instruction_type: [
+    {Openflow.Instruction.GotoTable, 1},
+    {Openflow.Instruction.WriteMetadata, 2},
+    {Openflow.Instruction.WriteActions, 3},
+    {Openflow.Instruction.ApplyActions, 4},
+    {Openflow.Instruction.ClearActions, 5},
+    {Openflow.Instruction.Meter, 6},
+    {Openflow.Instruction.Experimenter, 0xFFFF}
+  ],
+  controller_role: [
+    nochange: 0,
+    equal: 1,
+    master: 2,
+    slave: 3
+  ],
+  nx_role: [
+    other: 0,
+    master: 1,
+    slave: 2
+  ],
+  packet_in_format: [
+    standard: 0,
+    nxt_packet_in: 1,
+    nxt_packet_in2: 2
+  ],
+  flow_format: [
+    openflow10: 0,
+    nxm: 1
+  ],
+  packet_in2_prop_type: [
+    packet: 0,
+    full_len: 1,
+    buffer_id: 2,
+    table_id: 3,
+    cookie: 4,
+    reason: 5,
+    metadata: 6,
+    userdata: 7,
+    continuation: 8
+  ],
+  continuation_prop_type: [
+    bridge: 0x8000,
+    stack: 0x8001,
+    mirrors: 0x8002,
+    conntracked: 0x8003,
+    table_id: 0x8004,
+    cookie: 0x8005,
+    actions: 0x8006,
+    action_set: 0x8007
+  ],
+  flow_monitor_flag: [
+    initial: 1 <<< 0,
+    add: 1 <<< 1,
+    delete: 1 <<< 2,
+    modify: 1 <<< 3,
+    actions: 1 <<< 4,
+    own: 1 <<< 5
+  ],
+  flow_update_event: [
+    added: 0,
+    deleted: 1,
+    modified: 2,
+    abbrev: 3
+  ],
+  tlv_table_mod_command: [
+    add: 0,
+    delete: 1,
+    clear: 2
+  ],
+  table_feature_prop_type: [
+    instructions: 0,
+    instructions_miss: 1,
+    next_tables: 2,
+    next_tables_miss: 3,
+    write_actions: 4,
+    write_actions_miss: 5,
+    apply_actions: 6,
+    apply_actions_miss: 7,
+    match: 8,
+    wildcards: 10,
+    write_setfield: 12,
+    write_setfield_miss: 13,
+    apply_setfield: 14,
+    apply_setfield_miss: 15,
+    experimenter: 0xFFFE,
+    experimenter_miss: 0xFFFF
+  ],
+  bundle_ctrl_type: [
+    open_request: 0,
+    open_reply: 1,
+    close_request: 2,
+    close_reply: 3,
+    commit_request: 4,
+    commit_reply: 5,
+    discard_request: 6,
+    discard_reply: 7
+  ],
+  bundle_flags: [
+    atomic: 1 <<< 0,
+    ordered: 1 <<< 1
+  ]
 ]
 
 File.write(
@@ -1043,129 +1072,128 @@ File.write(
 )
 
 for {enum_name, enum_def} <- enums do
-    to_int_fn_name = :"#{enum_name}_to_int"
+  to_int_fn_name = :"#{enum_name}_to_int"
 
-    for {key, _value} <- enum_def do
-      File.write(
-        "lib/openflow/enums.ex",
-    """
-    def to_int(#{inspect(key)}, :#{enum_name}) do
-    #{to_int_fn_name}(#{inspect(key)})
-    catch
-    _class, _reason -> #{inspect(key)}
-    end\n
-    """,
-        [:append, :binary]
-      )
-    end
-
+  for {key, _value} <- enum_def do
     File.write(
       "lib/openflow/enums.ex",
+      """
+      def to_int(#{inspect(key)}, :#{enum_name}) do
+      #{to_int_fn_name}(#{inspect(key)})
+      catch
+      _class, _reason -> #{inspect(key)}
+      end\n
+      """,
+      [:append, :binary]
+    )
+  end
+
+  File.write(
+    "lib/openflow/enums.ex",
     """
     def to_int(_int, :#{enum_name}) do
     throw(:bad_enum)
     end\n
     """,
+    [:append, :binary]
+  )
+end
+
+for {enum_name, enum_def} <- enums do
+  to_atom_fn_name = :"#{enum_name}_to_atom"
+
+  for {_key, value} <- enum_def do
+    File.write(
+      "lib/openflow/enums.ex",
+      """
+      def to_atom(#{inspect(value, base: :hex)}, :#{enum_name}) do
+      #{to_atom_fn_name}(#{inspect(value, base: :hex)})
+      catch
+      _class, _reason -> #{value}
+      end\n
+      """,
       [:append, :binary]
     )
   end
 
-  for {enum_name, enum_def} <- enums do
-    to_atom_fn_name = :"#{enum_name}_to_atom"
-
-    for {_key, value} <- enum_def do
-      File.write(
-        "lib/openflow/enums.ex",
-    """
-    def to_atom(#{inspect(value, base: :hex)}, :#{enum_name}) do
-    #{to_atom_fn_name}(#{inspect(value, base: :hex)})
-    catch
-    _class, _reason -> #{value}
-    end\n
-    """,
-        [:append, :binary]
-      )
-    end
-
-    File.write(
-      "lib/openflow/enums.ex",
+  File.write(
+    "lib/openflow/enums.ex",
     """
     def to_atom(_, :#{enum_name}) do
     throw(:bad_enum)
     end\n
     """,
-      [:append, :binary]
+    [:append, :binary]
+  )
+end
+
+for {enum_name, enum_def} <- enums do
+  to_int_fn_name = :"#{enum_name}_to_int"
+  to_atom_fn_name = :"#{enum_name}_to_atom"
+
+  for {key, value} <- enum_def do
+    File.write(
+      "lib/openflow/enums.ex",
+      "  def #{to_int_fn_name}(#{inspect(key)}), do: #{inspect(value, base: :hex)}\n",
+      [
+        :append,
+        :binary
+      ]
     )
   end
 
-  for {enum_name, enum_def} <- enums do
-    to_int_fn_name = :"#{enum_name}_to_int"
-    to_atom_fn_name = :"#{enum_name}_to_atom"
+  File.write("lib/openflow/enums.ex", "  def #{to_int_fn_name}(_), do: throw(:bad_enum)\n", [
+    :append,
+    :binary
+  ])
 
-    for {key, value} <- enum_def do
-      File.write(
-        "lib/openflow/enums.ex",
-        "  def #{to_int_fn_name}(#{inspect(key)}), do: #{inspect(value, base: :hex)}\n",
-        [
-          :append,
-          :binary
-        ]
-      )
-    end
-
-    File.write("lib/openflow/enums.ex", "  def #{to_int_fn_name}(_), do: throw(:bad_enum)\n", [
-          :append,
-          :binary
-        ])
-
-    for {key, value} <- enum_def do
-      File.write(
-        "lib/openflow/enums.ex",
-        "  def #{to_atom_fn_name}(#{inspect(value, base: :hex)}), do: #{inspect(key)}\n",
-        [
-          :append,
-          :binary
-        ]
-      )
-    end
-
-    File.write("lib/openflow/enums.ex", "  def #{to_atom_fn_name}(_), do: throw(:bad_enum)\n", [
-          :append,
-          :binary
-        ])
-  end
-
-  for {enum_name, _enum_def} <- enums do
+  for {key, value} <- enum_def do
     File.write(
       "lib/openflow/enums.ex",
+      "  def #{to_atom_fn_name}(#{inspect(value, base: :hex)}), do: #{inspect(key)}\n",
+      [
+        :append,
+        :binary
+      ]
+    )
+  end
+
+  File.write("lib/openflow/enums.ex", "  def #{to_atom_fn_name}(_), do: throw(:bad_enum)\n", [
+    :append,
+    :binary
+  ])
+end
+
+for {enum_name, _enum_def} <- enums do
+  File.write(
+    "lib/openflow/enums.ex",
     """
     def int_to_flags(int, :#{enum_name}) do
     Openflow.Utils.int_to_flags([], int, enum_of(:#{enum_name}))
     end\n
     """,
-      [:append, :binary]
-    )
-  end
+    [:append, :binary]
+  )
+end
 
-  for {enum_name, _enum_def} <- enums do
-    File.write(
-      "lib/openflow/enums.ex",
+for {enum_name, _enum_def} <- enums do
+  File.write(
+    "lib/openflow/enums.ex",
     """
     def flags_to_int(flags, :#{enum_name}) do
     Openflow.Utils.flags_to_int(0, flags, enum_of(:#{enum_name}))
     end\n
     """,
-      [:append, :binary]
-    )
-  end
+    [:append, :binary]
+  )
+end
 
-  for {enum_name, enum_def} <- enums do
-    File.write(
-      "lib/openflow/enums.ex",
-      "  defp enum_of(:#{enum_name}), do: #{inspect(enum_def, pretty: true, limit: 100_000)}\n",
-      [:append, :binary]
-    )
-  end
+for {enum_name, enum_def} <- enums do
+  File.write(
+    "lib/openflow/enums.ex",
+    "  defp enum_of(:#{enum_name}), do: #{inspect(enum_def, pretty: true, limit: 100_000)}\n",
+    [:append, :binary]
+  )
+end
 
-  File.write("lib/openflow/enums.ex", "end", [:append, :binary])
-
+File.write("lib/openflow/enums.ex", "end", [:append, :binary])
