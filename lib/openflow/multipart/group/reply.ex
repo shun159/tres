@@ -11,14 +11,21 @@ defmodule Openflow.Multipart.Group.Reply do
 
   alias __MODULE__
 
+  @type t :: %Reply{
+          version: 4,
+          xid: 0..0xFFFFFFFF,
+          datapath_id: String.t() | nil,
+          aux_id: 0..0xFF | nil,
+          flags: [:more],
+          groups: [Openflow.Multipart.GroupStats.t()]
+        }
+
+  @spec ofp_type() :: 18
   def ofp_type, do: 18
 
-  def new(groups \\ []) do
-    %Reply{groups: groups}
-  end
-
+  @spec read(binary()) :: t()
   def read(<<groups_bin::bytes>>) do
-    groups = Openflow.Multipart.Group.read(groups_bin)
+    groups = Openflow.Multipart.GroupStats.read(groups_bin)
     %Reply{groups: groups}
   end
 
@@ -36,7 +43,7 @@ defmodule Openflow.Multipart.Group.Reply do
   end
 end
 
-defmodule Openflow.Multipart.Group do
+defmodule Openflow.Multipart.GroupStats do
   defstruct(
     group_id: 0,
     ref_count: 0,
@@ -50,6 +57,15 @@ defmodule Openflow.Multipart.Group do
   @ofp_group_stats_size 40
 
   alias __MODULE__
+
+  @type t :: %GroupStats{
+          group_id: 0..0xFFFFFFFF,
+          ref_count: 0..0xFFFFFFFF,
+          packet_count: 0..0xFFFFFFFFFFFFFFFF,
+          byte_count: 0..0xFFFFFFFFFFFFFFFF,
+          duration_sec: 0..0xFFFFFFFF,
+          duration_nsec: 0..0xFFFFFFFF
+        }
 
   def read(binary) do
     do_read([], binary)
@@ -72,11 +88,10 @@ defmodule Openflow.Multipart.Group do
     <<bucket_stats_bin::size(bucket_stats_size)-bytes, _rest::bytes>> = tail
 
     bucket_stats =
-      for <<packet_count::64, byte_count::64 <- bucket_stats_bin>> do
-        %{packet_count: packet_count, byte_count: byte_count}
-      end
+      for <<packet_count::64, byte_count::64 <- bucket_stats_bin>>,
+        do: %{packet_count: packet_count, byte_count: byte_count}
 
-    %Group{
+    %GroupStats{
       group_id: group_id,
       ref_count: ref_count,
       packet_count: packet_count,

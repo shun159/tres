@@ -19,7 +19,7 @@ defmodule Openflow.GroupMod do
   @type t :: %GroupMod{
           version: 4,
           datapath_id: String.t() | nil,
-          aux_id: 0..0xF | nil,
+          aux_id: 0..0xFF | nil,
           xid: 0..0xFFFFFFFF,
           command: command(),
           type: type(),
