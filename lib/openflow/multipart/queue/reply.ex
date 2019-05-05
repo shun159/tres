@@ -13,12 +13,8 @@ defmodule Openflow.Multipart.Queue.Reply do
 
   def ofp_type, do: 18
 
-  def new(queues \\ []) do
-    %Reply{queues: queues}
-  end
-
   def read(<<queues_bin::bytes>>) do
-    queues = Openflow.Multipart.Queue.read(queues_bin)
+    queues = Openflow.Multipart.QueueStats.read(queues_bin)
     %Reply{queues: queues}
   end
 
@@ -36,7 +32,7 @@ defmodule Openflow.Multipart.Queue.Reply do
   end
 end
 
-defmodule Openflow.Multipart.Queue do
+defmodule Openflow.Multipart.QueueStats do
   defstruct(
     port_number: 0,
     queue_id: 0,
@@ -65,7 +61,7 @@ defmodule Openflow.Multipart.Queue do
          <<port_no::32, queue_id::32, tx_bytes::64, tx_packets::64, tx_errors::64,
            duration_sec::32, duration_nsec::32>>
        ) do
-    %Queue{
+    %QueueStats{
       port_number: port_no,
       queue_id: queue_id,
       tx_bytes: tx_bytes,
