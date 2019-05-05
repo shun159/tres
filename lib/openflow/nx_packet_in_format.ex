@@ -14,8 +14,15 @@ defmodule Openflow.NxSetPacketInFormat do
 
   def ofp_type, do: 4
 
-  def new(format \\ :standard) do
-    %NxSetPacketInFormat{format: format}
+  def new(format) when is_atom(format) do
+    new(format: format)
+  end
+
+  def new(options) when is_list(options) do
+    %NxSetPacketInFormat{
+      format: options[:format] || :standard,
+      xid: options[:xid] || 0
+    }
   end
 
   def read(<<@experimenter::32, @nx_type::32, format_int::32>>) do
