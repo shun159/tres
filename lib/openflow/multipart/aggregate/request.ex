@@ -33,9 +33,6 @@ defmodule Openflow.Multipart.Aggregate.Request do
   def ofp_type, do: 18
 
   @spec new(
-          version: 4,
-          datapath_id: String.t(),
-          aux_id: 0..0xFF | nil,
           xid: 0..0xFFFFFFFF,
           table_id: 0..0xFF | :all | :max,
           out_port: Openflow.Port.no(),
