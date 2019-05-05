@@ -38,7 +38,7 @@ defmodule OfpQueueStatsTest do
             tx_bytes: 0,
             tx_errors: 0,
             tx_packets: 0
-},
+          },
           %Openflow.Multipart.QueueStats{
             duration_nsec: 0,
             duration_sec: 0,

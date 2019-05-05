@@ -11,8 +11,8 @@ defmodule Openflow.Multipart.Table.Request do
 
   def ofp_type, do: 18
 
-  def new(xid \\ 0) do
-    %Request{xid: xid}
+  def new(options \\ []) do
+    %Request{xid: options[:xid] || 0}
   end
 
   def read("") do
