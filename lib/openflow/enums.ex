@@ -325,10 +325,10 @@ defmodule Openflow.Enums do
     _class, _reason -> Openflow.Multipart.Table.Request
   end
 
-  def to_int(Openflow.Multipart.PortStats.Request, :multipart_request_codec) do
-    multipart_request_codec_to_int(Openflow.Multipart.PortStats.Request)
+  def to_int(Openflow.Multipart.Port.Request, :multipart_request_codec) do
+    multipart_request_codec_to_int(Openflow.Multipart.Port.Request)
   catch
-    _class, _reason -> Openflow.Multipart.PortStats.Request
+    _class, _reason -> Openflow.Multipart.Port.Request
   end
 
   def to_int(Openflow.Multipart.Queue.Request, :multipart_request_codec) do
@@ -419,10 +419,10 @@ defmodule Openflow.Enums do
     _class, _reason -> Openflow.Multipart.Table.Reply
   end
 
-  def to_int(Openflow.Multipart.PortStats.Reply, :multipart_reply_codec) do
-    multipart_reply_codec_to_int(Openflow.Multipart.PortStats.Reply)
+  def to_int(Openflow.Multipart.Port.Reply, :multipart_reply_codec) do
+    multipart_reply_codec_to_int(Openflow.Multipart.Port.Reply)
   catch
-    _class, _reason -> Openflow.Multipart.PortStats.Reply
+    _class, _reason -> Openflow.Multipart.Port.Reply
   end
 
   def to_int(Openflow.Multipart.Queue.Reply, :multipart_reply_codec) do
@@ -10941,7 +10941,7 @@ defmodule Openflow.Enums do
   def multipart_request_codec_to_int(Openflow.Multipart.Flow.Request), do: 0x1
   def multipart_request_codec_to_int(Openflow.Multipart.Aggregate.Request), do: 0x2
   def multipart_request_codec_to_int(Openflow.Multipart.Table.Request), do: 0x3
-  def multipart_request_codec_to_int(Openflow.Multipart.PortStats.Request), do: 0x4
+  def multipart_request_codec_to_int(Openflow.Multipart.Port.Request), do: 0x4
   def multipart_request_codec_to_int(Openflow.Multipart.Queue.Request), do: 0x5
   def multipart_request_codec_to_int(Openflow.Multipart.Group.Request), do: 0x6
   def multipart_request_codec_to_int(Openflow.Multipart.GroupDesc.Request), do: 0x7
@@ -10957,7 +10957,7 @@ defmodule Openflow.Enums do
   def multipart_request_codec_to_atom(0x1), do: Openflow.Multipart.Flow.Request
   def multipart_request_codec_to_atom(0x2), do: Openflow.Multipart.Aggregate.Request
   def multipart_request_codec_to_atom(0x3), do: Openflow.Multipart.Table.Request
-  def multipart_request_codec_to_atom(0x4), do: Openflow.Multipart.PortStats.Request
+  def multipart_request_codec_to_atom(0x4), do: Openflow.Multipart.Port.Request
   def multipart_request_codec_to_atom(0x5), do: Openflow.Multipart.Queue.Request
   def multipart_request_codec_to_atom(0x6), do: Openflow.Multipart.Group.Request
   def multipart_request_codec_to_atom(0x7), do: Openflow.Multipart.GroupDesc.Request
@@ -10973,7 +10973,7 @@ defmodule Openflow.Enums do
   def multipart_reply_codec_to_int(Openflow.Multipart.Flow.Reply), do: 0x1
   def multipart_reply_codec_to_int(Openflow.Multipart.Aggregate.Reply), do: 0x2
   def multipart_reply_codec_to_int(Openflow.Multipart.Table.Reply), do: 0x3
-  def multipart_reply_codec_to_int(Openflow.Multipart.PortStats.Reply), do: 0x4
+  def multipart_reply_codec_to_int(Openflow.Multipart.Port.Reply), do: 0x4
   def multipart_reply_codec_to_int(Openflow.Multipart.Queue.Reply), do: 0x5
   def multipart_reply_codec_to_int(Openflow.Multipart.Group.Reply), do: 0x6
   def multipart_reply_codec_to_int(Openflow.Multipart.GroupDesc.Reply), do: 0x7
@@ -10989,7 +10989,7 @@ defmodule Openflow.Enums do
   def multipart_reply_codec_to_atom(0x1), do: Openflow.Multipart.Flow.Reply
   def multipart_reply_codec_to_atom(0x2), do: Openflow.Multipart.Aggregate.Reply
   def multipart_reply_codec_to_atom(0x3), do: Openflow.Multipart.Table.Reply
-  def multipart_reply_codec_to_atom(0x4), do: Openflow.Multipart.PortStats.Reply
+  def multipart_reply_codec_to_atom(0x4), do: Openflow.Multipart.Port.Reply
   def multipart_reply_codec_to_atom(0x5), do: Openflow.Multipart.Queue.Reply
   def multipart_reply_codec_to_atom(0x6), do: Openflow.Multipart.Group.Reply
   def multipart_reply_codec_to_atom(0x7), do: Openflow.Multipart.GroupDesc.Reply
@@ -13542,7 +13542,7 @@ defmodule Openflow.Enums do
       {Openflow.Multipart.Flow.Request, 1},
       {Openflow.Multipart.Aggregate.Request, 2},
       {Openflow.Multipart.Table.Request, 3},
-      {Openflow.Multipart.PortStats.Request, 4},
+      {Openflow.Multipart.Port.Request, 4},
       {Openflow.Multipart.Queue.Request, 5},
       {Openflow.Multipart.Group.Request, 6},
       {Openflow.Multipart.GroupDesc.Request, 7},
@@ -13561,7 +13561,7 @@ defmodule Openflow.Enums do
       {Openflow.Multipart.Flow.Reply, 1},
       {Openflow.Multipart.Aggregate.Reply, 2},
       {Openflow.Multipart.Table.Reply, 3},
-      {Openflow.Multipart.PortStats.Reply, 4},
+      {Openflow.Multipart.Port.Reply, 4},
       {Openflow.Multipart.Queue.Reply, 5},
       {Openflow.Multipart.Group.Reply, 6},
       {Openflow.Multipart.GroupDesc.Reply, 7},

@@ -1,4 +1,4 @@
-defmodule Openflow.Multipart.PortStats.Request do
+defmodule Openflow.Multipart.Port.Request do
   defstruct(
     version: 4,
     xid: 0,
@@ -12,11 +12,7 @@ defmodule Openflow.Multipart.PortStats.Request do
 
   def ofp_type, do: 18
 
-  def new(port_no) when is_integer(port_no) or is_atom(port_no) do
-    %Request{port_number: port_no}
-  end
-
-  def new(options) when is_list(options) do
+  def new(options \\ []) do
     %Request{
       xid: options[:xid] || 0,
       port_number: options[:port_no] || :any

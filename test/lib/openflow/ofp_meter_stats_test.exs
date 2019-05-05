@@ -32,12 +32,12 @@ defmodule OfpMeterStatsTest do
           %Openflow.Multipart.Meter{
             band_stats: [%{byte_band_count: 0, packet_band_count: 0}],
             byte_in_count: 0,
-            duration_nsec: 480000,
+            duration_nsec: 480_000,
             duration_sec: 0,
             flow_count: 0,
             meter_id: 100,
             packet_in_count: 0
-}
+          }
         ],
         version: 4,
         xid: 0
