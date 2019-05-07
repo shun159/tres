@@ -45,6 +45,7 @@ defmodule SimpleRouter.Openflow.Controller do
     :ok = debug("port_reply from dpid: #{dpid}")
     ports = handle_ports(ports)
     routes = Config.routes()
+    :ok = onf_bundle_open(dpid, bundle_id: 1, flags: [:atomic, :ordered])
     :ok = FlowTables.classifier(dpid)
     :ok = init_egress_groups(ports, dpid)
     :ok = init_interface_lookup_flows(ports, dpid)
@@ -52,6 +53,7 @@ defmodule SimpleRouter.Openflow.Controller do
     :ok = init_egress_flows(ports, dpid)
     :ok = init_connected_routes(ports, dpid)
     :ok = init_static_routes(routes, dpid)
+    :ok = onf_bundle_commit(dpid, bundle_id: 1, flags: [:atomic, :ordered])
     {:noreply, %{state | ports: ports}}
   end
 

@@ -19,6 +19,8 @@ defmodule SimpleRouter.Openflow.FlowTables do
     # ARP
     send_flow_mod_add(
       datapath_id,
+      bundle_id: 1,
+      bundle_flags: [:atomic, :ordered],
       table_id: @classifier_table_id,
       priority: 1,
       match: Match.new(eth_type: 0x0806),
@@ -28,6 +30,8 @@ defmodule SimpleRouter.Openflow.FlowTables do
     # IPv4
     send_flow_mod_add(
       datapath_id,
+      bundle_id: 1,
+      bundle_flags: [:atomic, :ordered],
       table_id: @classifier_table_id,
       priority: 1,
       match: Match.new(eth_type: 0x0800),
@@ -39,6 +43,8 @@ defmodule SimpleRouter.Openflow.FlowTables do
     send_flow_mod_add(
       datapath_id,
       table_id: @routing_table_id,
+      bundle_id: 1,
+      bundle_flags: [:atomic, :ordered],
       priority: 100 + iface.prefix_length,
       match: Match.new(
         eth_type: 0x0800,
@@ -55,6 +61,8 @@ defmodule SimpleRouter.Openflow.FlowTables do
     send_flow_mod_add(
       datapath_id,
       table_id: @routing_table_id,
+      bundle_id: 1,
+      bundle_flags: [:atomic, :ordered],
       priority: route.prefix_length,
       match: Match.new(
         eth_type: 0x0800,
@@ -77,6 +85,8 @@ defmodule SimpleRouter.Openflow.FlowTables do
     send_flow_mod_add(
       datapath_id,
       priority: 0,
+      bundle_id: 1,
+      bundle_flags: [:atomic, :ordered],
       table_id: @arp_lookup_table_id,
       match: Match.new(reg1: iface.number),
       instructions: [
@@ -99,6 +109,8 @@ defmodule SimpleRouter.Openflow.FlowTables do
     send_flow_mod_add(
       datapath_id,
       table_id: @interface_lookup_table_id,
+      bundle_id: 1,
+      bundle_flags: [:atomic, :ordered],
       priority: iface.prefix_length,
       match: match,
       instructions: [
@@ -115,6 +127,8 @@ defmodule SimpleRouter.Openflow.FlowTables do
     send_flow_mod_add(
       datapath_id,
       table_id: @egress_table_id,
+      bundle_id: 1,
+      bundle_flags: [:atomic, :ordered],
       priority: 1,
       match: Match.new(reg1: iface.number),
       instructions: ApplyActions.new(Group.new(iface.number))
@@ -128,6 +142,8 @@ defmodule SimpleRouter.Openflow.FlowTables do
       datapath_id,
       table_id: @arp_handler_table_id,
       priority: 0,
+      bundle_id: 1,
+      bundle_flags: [:atomic, :ordered],
       match: Match.new(
         in_port: iface.number,
         eth_type: 0x0806,
@@ -144,6 +160,8 @@ defmodule SimpleRouter.Openflow.FlowTables do
       datapath_id,
       table_id: @arp_handler_table_id,
       priority: 0,
+      bundle_id: 1,
+      bundle_flags: [:atomic, :ordered],
       match: Match.new(
         in_port: iface.number,
         eth_type: 0x0806,
