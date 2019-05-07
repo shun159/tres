@@ -9,7 +9,7 @@ defmodule SimpleRouter.Openflow.GroupTables do
     bucket =
       Openflow.Bucket.new(
         actions: [
-          SetField.new({:eth_src, iface.mac_address}),
+          SetField.new(eth_src: iface.mac_address),
           Output.new(iface.number)
         ]
       )

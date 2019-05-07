@@ -61,7 +61,7 @@ defmodule SimpleRouter.Openflow.FlowTables do
         ipv4_dst: {route.dst, route.mask}
       ),
       instructions: [
-        ApplyActions.new(SetField.new({:reg0, IPv4Address.to_int(route.nexthop)})),
+        ApplyActions.new(SetField.new(reg0: IPv4Address.to_int(route.nexthop))),
         GotoTable.new(@interface_lookup_table_id)
       ]
     )
@@ -103,7 +103,7 @@ defmodule SimpleRouter.Openflow.FlowTables do
       match: match,
       instructions: [
         ApplyActions.new([
-          SetField.new({:reg1, iface.number}),
+          SetField.new(reg1: iface.number),
           NxResubmitTable.new(@arp_lookup_table_id),
           NxResubmitTable.new(@egress_table_id)
         ])
@@ -174,9 +174,9 @@ defmodule SimpleRouter.Openflow.FlowTables do
       NxStackPop.new(field: :arp_tpa),
       NxStackPop.new(field: :arp_tha),
       NxStackPop.new(field: :arp_spa),
-      SetField.new({:arp_op, 0x2}),
-      SetField.new({:arp_sha, mac}),
-      SetField.new({:eth_src, mac}),
+      SetField.new(arp_op: 0x2),
+      SetField.new(arp_sha: mac),
+      SetField.new(eth_src: mac),
       Output.new(:in_port)
     ]
   end
