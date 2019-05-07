@@ -28,8 +28,14 @@ defmodule OfpPacketIn2Test do
         |> Kernel.elem(1)
 
       assert pktin.continuation_action_set == nil
-      assert pktin.continuation_actions == [%Openflow.Action.NxResubmitTable{in_port: :in_port, table_id: 5}]
-      assert pktin.continuation_bridge == <<8, 137, 105, 58, 5, 77, 183, 237, 163, 58, 25, 166, 212, 167, 209, 11>>
+
+      assert pktin.continuation_actions == [
+               %Openflow.Action.NxResubmitTable{in_port: :in_port, table_id: 5}
+             ]
+
+      assert pktin.continuation_bridge ==
+               <<8, 137, 105, 58, 5, 77, 183, 237, 163, 58, 25, 166, 212, 167, 209, 11>>
+
       assert pktin.continuation_conntracked == nil
       assert pktin.continuation_cookie == nil
       assert pktin.continuation_mirrors == nil

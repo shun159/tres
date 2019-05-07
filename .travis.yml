@@ -21,7 +21,9 @@ before_install:
   - sudo ovs-vsctl add-br br0
   - sudo ovs-vsctl set bridge br0 datapath_type=netdev
   - sudo ovs-vsctl set bridge br0 protocols=OpenFlow13
+  - sudo ovs-vsctl set bridge br0 other-config:datapath-id=0000000000000001
   - sudo ovs-vsctl set-controller br0 tcp:127.0.0.1:6653
+  - sudo ovs-vsctl set-manager ptcp:6640
   - sudo ovs-vsctl show
   - cd -
   

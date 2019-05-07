@@ -43,29 +43,4 @@ defmodule Openflow.PacketIn do
       data: data
     }
   end
-
-  def to_binary(%PacketIn{} = packet_in) do
-    %PacketIn{
-      buffer_id: buffer_id,
-      total_len: total_len,
-      reason: reason,
-      table_id: table_id,
-      cookie: cookie,
-      in_port: in_port,
-      match: match_fields,
-      data: data
-    } = packet_in
-
-    buffer_id_int = Openflow.Utils.get_enum(buffer_id, :buffer_id)
-    reason_int = Openflow.Utils.get_enum(reason, :packet_in_reason)
-    table_id_int = Openflow.Utils.get_enum(table_id, :table_id)
-
-    match_fields_bin =
-      [{:in_port, in_port} | match_fields]
-      |> Openflow.Match.new()
-      |> Openflow.Match.to_binary()
-
-    <<buffer_id_int::32, total_len::16, reason_int::8, table_id_int::8, cookie::64,
-      match_fields_bin::bytes, 0::size(2)-unit(8), data::bytes>>
-  end
 end
