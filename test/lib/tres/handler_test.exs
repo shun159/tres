@@ -1,5 +1,5 @@
 defmodule Tres.HanderTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: false
 
   @datapath_id "0000000000000001"
 
@@ -13,6 +13,18 @@ defmodule Tres.HanderTest do
   describe "Openflow RoleRequest message" do
     test "with role and generation_id" do
       {:ok, %Openflow.Role.Reply{}} = sync_send_message(Openflow.Role.Request.new(role: :nochange, generation_id: 1))
+    end
+  end
+
+  describe "Openflow TableMod message" do
+    test "with table_id" do
+      {:ok, :noreply} = sync_send_message(Openflow.TableMod.new(table_id: :all))
+    end
+  end
+
+  describe "Openflow NxSetControllerId message" do
+    test "with controller_id" do
+      {:ok, :noreply} = sync_send_message(Openflow.NxSetControllerId.new(0))
     end
   end
 
@@ -68,20 +80,31 @@ defmodule Tres.HanderTest do
 
       send_message(
         Openflow.FlowMod.new(
-          instructions: Openflow.Instruction.ApplyActions.new(Openflow.Action.NxController2.new())
+          priority: 0xFFFF,
+          match: Openflow.Match.new(in_port: 0xF, reg0: 99, eth_type: 0x0806),
+          instructions: Openflow.Instruction.ApplyActions.new([
+            Openflow.Action.NxController2.new(pause: true),
+            Openflow.Action.NxResubmitTable.new()
+          ])
         )
       )
 
       send_message(
         Openflow.PacketOut.new(
           buffer_id: :no_buffer,
-          in_port: :controller,
-          actions: [Openflow.Action.Output.new(:controller)],
+          in_port: 0xF,
+          actions: [
+            Openflow.Action.SetField.new(reg0: 99),
+            Openflow.Action.Output.new(:table)
+          ],
           data: File.read!("test/packet_data/arp_packet.raw")
         )
       )
 
+      %Openflow.NxPacketIn2{} = packet_in2 = get_message()
+      {:ok, :noreply} = sync_send_message(Openflow.NxResume.new(packet_in: packet_in2))
       %Openflow.NxPacketIn2{} = get_message()
+      send_message(Openflow.NxSetPacketInFormat.new(:standard))
     end
   end
 
