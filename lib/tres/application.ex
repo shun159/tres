@@ -12,8 +12,7 @@ defmodule Tres.Application do
     children = [
       worker(Registry, [[keys: :unique, name: SwitchRegistry]], id: SwitchRegistry),
       worker(Registry, [[keys: :unique, name: HandlerRegistry]], id: HandlerRegistry),
-      supervisor(Tres.MessageHandlerSup, [], id: MessageHandlerSup),
-      supervisor(OVSDB, [], id: OVSDB)
+      supervisor(Tres.MessageHandlerSup, [], id: MessageHandlerSup)
     ]
 
     opts = [strategy: :one_for_one, name: Tres.Supervisor]
