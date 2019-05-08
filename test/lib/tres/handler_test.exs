@@ -12,8 +12,14 @@ defmodule Tres.HanderTest do
 
   describe "Openflow RoleRequest message" do
     test "with role and generation_id" do
-      send_message(Openflow.Role.Request.new(role: :nochange, generation_id: 1))
-      %Openflow.Role.Reply{} = get_message()
+      {:ok, %Openflow.Role.Reply{}} = sync_send_message(Openflow.Role.Request.new(role: :nochange, generation_id: 1))
+    end
+  end
+
+  describe "Openflow Error message" do
+    test "with a flow" do
+      send_message(Openflow.FlowMod.new(match: Openflow.Match.new(arp_tpa: {10, 10, 10, 10})))
+      %Openflow.ErrorMsg{} = get_message()
     end
   end
 
@@ -30,16 +36,14 @@ defmodule Tres.HanderTest do
         )
       )
 
-      send_message(Openflow.GetAsync.Request.new())
-
-      %Openflow.GetAsync.Reply{
+      {:ok, %Openflow.GetAsync.Reply{
         flow_removed_mask_master: [:idle_timeout, :hard_timeout, :delete, :group_delete],
         flow_removed_mask_slave: [],
         packet_in_mask_master: [:no_match, :action],
         packet_in_mask_slave: [],
         port_status_mask_master: [:add, :delete, :modify],
         port_status_mask_slave: []
-      } = get_message()
+      }} = sync_send_message(Openflow.GetAsync.Request.new())
     end
   end
 
@@ -192,6 +196,10 @@ defmodule Tres.HanderTest do
       nil -> wait_datapath_is_connected()
       pid when is_pid(pid) -> :ok
     end
+  end
+
+  def sync_send_message(msg) do
+    Tres.SwitchRegistry.send_message(msg, @datapath_id, true)
   end
 
   def send_message(msg) do
