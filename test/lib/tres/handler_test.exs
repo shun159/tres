@@ -17,6 +17,32 @@ defmodule Tres.HanderTest do
     end
   end
 
+  describe "Openflow AsyncConfig message" do
+    test "with master and slave config" do
+      send_message(
+        Openflow.SetAsync.new(
+          flow_removed_mask_master: [:idle_timeout, :hard_timeout, :delete, :group_delete],
+          flow_removed_mask_slave: [],
+          packet_in_mask_master: [:no_match, :action],
+          packet_in_mask_slave: [],
+          port_status_mask_master: [:add, :delete, :modify],
+          port_status_mask_slave: []
+        )
+      )
+
+      send_message(Openflow.GetAsync.Request.new())
+
+      %Openflow.GetAsync.Reply{
+        flow_removed_mask_master: [:idle_timeout, :hard_timeout, :delete, :group_delete],
+        flow_removed_mask_slave: [],
+        packet_in_mask_master: [:no_match, :action],
+        packet_in_mask_slave: [],
+        port_status_mask_master: [:add, :delete, :modify],
+        port_status_mask_slave: []
+      } = get_message()
+    end
+  end
+
   describe "Openflow standard PacketIn message" do
     test "with arp_packet" do
       send_message(
