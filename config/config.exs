@@ -11,7 +11,7 @@ config :tres,
   callback_args: []
 
 config :logger,
-  level: :info,
+  level: :debug,
   format: "$date $time [$level] $message\n",
   metadata: [],
   handle_otp_reports: true
