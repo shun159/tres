@@ -10,7 +10,6 @@ defmodule Tres.SecureChannel do
   alias Tres.MessageHandlerSup
 
   @process_flags [
-    trap_exit: true,
     message_queue_data: :off_heap
   ]
 
@@ -589,10 +588,6 @@ defmodule Tres.SecureChannel do
     close_connection({:handler_down, reason}, state_data)
   end
 
-  defp handle_signal({:EXIT, _pid, reason}, state_data) do
-    close_connection({:trap_detected, reason}, state_data)
-  end
-
   defp close_connection(:failed_version_negotiation, state_data) do
     debug("connection terminated: Version negotiation failed")
     {:stop, :normal, %{state_data | socket: nil}}
@@ -631,21 +626,15 @@ defmodule Tres.SecureChannel do
     {:stop, :normal, %{state_data | socket: nil}}
   end
 
-  defp close_connection({:trap_detected, reason}, state_data) do
-    debug("connection terminated: Trapped by #{inspect(reason)}")
-    _ = send(state_data.handler_pid, {:switch_disconnected, :trap_detected})
-    {:stop, :normal, %{state_data | socket: nil}}
-  end
-
   defp close_connection(:tcp_closed, state_data) do
     debug("connection terminated: TCP Closed by peer")
     _ = send(state_data.handler_pid, {:switch_disconnected, :tcp_closed})
     {:stop, :normal, %{state_data | socket: nil}}
   end
 
-  defp close_connection({:tcp_error, reason}, state_data) do
-    debug("connection terminated: TCP Error occured: #{inspect(reason)}")
-    _ = send(state_data.handler_pid, {:switch_disconnected, :tcp_error})
+  defp close_connection(close_reason, state_data) do
+    debug("connection terminated: reason: #{inspect(close_reason)}")
+    _ = send(state_data.handler_pid, {:switch_disconnected, close_reason})
     {:stop, :normal, %{state_data | socket: nil}}
   end
 end
