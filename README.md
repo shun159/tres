@@ -1,7 +1,9 @@
 # Tres - an Elixir OpenFlow development platform
 
-[![Build Status](https://travis-ci.org/shun159/tres.svg?branch=develop)](https://travis-ci.org/shun159/tres) 
-[![codecov](https://codecov.io/gh/shun159/tres/branch/develop/graph/badge.svg)](https://codecov.io/gh/shun159/tres)
+[![Build Status](https://img.shields.io/travis/shun159/tres.svg?style=flat-square)](https://travis-ci.org/shun159/tres) 
+[![codecov](https://img.shields.io/codecov/c/github/shun159/tres/develop.svg?style=flat-square)](https://codecov.io/gh/shun159/tres) 
+[![Supported OTP version](https://img.shields.io/badge/erlang-22.x-blue.svg?style=flat-square)](http://erlang.org/) 
+[![LICENSE](https://img.shields.io/badge/license-SUSHI--WARE%F0%9F%8D%A3-blue.svg?style=flat-square)](https://github.com/MakeNowJust/sushi-ware)
 
 ## Overview
 
