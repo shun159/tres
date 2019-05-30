@@ -12,7 +12,8 @@ defmodule Tres.HanderTest do
 
   describe "Openflow RoleRequest message" do
     test "with role and generation_id" do
-      {:ok, %Openflow.Role.Reply{}} = sync_send_message(Openflow.Role.Request.new(role: :nochange, generation_id: 1))
+      {:ok, %Openflow.Role.Reply{}} =
+        sync_send_message(Openflow.Role.Request.new(role: :nochange, generation_id: 1))
     end
   end
 
@@ -48,14 +49,15 @@ defmodule Tres.HanderTest do
         )
       )
 
-      {:ok, %Openflow.GetAsync.Reply{
-        flow_removed_mask_master: [:idle_timeout, :hard_timeout, :delete, :group_delete],
-        flow_removed_mask_slave: [],
-        packet_in_mask_master: [:no_match, :action],
-        packet_in_mask_slave: [],
-        port_status_mask_master: [:add, :delete, :modify],
-        port_status_mask_slave: []
-      }} = sync_send_message(Openflow.GetAsync.Request.new())
+      {:ok,
+       %Openflow.GetAsync.Reply{
+         flow_removed_mask_master: [:idle_timeout, :hard_timeout, :delete, :group_delete],
+         flow_removed_mask_slave: [],
+         packet_in_mask_master: [:no_match, :action],
+         packet_in_mask_slave: [],
+         port_status_mask_master: [:add, :delete, :modify],
+         port_status_mask_slave: []
+       }} = sync_send_message(Openflow.GetAsync.Request.new())
     end
   end
 
@@ -82,10 +84,11 @@ defmodule Tres.HanderTest do
         Openflow.FlowMod.new(
           priority: 0xFFFF,
           match: Openflow.Match.new(in_port: 0xF, reg0: 99, eth_type: 0x0806),
-          instructions: Openflow.Instruction.ApplyActions.new([
-            Openflow.Action.NxController2.new(pause: true),
-            Openflow.Action.NxResubmitTable.new()
-          ])
+          instructions:
+            Openflow.Instruction.ApplyActions.new([
+              Openflow.Action.NxController2.new(pause: true),
+              Openflow.Action.NxResubmitTable.new()
+            ])
         )
       )
 
