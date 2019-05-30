@@ -37,8 +37,6 @@ defmodule Tres.Mixfile do
   defp deps do
     [
       {:ranch, "~> 1.7.1"},
-      {:eovsdb, github: "shun159/eovsdb", branch: "master"},
-      {:jsone, github: "sile/jsone", tag: "1.4.6", override: true},
       {:excoveralls, "~> 0.10", only: :test},
       # Document
       {:earmark, "~> 1.2.6", only: :dev, runtime: false},
