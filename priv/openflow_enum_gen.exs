@@ -296,8 +296,8 @@ enums = [
     port_blocked: 1 <<< 8
   ],
   config_flags: [
-    drop: 1 <<< 0,
-    reasm: 1 <<< 1
+    fragment_drop: 1 <<< 0,
+    fragment_reassemble: 1 <<< 1
   ],
   controller_max_len: [
     max: 0xFFE5,

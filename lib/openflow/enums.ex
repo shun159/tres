@@ -1503,16 +1503,16 @@ defmodule Openflow.Enums do
     throw(:bad_enum)
   end
 
-  def to_int(:drop, :config_flags) do
-    config_flags_to_int(:drop)
+  def to_int(:fragment_drop, :config_flags) do
+    config_flags_to_int(:fragment_drop)
   catch
-    _class, _reason -> :drop
+    _class, _reason -> :fragment_drop
   end
 
-  def to_int(:reasm, :config_flags) do
-    config_flags_to_int(:reasm)
+  def to_int(:fragment_reassemble, :config_flags) do
+    config_flags_to_int(:fragment_reassemble)
   catch
-    _class, _reason -> :reasm
+    _class, _reason -> :fragment_reassemble
   end
 
   def to_int(_int, :config_flags) do
@@ -11351,11 +11351,11 @@ defmodule Openflow.Enums do
   def switch_capabilities_to_atom(0x80), do: :arp_match_ip
   def switch_capabilities_to_atom(0x100), do: :port_blocked
   def switch_capabilities_to_atom(_), do: throw(:bad_enum)
-  def config_flags_to_int(:drop), do: 0x1
-  def config_flags_to_int(:reasm), do: 0x2
+  def config_flags_to_int(:fragment_drop), do: 0x1
+  def config_flags_to_int(:fragment_reassemble), do: 0x2
   def config_flags_to_int(_), do: throw(:bad_enum)
-  def config_flags_to_atom(0x1), do: :drop
-  def config_flags_to_atom(0x2), do: :reasm
+  def config_flags_to_atom(0x1), do: :fragment_drop
+  def config_flags_to_atom(0x2), do: :fragment_reassemble
   def config_flags_to_atom(_), do: throw(:bad_enum)
   def controller_max_len_to_int(:max), do: 0xFFE5
   def controller_max_len_to_int(:no_buffer), do: 0xFFFF
@@ -13767,7 +13767,7 @@ defmodule Openflow.Enums do
       port_blocked: 256
     ]
 
-  defp enum_of(:config_flags), do: [drop: 1, reasm: 2]
+  defp enum_of(:config_flags), do: [fragment_drop: 1, fragment_reassemble: 2]
   defp enum_of(:controller_max_len), do: [max: 65509, no_buffer: 65535]
 
   defp enum_of(:experimenter_oxm_vendors),
