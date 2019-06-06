@@ -325,7 +325,12 @@ defmodule Tres.SecureChannel do
     {:keep_state, %{state_data | ping_fail_count: 0}, Enum.reverse(actions)}
   end
 
-  defp handle_packet(packet, %State{buffer: buffer} = state_data, state, actions) do
+  defp handle_packet(
+         packet,
+         %State{buffer: buffer, datapath_id: dpid} = state_data,
+         state,
+         actions
+       ) do
     binary = <<buffer::bytes, packet::bytes>>
 
     case Openflow.read(binary) do
@@ -337,8 +342,10 @@ defmodule Tres.SecureChannel do
       {:error, :binary_too_small} ->
         handle_packet("", %{state_data | buffer: binary}, state, actions)
 
-      {:error, {:malformed_packet, {_reason, st}}} ->
-        :ok = debug("malformed packet received from #{state_data.datapath_id} stack_trace: #{st}")
+      {:error, {:malformed_packet, {reason, st}}} ->
+        :ok =
+          debug("malformed packet #{dpid} reason: #{inspect(reason)} stack_trace: #{inspect(st)}")
+
         handle_packet("", %{state_data | buffer: ""}, state, actions)
     end
   end
