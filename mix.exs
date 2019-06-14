@@ -1,11 +1,17 @@
 defmodule Tres.Mixfile do
   use Mix.Project
 
+  @description """
+  OpenFlow controller library for Elixir
+  """
+
   def project do
     [
       app: :tres,
       version: "0.1.0",
+      description: @description,
       elixir: "~> 1.8",
+      package: package(),
       start_permanent: Mix.env() == :prod,
       compilers: [:erlang] ++ Mix.compilers(),
       deps: deps(),
@@ -155,6 +161,15 @@ defmodule Tres.Mixfile do
         Openflow.OnfBundleControl,
         Openflow.OnfBundleAddMessage
       ]
+    ]
+  end
+
+  defp package do
+    [
+      maintainers: ["Eishun Kondoh"],
+      licenses: ["SUSHI-WARE", "Apache 2.0"],
+      links: %{"GitHub" => "https://github.com/shun159/tres"},
+      files: ~w(.formatter.exs mix.exs README.md lib priv src)
     ]
   end
 end
