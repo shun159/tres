@@ -14,7 +14,8 @@ defmodule Tres.Mixfile do
           "test"
         ],
         generate_enum: [
-          "run priv/openflow_enum_gen.exs"
+          "run priv/openflow_enum_gen.exs",
+          "format"
         ]
       ],
       docs: docs(),
