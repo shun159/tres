@@ -8,7 +8,7 @@ defmodule Tres.Mixfile do
   def project do
     [
       app: :tres,
-      version: "0.1.0",
+      version: "0.1.1",
       description: @description,
       elixir: "~> 1.8",
       package: package(),
