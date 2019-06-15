@@ -17,7 +17,7 @@ Tres is a framework and set of helper libraries to develop OpenFlow controllers 
 ```elixir
 def deps do
   [
-    {:tres, "~> 0.1.0"}
+    {:tres, "~> 0.1.1"}
   ]
 end
 ```
