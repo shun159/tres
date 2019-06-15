@@ -4,7 +4,7 @@
 [![codecov](https://img.shields.io/codecov/c/github/shun159/tres/develop.svg?style=flat-square)](https://codecov.io/gh/shun159/tres) 
 [![Supported OTP version](https://img.shields.io/badge/erlang-22.x-blue.svg?style=flat-square)](http://erlang.org/) 
 [![LICENSE](https://img.shields.io/badge/license-SUSHI--WARE%F0%9F%8D%A3-blue.svg?style=flat-square)](https://github.com/MakeNowJust/sushi-ware)
-[![hex version](https://img.shields.io/badge/hex-0.1.0-yellow.svg?style=flat-square)](https://hex.pm/packages/tres/0.1.0)
+[![Hex Version](https://img.shields.io/hexpm/v/tres.svg?style=flat-square)](https://hex.pm/packages/tres)
 
 ## Overview
 
