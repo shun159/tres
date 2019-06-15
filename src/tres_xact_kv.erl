@@ -3,13 +3,23 @@
 -include_lib("stdlib/include/ms_transform.hrl").
 
 -export([create/0, drop/1]).
--export([insert/3, update/3, get/2, delete/2, is_exists/2, is_empty/1]).
+-export([insert/3, insert/4,
+         update/3, get/2,
+         delete/2, is_exists/2,
+         is_empty/1, aged_out/1]).
 
+-define(AGE_TIME_MS, 1000).
 -define(TABLE, xact_kv).
 -define(ENTRY, xact_entry).
 -define(TABLE_OPTS, [set, protected, {keypos, #?ENTRY.xid}]).
 
--record(?ENTRY, {xid = 0, pending = nil, orig = nil}).
+-record(?ENTRY, {
+           xid         = 0,
+           pending     = nil,
+           orig        = nil,
+           from        = nil,
+           inserted_at = 0
+          }).
 
 -spec create() -> reference().
 create() ->
@@ -21,7 +31,15 @@ drop(Tid) ->
 
 -spec insert(reference(), integer(), map()) -> true.
 insert(Tid, Xid, Orig) ->
-    ets:insert(Tid, #?ENTRY{xid = Xid, orig = Orig}).
+    ets:insert(Tid, #?ENTRY{
+                        xid = Xid,
+                        orig = Orig,
+                        inserted_at = os:system_time(milli_seconds)
+                       }).
+
+-spec insert(reference(), integer(), map(), term()) -> true.
+insert(Tid, Xid, Orig, From) ->
+    ets:insert(Tid, #?ENTRY{xid = Xid, orig = Orig, from = From}).
 
 -spec update(reference(), integer(), map()) -> integer().
 update(Tid, Xid, #{'__struct__' := 'Elixir.Openflow.ErrorMsg'} = Error) ->
@@ -51,7 +69,16 @@ is_empty(Tid) ->
         _ -> false
     end.
 
+-spec aged_out(reference()) -> integer().
+aged_out(Tid) ->
+    MatchSpec = ms_for_aged_entries(),
+    ets:select_delete(Tid, MatchSpec).
+
 %% Private functions
+
+ms_for_aged_entries() ->
+    Now = os:system_time(milli_seconds),
+    ets:fun2ms(fun(#?ENTRY{inserted_at = T1}) -> Now - T1 > ?AGE_TIME_MS end).
 
 ms_for_exists(Xid) ->
     ets:fun2ms(fun(#?ENTRY{xid = TXid}) when TXid == Xid -> true end).

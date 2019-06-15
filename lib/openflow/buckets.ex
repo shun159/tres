@@ -8,23 +8,35 @@ defmodule Openflow.Bucket do
 
   alias __MODULE__
 
+  @type t :: %Bucket{
+          weight: 0..0xFFFF,
+          watch_port: Openflow.Port.no(),
+          watch_group: Openflow.GroupMod.id(),
+          actions: [Openflow.Actions.type()]
+        }
+
   @header_size 16
 
+  @spec new(
+          weight: 0..0xFFFF,
+          watch_port: Openflow.Port.no(),
+          watch_group: Openflow.GroupMod.id(),
+          actions: [Openflow.Actions.type()]
+        ) :: t()
   def new(options) do
-    weight = Keyword.get(options, :weight, 0)
-    watch_port = Keyword.get(options, :watch_port, :any)
-    watch_group = Keyword.get(options, :watch_group, :any)
-    actions = Keyword.get(options, :actions, [])
-    %Bucket{weight: weight, watch_port: watch_port, watch_group: watch_group, actions: actions}
+    %Bucket{
+      weight: options[:weight] || 0,
+      watch_port: options[:watch_port] || :any,
+      watch_group: options[:watch_group] || :any,
+      actions: options[:actions] || []
+    }
   end
 
-  def read(buckets_bin) do
-    do_read([], buckets_bin)
-  end
+  @spec read(<<_::_*128>>) :: [t()]
+  def read(buckets_bin), do: do_read([], buckets_bin)
 
-  def to_binary(buckets) do
-    to_binary("", buckets)
-  end
+  @spec read([t()]) :: <<_::_*128>>
+  def to_binary(buckets), do: to_binary("", buckets)
 
   # private functions
 

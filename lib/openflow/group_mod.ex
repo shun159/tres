@@ -12,17 +12,42 @@ defmodule Openflow.GroupMod do
 
   alias __MODULE__
 
+  @type command :: :add | :delete | :modify
+  @type type :: :add | :select | :indirect | :fast_failover
+  @type id :: :max | :all | :any | 0..0xFFFFFFFF
+
+  @type t :: %GroupMod{
+          version: 4,
+          datapath_id: String.t() | nil,
+          aux_id: 0..0xFF | nil,
+          xid: 0..0xFFFFFFFF,
+          command: command(),
+          type: type(),
+          group_id: id(),
+          buckets: [Openflow.Bucket.t()]
+        }
+
+  @spec ofp_type() :: 15
   def ofp_type, do: 15
 
+  @spec new(
+          xid: 0..0xFFFFFFFF,
+          command: command(),
+          type: type(),
+          group_id: id(),
+          buckets: [Openflow.Bucket.t()]
+        ) :: t()
   def new(options \\ []) do
-    xid = Keyword.get(options, :xid, 0)
-    command = Keyword.get(options, :command, :add)
-    type = Keyword.get(options, :type, :all)
-    group_id = Keyword.get(options, :group_id, 0)
-    buckets = Keyword.get(options, :buckets, [])
-    %GroupMod{xid: xid, command: command, type: type, group_id: group_id, buckets: buckets}
+    %GroupMod{
+      xid: options[:xid] || 0,
+      command: options[:command] || :add,
+      type: options[:type] || :all,
+      group_id: options[:group_id] || 0,
+      buckets: options[:buckets] || []
+    }
   end
 
+  @spec read(<<_::64, _::_*128>>) :: t()
   def read(<<command_int::16, type_int::8, _::8, group_id_int::32, buckets_bin::bytes>>) do
     command = Openflow.Utils.get_enum(command_int, :group_mod_command)
     type = Openflow.Utils.get_enum(type_int, :group_type)
@@ -31,6 +56,7 @@ defmodule Openflow.GroupMod do
     %GroupMod{command: command, type: type, group_id: group_id, buckets: buckets}
   end
 
+  @spec to_binary(t()) :: <<_::64, _::_*128>>
   def to_binary(%GroupMod{command: command, type: type, group_id: group_id, buckets: buckets}) do
     command_int = Openflow.Utils.get_enum(command, :group_mod_command)
     type_int = Openflow.Utils.get_enum(type, :group_type)

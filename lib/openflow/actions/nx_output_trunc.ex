@@ -8,20 +8,28 @@ defmodule Openflow.Action.NxOutputTrunc do
   @nxast 39
 
   alias __MODULE__
+  alias Openflow.Action.Experimenter
 
+  @spec new(Keyword.t()) :: %NxOutputTrunc{}
   def new(options) do
-    port_no = Keyword.get(options, :port_number)
-    max_len = Keyword.get(options, :max_len)
-    %NxOutputTrunc{port_number: port_no, max_len: max_len}
+    port_no = options[:port_no] || raise "port_no must be specified"
+    max_len = options[:max_len] || raise "max_len must be specified"
+
+    %NxOutputTrunc{
+      port_number: port_no,
+      max_len: max_len
+    }
   end
 
   def to_binary(%NxOutputTrunc{port_number: port_no, max_len: max_len}) do
     port_no_int = Openflow.Utils.get_enum(port_no, :openflow10_port_no)
-    exp_body = <<@experimenter::32, @nxast::16, port_no_int::16, max_len::32>>
-    exp_body_size = byte_size(exp_body)
-    padding_length = Openflow.Utils.padding(4 + exp_body_size, 8)
-    length = 4 + exp_body_size + padding_length
-    <<0xFFFF::16, length::16, exp_body::bytes, 0::size(padding_length)-unit(8)>>
+
+    Experimenter.pack_exp_header(<<
+      @experimenter::32,
+      @nxast::16,
+      port_no_int::16,
+      max_len::32
+    >>)
   end
 
   def read(<<@experimenter::32, @nxast::16, port_no_int::16, max_len::32>>) do

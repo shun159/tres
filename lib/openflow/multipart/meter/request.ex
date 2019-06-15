@@ -12,11 +12,7 @@ defmodule Openflow.Multipart.Meter.Request do
 
   def ofp_type, do: 18
 
-  def new(meter_id) when is_integer(meter_id) or is_atom(meter_id) do
-    %Request{meter_id: meter_id}
-  end
-
-  def new(options) when is_list(options) do
+  def new(options \\ []) do
     %Request{
       xid: options[:xid] || 0,
       meter_id: options[:meter_id] || :all

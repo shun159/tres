@@ -1,0 +1,7 @@
+%{
+  "eovsdb": {:git, "https://github.com/shun159/eovsdb.git", "1ff1572708d72fd25631c681f2102407903252a3", [branch: "master"]},
+  "jsone": {:git, "https://github.com/sile/jsone.git", "b23d312a5ed051ea7ad0989a9f2cb1a9c3f9a502", [tag: "1.4.6"]},
+  "pkt": {:git, "https://github.com/msantos/pkt.git", "ff0e9a7d28cdae941bce935602cd252cad1ea296", []},
+  "ranch": {:hex, :ranch, "1.7.1", "6b1fab51b49196860b733a49c07604465a47bdb78aa10c1c16a3d199f7f8c881", [:rebar3], [], "hexpm"},
+  "uuid": {:git, "https://github.com/avtobiff/erlang-uuid.git", "585c2474afb4a597ae8c8bf6d21e5a9c73f18e0b", [tag: "v0.5.0"]},
+}

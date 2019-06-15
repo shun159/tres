@@ -5,25 +5,31 @@ defmodule Openflow.Action.NxResubmitTable do
   @nxast 14
 
   alias __MODULE__
+  alias Openflow.Action.Experimenter
+
+  def new(options \\ [])
 
   def new(table_id) when is_atom(table_id) or is_integer(table_id) do
     new(table_id: table_id)
   end
 
   def new(options) do
-    in_port = Keyword.get(options, :in_port, :in_port)
-    table_id = Keyword.get(options, :table_id, :all)
+    in_port = options[:in_port] || :in_port
+    table_id = options[:table_id] || :all
     %NxResubmitTable{in_port: in_port, table_id: table_id}
   end
 
-  def to_binary(%NxResubmitTable{in_port: in_port, table_id: table_id}) do
-    in_port_int = Openflow.Utils.get_enum(in_port, :openflow10_port_no)
-    table_id_int = Openflow.Utils.get_enum(table_id, :table_id)
-    exp_body = <<@experimenter::32, @nxast::16, in_port_int::16, table_id_int::8, 0::24>>
-    exp_body_size = byte_size(exp_body)
-    padding_length = Openflow.Utils.padding(4 + exp_body_size, 8)
-    length = 4 + exp_body_size + padding_length
-    <<0xFFFF::16, length::16, exp_body::bytes, 0::size(padding_length)-unit(8)>>
+  def to_binary(%NxResubmitTable{} = resubmit_table) do
+    in_port_int = Openflow.Utils.get_enum(resubmit_table.in_port, :openflow10_port_no)
+    table_id_int = Openflow.Utils.get_enum(resubmit_table.table_id, :table_id)
+
+    Experimenter.pack_exp_header(<<
+      @experimenter::32,
+      @nxast::16,
+      in_port_int::16,
+      table_id_int::8,
+      0::24
+    >>)
   end
 
   def read(

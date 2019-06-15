@@ -1,4 +1,6 @@
 defmodule Tres.SecureChannelState do
+  use Bitwise
+
   defstruct(
     handler_pid: nil,
     handler_ref: nil,
@@ -43,26 +45,27 @@ defmodule Tres.SecureChannelState do
     }
   end
 
-  def increment_transaction_id(table_ref) do
-    :ets.update_counter(table_ref, :datapath_xid, {2, 1, 0xFFFFFFFF, 0})
+  @spec increment_transaction_id(:counters.counters_ref()) :: integer()
+  def increment_transaction_id(counter_ref) do
+    :ok = :counters.add(counter_ref, 1, 1)
+    get_transaction_id(counter_ref)
   end
 
-  def set_transaction_id(table_ref, xid) do
-    :ets.insert(table_ref, {:datapath_xid, xid})
+  @spec set_transaction_id(:counters.counters_ref(), integer()) :: integer()
+  def set_transaction_id(counter_ref, xid) do
+    :ok = :counters.put(counter_ref, 1, xid)
+    get_transaction_id(counter_ref)
   end
 
-  def get_transaction_id(table_ref) do
-    case :ets.lookup(table_ref, :datapath_xid) do
-      [{_, xid} | _] -> xid
-    end
+  @spec get_transaction_id(:counters.counters_ref()) :: integer()
+  def get_transaction_id(counter_ref) do
+    :counters.get(counter_ref, 1) &&& 0xFFFFFFFF
   end
 
   # private functions
 
   @spec create_counter() :: reference()
   defp create_counter do
-    table_ref = :ets.new(:xid_counter, [:set, :private])
-    _ = :ets.insert(table_ref, {:datapath_xid, 0})
-    {:ok, table_ref}
+    {:ok, :counters.new(1, [])}
   end
 end

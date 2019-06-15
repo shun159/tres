@@ -10,35 +10,40 @@ defmodule Openflow.Action.NxSample do
   @nxast 29
 
   alias __MODULE__
+  alias Openflow.Action.Experimenter
 
+  @spec new(
+          probability: 1..0xFFFF,
+          collector_set_id: 0..0xFFFFFFFF,
+          obs_domain_id: 0..0xFFFFFFFF,
+          obs_point_id: 0..0xFFFFFFFF
+        ) :: %NxSample{
+          probability: 1..0xFFFF,
+          collector_set_id: 0..0xFFFFFFFF,
+          obs_domain_id: 0..0xFFFFFFFF,
+          obs_point_id: 0..0xFFFFFFFF
+        }
   def new(options) do
-    probability = Keyword.get(options, :probability, 0)
-    collector_set_id = Keyword.get(options, :collector_set_id, 0)
-    obs_domain_id = Keyword.get(options, :obs_domain_id, 0)
-    obs_point_id = Keyword.get(options, :obs_point_id, 0)
+    (is_integer(options[:probability]) and options[:probability] > 0) ||
+      raise("probability must be greater than 0")
 
     %NxSample{
-      probability: probability,
-      collector_set_id: collector_set_id,
-      obs_domain_id: obs_domain_id,
-      obs_point_id: obs_point_id
+      probability: options[:probability],
+      collector_set_id: options[:collector_set_id] || 0,
+      obs_domain_id: options[:obs_domain_id] || 0,
+      obs_point_id: options[:obs_point_id] || 0
     }
   end
 
-  def to_binary(%NxSample{
-        probability: probability,
-        collector_set_id: collector_set_id,
-        obs_domain_id: obs_domain_id,
-        obs_point_id: obs_point_id
-      }) do
-    exp_body =
-      <<@experimenter::32, @nxast::16, probability::16, collector_set_id::32, obs_domain_id::32,
-        obs_point_id::32>>
-
-    exp_body_size = byte_size(exp_body)
-    padding_length = Openflow.Utils.padding(4 + exp_body_size, 8)
-    length = 4 + exp_body_size + padding_length
-    <<0xFFFF::16, length::16, exp_body::bytes, 0::size(padding_length)-unit(8)>>
+  def to_binary(%NxSample{} = sample) do
+    Experimenter.pack_exp_header(<<
+      @experimenter::32,
+      @nxast::16,
+      sample.probability::16,
+      sample.collector_set_id::32,
+      sample.obs_domain_id::32,
+      sample.obs_point_id::32
+    >>)
   end
 
   def read(

@@ -63,14 +63,18 @@ defmodule LearningSwitch.Ofctl do
   end
 
   defp init_flow_tables(datapath_id) do
+    :ok = onf_bundle_open(datapath_id, bundle_id: 1, flags: [:atomic, :ordered])
+
     for flow_options <- [
           add_default_broadcast_flow_entry(),
           add_default_flooding_flow_entry(),
           add_multicast_mac_drop_flow_entry(),
           add_ipv6_multicast_mac_drop_flow_entry(),
           add_default_forwarding_flow_entry()] do
-        send_flow_mod_add(datapath_id, flow_options)
+        send_flow_mod_add(datapath_id, Keyword.merge(flow_options, [bundle_id: 1, bundle_flags: [:atomic, :ordered]]))
     end
+
+    :ok = onf_bundle_commit(datapath_id, bundle_id: 1, flags: [:atomic, :ordered])
   end
 
   defp add_forwarding_flow_and_packet_out(packet_in, state) do
@@ -81,12 +85,8 @@ defmodule LearningSwitch.Ofctl do
     packet_out(packet_in, port_no || :flood)
   end
 
-  defp packet_out(%PacketIn{datapath_id: datapath_id, data: data}, port_no) do
-    send_packet_out(
-      datapath_id,
-      data: data,
-      actions: [Output.new(port_no)]
-    )
+  defp packet_out(%PacketIn{} = pin, port_no) do
+    send_packet_out(packet_in: pin, actions: [Output.new(port_no)])
   end
 
   defp add_forwarding_flow_entry(_packet_in, nil), do: :noop

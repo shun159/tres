@@ -8,7 +8,9 @@ defmodule Openflow.Action.NxFinTimeout do
   @nxast 19
 
   alias __MODULE__
+  alias Openflow.Action.Experimenter
 
+  @spec new(Keyword.t()) :: %NxFinTimeout{}
   def new(options) do
     %NxFinTimeout{
       idle_timeout: options[:idle_timeout] || 0,
@@ -16,9 +18,13 @@ defmodule Openflow.Action.NxFinTimeout do
     }
   end
 
-  def to_binary(%NxFinTimeout{idle_timeout: fin_idle, hard_timeout: fin_hard}) do
-    exp_body = <<@experimenter::32, @nxast::16, fin_idle::16, fin_hard::16>>
-    <<0xFFFF::16, 16::16, exp_body::bytes, 0::size(2)-unit(8)>>
+  def to_binary(%NxFinTimeout{} = fin_timeout) do
+    Experimenter.pack_exp_header(<<
+      @experimenter::32,
+      @nxast::16,
+      fin_timeout.idle_timeout::16,
+      fin_timeout.hard_timeout::16
+    >>)
   end
 
   def read(<<@experimenter::32, @nxast::16, fin_idle::16, fin_hard::16, _::size(2)-unit(8)>>) do

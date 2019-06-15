@@ -21,39 +21,87 @@ defmodule Openflow.FlowMod do
 
   alias __MODULE__
 
+  @type buffer_id :: :no_buffer | 0..0xFFFFFFFF
+
+  @type command :: :add | :modify | :modify_strict | :delete | :delete_strict
+
+  @type out_port :: Openflow.Port.number()
+
+  @type out_group :: Openflow.GroupMod.id()
+
+  @type flags :: [
+          :send_flow_rem | :check_overlap | :reset_counts | :no_packet_counts | :no_byte_counts
+        ]
+
+  @type t :: %FlowMod{
+          version: 4,
+          xid: 0..0xFFFFFFFF,
+          datapath_id: String.t() | nil,
+          aux_id: 0..0xF | nil,
+          cookie: 0..0xFFFFFFFFFFFFFFFF,
+          cookie_mask: 0..0xFFFFFFFFFFFFFFFF,
+          table_id: 0..0xFF,
+          command: command(),
+          idle_timeout: 0..0xFFFF,
+          hard_timeout: 0..0xFFFF,
+          priority: 0..0xFFFF,
+          buffer_id: buffer_id(),
+          out_port: out_port(),
+          out_group: out_group(),
+          flags: flags(),
+          match: %Openflow.Match{},
+          instructions: [
+            %Openflow.Instruction.ApplyActions{}
+            | %Openflow.Instruction.WriteActions{}
+            | %Openflow.Instruction.ClearActions{}
+            | %Openflow.Instruction.GotoTable{}
+            | %Openflow.Instruction.Meter{}
+            | %Openflow.Instruction.WriteMetadata{}
+          ]
+        }
+
+  @spec ofp_type() :: 14
   def ofp_type, do: 14
 
+  @spec new(
+          xid: 0..0xFFFFFFFF,
+          cookie: 0..0xFFFFFFFFFFFFFFFF,
+          cookie_mask: 0..0xFFFFFFFFFFFFFFFF,
+          table_id: 0..0xF,
+          command: command(),
+          idle_timeout: 0..0xFFFF,
+          hard_timeout: 0..0xFFFF,
+          priority: 0..0xFFFF,
+          buffer_id: buffer_id(),
+          out_port: out_port(),
+          out_group: out_group(),
+          flags: flags(),
+          match: %Openflow.Match{},
+          instructions: [
+            %Openflow.Instruction.ApplyActions{}
+            | %Openflow.Instruction.WriteActions{}
+            | %Openflow.Instruction.ClearActions{}
+            | %Openflow.Instruction.GotoTable{}
+            | %Openflow.Instruction.Meter{}
+            | %Openflow.Instruction.WriteMetadata{}
+          ]
+        ) :: t()
   def new(options \\ []) do
-    xid = Keyword.get(options, :xid, 0)
-    cookie = Keyword.get(options, :cookie, 0)
-    cookie_mask = Keyword.get(options, :cookie_mask, 0)
-    table_id = Keyword.get(options, :table_id, 0)
-    command = Keyword.get(options, :command, :add)
-    idle = Keyword.get(options, :idle_timeout, 0)
-    hard = Keyword.get(options, :hard_timeout, 0)
-    priority = Keyword.get(options, :priority, 0)
-    buffer_id = Keyword.get(options, :buffer_id, :no_buffer)
-    out_port = Keyword.get(options, :out_port, :any)
-    out_group = Keyword.get(options, :out_group, :any)
-    flags = Keyword.get(options, :flags, [])
-    match = Keyword.get(options, :match, Openflow.Match.new())
-    instructions = Keyword.get(options, :instructions, [])
-
     %FlowMod{
-      xid: xid,
-      cookie: cookie,
-      cookie_mask: cookie_mask,
-      priority: priority,
-      table_id: table_id,
-      command: command,
-      idle_timeout: idle,
-      hard_timeout: hard,
-      buffer_id: buffer_id,
-      out_port: out_port,
-      out_group: out_group,
-      flags: flags,
-      match: match,
-      instructions: instructions
+      xid: options[:xid] || 0,
+      cookie: options[:cookie] || 0,
+      cookie_mask: options[:cookie_mask] || 0,
+      priority: options[:priority] || 0x8000,
+      table_id: options[:table_id] || 0,
+      command: options[:command] || :add,
+      idle_timeout: options[:idle_timeout] || 0,
+      hard_timeout: options[:hard_timeout] || 0,
+      buffer_id: options[:buffer_id] || :no_buffer,
+      out_port: options[:out_port] || :any,
+      out_group: options[:out_group] || :any,
+      flags: options[:flags] || [],
+      match: options[:match] || Openflow.Match.new(),
+      instructions: options[:instructions] || []
     }
   end
 

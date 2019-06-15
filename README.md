@@ -1,5 +1,11 @@
 # Tres - an Elixir OpenFlow development platform
 
+[![Build Status](https://img.shields.io/travis/shun159/tres.svg?style=flat-square)](https://travis-ci.org/shun159/tres) 
+[![codecov](https://img.shields.io/codecov/c/github/shun159/tres/develop.svg?style=flat-square)](https://codecov.io/gh/shun159/tres) 
+[![Supported OTP version](https://img.shields.io/badge/erlang-22.x-blue.svg?style=flat-square)](http://erlang.org/) 
+[![LICENSE](https://img.shields.io/badge/license-SUSHI--WARE%F0%9F%8D%A3-blue.svg?style=flat-square)](https://github.com/MakeNowJust/sushi-ware)
+[![hex version](https://img.shields.io/badge/hex-0.1.0-yellow.svg?style=flat-square)](https://hex.pm/packages/tres/0.1.0)
+
 ## Overview
 
 Tres is a framework and set of helper libraries to develop OpenFlow controllers in Elixir.
@@ -11,7 +17,7 @@ Tres is a framework and set of helper libraries to develop OpenFlow controllers 
 ```elixir
 def deps do
   [
-    {:tres, github: "shun159/tres", branch: "develop"}
+    {:tres, "~> 0.1.0"}
   ]
 end
 ```
@@ -25,7 +31,7 @@ config :tres,
 ```
 
 To use `Tres.Controller` with your code, set the handler callback_module to your callback module.
-This module must implement the `Module.start_link/2` that returns `on_start`.
+This module must implement the `Module.start_link/1` that returns `on_start`.
 
 Set the callback_args to the terms you want pass to the `start_link/2` callback function.
 
@@ -35,7 +41,7 @@ defmodule Sample do
   use GenServer
   use Tres.Controller
 
-  def start_link(datapath_id, _start_args) do
+  def start_link([datapath_id, _start_args]) do
     GenServer.start_link(__MODULE__, [datapath_id])
   end
   
@@ -70,9 +76,11 @@ $ iex -S mix
 - learning-switch: Simple Layer2 switch
 - leader-example: Simple election based multiple controller using Ulf Wiger's Locks Leader
 - patch\_panel: inteligent patch\_panel example
+- simple\_router: An OpenFlow controller that emulates layer 3 switch (router).
+- nx\_learning\_switch: Example for very simple-minded L2 switch using NXAST_LEARN action.
 
 License
 -------
-Tres is released under the Apache license Version 2.0:
+Tres is released under the __SUSHI-WARE LICENSE__.
 
-* https://www.apache.org/licenses/LICENSE-2.0
+__私に寿司をおごってください__

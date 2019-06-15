@@ -16,10 +16,6 @@ defmodule Openflow.NxSetControllerId do
     %NxSetControllerId{id: controller_id}
   end
 
-  def read(<<@experimenter::32, @nx_type::32, _::size(6)-unit(8), controller_id::16>>) do
-    %NxSetControllerId{id: controller_id}
-  end
-
   def to_binary(%NxSetControllerId{id: controller_id}) do
     <<@experimenter::32, @nx_type::32, 0::size(6)-unit(8), controller_id::16>>
   end

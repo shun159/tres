@@ -19,6 +19,8 @@ defmodule Openflow.FlowRemoved do
 
   alias __MODULE__
 
+  @type reason :: :idle_timeout | :hard_timeout | :delete | :group_delete | :meter | :eviction
+
   def ofp_type, do: 11
 
   def read(

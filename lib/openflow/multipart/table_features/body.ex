@@ -18,7 +18,9 @@ defmodule Openflow.Multipart.TableFeatures.Body do
             write_setfield: nil,
             write_setfield_miss: nil,
             apply_setfield: nil,
-            apply_setfield_miss: nil
+            apply_setfield_miss: nil,
+            experimenter: nil,
+            experimenter_miss: nil
 
   alias __MODULE__
 
@@ -40,6 +42,8 @@ defmodule Openflow.Multipart.TableFeatures.Body do
   @write_setfield_miss 13
   @apply_setfield 14
   @apply_setfield_miss 15
+  @experimenter 0xFFFE
+  @experimenter_miss 0xFFFF
 
   @prop_keys [
     :instructions,
@@ -55,7 +59,9 @@ defmodule Openflow.Multipart.TableFeatures.Body do
     :write_setfield,
     :write_setfield_miss,
     :apply_setfield,
-    :apply_setfield_miss
+    :apply_setfield_miss,
+    :experimenter,
+    :experimenter_miss
   ]
 
   def new(options) do
@@ -79,7 +85,9 @@ defmodule Openflow.Multipart.TableFeatures.Body do
       write_setfield: options[:write_setfield],
       write_setfield_miss: options[:write_setfield_miss],
       apply_setfield: options[:apply_setfield],
-      apply_setfield_miss: options[:apply_setfield_miss]
+      apply_setfield_miss: options[:apply_setfield_miss],
+      experimenter: options[:experimenter],
+      experimenter_miss: options[:experimenter_miss]
     }
   end
 
@@ -111,7 +119,7 @@ defmodule Openflow.Multipart.TableFeatures.Body do
            name_bin::size(@max_table_name_len)-bytes, metadata_match::64, metadata_write::64,
            config_int::32, max_entries::32, props_bin::bytes>>
        ) do
-    name = Openflow.Utils.decode_string(name_bin)
+    name = hd(String.split(name_bin, <<0>>, parts: 2))
     config = Openflow.Enums.int_to_flags(config_int, :table_config)
 
     body = %Body{
@@ -142,7 +150,7 @@ defmodule Openflow.Multipart.TableFeatures.Body do
     } = table
 
     config_int = Openflow.Enums.flags_to_int(config, :table_config)
-    name_bin = Openflow.Utils.encode_string(name, @max_table_name_len)
+    name_bin = String.pad_trailing(name, @max_table_name_len, <<0>>)
 
     <<length::16, table_id::8, 0::size(5)-unit(8), name_bin::bytes, metadata_match::64,
       metadata_write::64, config_int::32, max_entries::32, props_bin::bytes>>
@@ -171,7 +179,7 @@ defmodule Openflow.Multipart.TableFeatures.Body do
     pad_length = Openflow.Utils.pad_length(length, 8)
     value_length = length - @prop_header_length
     <<next_tables_bin::size(value_length)-bytes, _::size(pad_length)-unit(8), rest::bytes>> = tail
-    next_tables = for <<table_id::8 <- next_tables_bin>>, do: table_id
+    next_tables = :erlang.binary_to_list(next_tables_bin)
     type = Openflow.Enums.to_atom(type_int, :table_feature_prop_type)
 
     body
@@ -208,9 +216,13 @@ defmodule Openflow.Multipart.TableFeatures.Body do
     |> decode_props(rest)
   end
 
-  defp decode_props(body, <<_type_int::16, length::16, tail::bytes>>) do
+  defp decode_props(
+         body,
+         <<type_int::16, length::16, _experimenter::32, _exp_type::32, tail::bytes>>
+       )
+       when type_int == @experimenter or type_int == @experimenter_miss do
     pad_length = Openflow.Utils.pad_length(length, 8)
-    value_length = length - @prop_header_length
+    value_length = length - 12
     <<_::size(value_length)-bytes, _::size(pad_length)-unit(8), rest::bytes>> = tail
     decode_props(body, rest)
   end
@@ -230,7 +242,7 @@ defmodule Openflow.Multipart.TableFeatures.Body do
   defp encode_props(acc, table, [type | rest])
        when type == :next_tables or type == :next_tables_miss do
     type_int = Openflow.Enums.to_int(type, :table_feature_prop_type)
-    next_tables_bin = to_string(Map.get(table, type))
+    next_tables_bin = :erlang.list_to_binary(Map.get(table, type))
     length = @prop_header_length + byte_size(next_tables_bin)
     pad_length = Openflow.Utils.pad_length(length, 8)
     body = <<next_tables_bin::bytes, 0::size(pad_length)-unit(8)>>
@@ -258,6 +270,10 @@ defmodule Openflow.Multipart.TableFeatures.Body do
     pad_length = Openflow.Utils.pad_length(length, 8)
     body = <<matches_bin::bytes, 0::size(pad_length)-unit(8)>>
     encode_props(<<acc::bytes, type_int::16, length::16, body::bytes>>, table, rest)
+  end
+
+  defp encode_props(acc, table, [_type | rest]) do
+    encode_props(acc, table, rest)
   end
 
   defp decode_instructions(acc, ""), do: Enum.reverse(acc)

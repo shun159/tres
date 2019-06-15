@@ -10,13 +10,12 @@ defmodule Tres.SecureChannel do
   alias Tres.MessageHandlerSup
 
   @process_flags [
-    trap_exit: true,
     message_queue_data: :off_heap
   ]
 
   @supported_version 4
 
-  @hello_handshake_timeout 1000
+  @hello_handshake_timeout 3000
   @features_handshake_timeout 1000
   @ping_timeout 5000
   # @transaction_timeout        5000
@@ -37,11 +36,11 @@ defmodule Tres.SecureChannel do
     state_data = init_secure_channel(ref, socket, transport)
 
     debug(
-      "[#{__MODULE__}] TCP connected to Switch on" <>
+      "TCP connected to Switch on" <>
         " #{state_data.ip_addr}:#{state_data.port}" <> " on #{inspect(self())}"
     )
 
-    :gen_statem.enter_loop(__MODULE__, [], :INIT, state_data, [])
+    :gen_statem.enter_loop(__MODULE__, [debug: []], :INIT, state_data, [])
   end
 
   # TCP handler
@@ -56,6 +55,7 @@ defmodule Tres.SecureChannel do
   end
 
   def handle_event(:info, {:tcp_closed, socket}, _state, %State{socket: socket} = state_data) do
+    :ok = debug("TCP disconnected with #{state_data.ip_addr}:#{state_data.port}")
     close_connection(:tcp_closed, state_data)
   end
 
@@ -102,7 +102,7 @@ defmodule Tres.SecureChannel do
         aux_id: aux_id,
         xact_kv_ref: kv_ref
       }) do
-    warn("[#{__MODULE__}] termiate: #{inspect(reason)} state = #{inspect(state)}")
+    debug("termiate: #{inspect(reason)} state = #{inspect(state)}")
     true = XACT_KV.drop(kv_ref)
     :ok = SwitchRegistry.unregister({datapath_id, aux_id})
   end
@@ -137,9 +137,7 @@ defmodule Tres.SecureChannel do
 
   # INIT state
   defp handle_INIT(:enter, _old_state, state_data) do
-    debug(
-      "[#{__MODULE__}] Initiate HELLO handshake: " <> "#{state_data.ip_addr}:#{state_data.port}"
-    )
+    debug("Initiate HELLO handshake: " <> "#{state_data.ip_addr}:#{state_data.port}")
 
     initiate_hello_handshake(state_data)
   end
@@ -153,25 +151,20 @@ defmodule Tres.SecureChannel do
   end
 
   defp handle_INIT(:internal, message, _state_data) do
-    debug(
-      "[#{__MODULE__}] Hello handshake in progress, " <> "dropping message: #{inspect(message)}"
-    )
+    debug("Hello handshake in progress, " <> "dropping message: #{inspect(message)}")
 
     :keep_state_and_data
   end
 
   # CONNECTING state
   defp handle_CONNECTING(:enter, :INIT, state_data) do
-    debug(
-      "[#{__MODULE__}] Initiate FEATURES handshake:" <>
-        " #{state_data.ip_addr}:#{state_data.port}"
-    )
+    debug("Initiate FEATURES handshake:" <> " #{state_data.ip_addr}:#{state_data.port}")
 
     initiate_features_handshake(state_data)
   end
 
   defp handle_CONNECTING(:enter, :WAITING, state_data) do
-    debug("[#{__MODULE__}] Re-entered features handshake")
+    debug("Re-entered features handshake")
     initiate_features_handshake(state_data)
   end
 
@@ -185,7 +178,7 @@ defmodule Tres.SecureChannel do
          state_data
        ) do
     debug(
-      "[#{__MODULE__}] Switch connected " <>
+      "Switch connected " <>
         "datapath_id: #{features.datapath_id}" <> " auxiliary_id: #{features.aux_id}"
     )
 
@@ -195,8 +188,7 @@ defmodule Tres.SecureChannel do
 
   defp handle_CONNECTING(:internal, {:openflow, message}, _state_data) do
     debug(
-      "[#{__MODULE__}] Features handshake in progress," <>
-        " dropping message: #{inspect(message.__struct__)}"
+      "Features handshake in progress," <> " dropping message: #{inspect(message.__struct__)}"
     )
 
     :keep_state_and_data
@@ -208,6 +200,8 @@ defmodule Tres.SecureChannel do
 
   # CONNECTED state
   defp handle_CONNECTED(:enter, :CONNECTING, state_data) do
+    _tref = schedule_xactdb_ageout()
+
     case init_handler(state_data) do
       %State{} = new_state_data ->
         start_periodic_idle_check()
@@ -226,6 +220,12 @@ defmodule Tres.SecureChannel do
 
   defp handle_CONNECTED(:info, :ping_timeout, state_data) do
     handle_ping_timeout(state_data, :CONNECTED)
+  end
+
+  defp handle_CONNECTED(:info, :xactdb_ageout, state_data) do
+    _num_deleted = XACT_KV.aged_out(state_data.xact_kv_ref)
+    _tref = schedule_xactdb_ageout()
+    :keep_state_and_data
   end
 
   defp handle_CONNECTED(
@@ -262,6 +262,11 @@ defmodule Tres.SecureChannel do
     :keep_state_and_data
   end
 
+  defp handle_CONNECTED({:call, from}, {:send_message, message}, state_data) do
+    xactional_send_message({from, message}, state_data)
+    :keep_state_and_data
+  end
+
   defp handle_CONNECTED({:call, from}, :get_xid, state_data) do
     xid = State.get_transaction_id(state_data.xid)
     {:keep_state_and_data, [{:reply, from, {:ok, xid}}]}
@@ -281,7 +286,7 @@ defmodule Tres.SecureChannel do
 
   # WATING state
   defp handle_WATING(:enter, _state, state_data) do
-    warn("[#{__MODULE__}] Possible HANG Detected on datapath_id: #{state_data.datapath_id} !")
+    debug("Possible HANG Detected on datapath_id: #{state_data.datapath_id} !")
     %State{handler_pid: handler_pid, datapath_id: dpid, aux_id: aux_id} = state_data
     send(handler_pid, {:switch_hang, {dpid, aux_id}})
     start_periodic_idle_check()
@@ -298,6 +303,12 @@ defmodule Tres.SecureChannel do
     handle_ping_timeout(state_data, :WAITING)
   end
 
+  defp handle_WATING(:info, :xactdb_ageout, state_data) do
+    _num_deleted = XACT_KV.aged_out(state_data.xact_kv_ref)
+    _tref = schedule_xactdb_ageout()
+    :keep_state_and_data
+  end
+
   defp handle_WATING(:internal, {:openflow, message}, state_data) do
     %State{handler_pid: handler_pid, datapath_id: dpid, aux_id: aux_id} = state_data
     send(handler_pid, %{message | datapath_id: dpid, aux_id: aux_id})
@@ -306,7 +317,7 @@ defmodule Tres.SecureChannel do
 
   defp handle_WATING(type, message, state_data)
        when type == :cast or type == :call do
-    debug("[#{__MODULE__}] Postponed: #{inspect(message)}, now WATING")
+    debug("Postponed: #{inspect(message)}, now WATING")
     {:keep_state, state_data, [{:postpone, true}]}
   end
 
@@ -314,16 +325,16 @@ defmodule Tres.SecureChannel do
     {:keep_state, %{state_data | ping_fail_count: 0}, Enum.reverse(actions)}
   end
 
-  defp handle_packet(packet, %State{buffer: buffer} = state_data, state, actions) do
+  defp handle_packet(
+         packet,
+         %State{buffer: buffer, datapath_id: dpid} = state_data,
+         state,
+         actions
+       ) do
     binary = <<buffer::bytes, packet::bytes>>
 
     case Openflow.read(binary) do
       {:ok, message, leftovers} ->
-        debug(
-          "[#{__MODULE__}] Received: #{inspect(message.__struct__)}" <>
-            "(xid: #{message.xid}) in #{state}"
-        )
-
         action = {:next_event, :internal, {:openflow, message}}
         new_state_data = %{state_data | buffer: "", last_received: :os.timestamp()}
         handle_packet(leftovers, new_state_data, state, [action | actions])
@@ -331,14 +342,17 @@ defmodule Tres.SecureChannel do
       {:error, :binary_too_small} ->
         handle_packet("", %{state_data | buffer: binary}, state, actions)
 
-      {:error, _reason} ->
-        handle_packet("", state_data, state, actions)
+      {:error, {:malformed_packet, {reason, st}}} ->
+        :ok =
+          debug("malformed packet #{dpid} reason: #{inspect(reason)} stack_trace: #{inspect(st)}")
+
+        handle_packet("", %{state_data | buffer: ""}, state, actions)
     end
   end
 
   defp handle_message(_in_xact = true, message, state_data) do
     case XACT_KV.get(state_data.xact_kv_ref, message.xid) do
-      [{:xact_entry, _xid, prev_message, _orig} | _] ->
+      [{:xact_entry, _xid, prev_message, _orig, _from, _inserted_at} | _] ->
         new_message = Openflow.append_body(prev_message, message)
         XACT_KV.update(state_data.xact_kv_ref, message.xid, new_message)
 
@@ -359,8 +373,15 @@ defmodule Tres.SecureChannel do
     pop_action_queue(state_data)
   end
 
-  defp process_xact_entry({:xact_entry, xid, message, _orig}, state_data) do
+  defp process_xact_entry({:xact_entry, xid, message, _orig, nil, _inserted_at}, state_data) do
     unless is_nil(message), do: send(state_data.handler_pid, message)
+    XACT_KV.delete(state_data.xact_kv_ref, xid)
+  end
+
+  defp process_xact_entry({:xact_entry, xid, message, _orig, from, _inserted_at}, state_data)
+       when is_tuple(from) do
+    reply = if is_nil(message), do: :noreply, else: message
+    :ok = :gen_statem.reply(from, {:ok, reply})
     XACT_KV.delete(state_data.xact_kv_ref, xid)
   end
 
@@ -384,10 +405,10 @@ defmodule Tres.SecureChannel do
   end
 
   defp handle_hello_handshake_1(hello, state_data) do
-    maybe_cancel_timer(state_data.timer_ref)
     State.set_transaction_id(state_data.xid, hello.xid)
 
     if Openflow.Hello.supported_version?(hello) do
+      :ok = maybe_cancel_timer(state_data.timer_ref)
       {:next_state, :CONNECTING, %{state_data | timer_ref: nil}}
     else
       close_connection(:failed_version_negotiation, state_data)
@@ -513,13 +534,36 @@ defmodule Tres.SecureChannel do
     send_message(messages, state_data)
   end
 
+  defp xactional_send_message({from, %{xid: 0} = message}, state_data) do
+    xid = State.increment_transaction_id(state_data.xid)
+
+    messages = [
+      %{message | xid: xid},
+      %{Openflow.Barrier.Request.new() | xid: xid}
+    ]
+
+    XACT_KV.insert(state_data.xact_kv_ref, xid, message, from)
+    send_message(messages, state_data)
+  end
+
+  defp xactional_send_message({from, %{xid: xid} = message}, state_data) do
+    _ = State.set_transaction_id(state_data.xid, xid)
+
+    messages = [
+      %{message | xid: xid},
+      %{Openflow.Barrier.Request.new() | xid: xid}
+    ]
+
+    XACT_KV.insert(state_data.xact_kv_ref, xid, message, from)
+    send_message(messages, state_data)
+  end
+
   defp send_message(message, %State{socket: socket, transport: transport}) do
     if is_list(message) do
       for message <- message,
-          do:
-            debug("[#{__MODULE__}] Sending: #{inspect(message.__struct__)}(xid: #{message.xid})")
+          do: debug("Sending: #{inspect(message.__struct__)}(xid: #{message.xid})")
     else
-      debug("[#{__MODULE__}] Sending: #{inspect(message.__struct__)}(xid: #{message.xid})")
+      debug("Sending: #{inspect(message.__struct__)}(xid: #{message.xid})")
     end
 
     Tres.Utils.send_message(message, socket, transport)
@@ -530,6 +574,11 @@ defmodule Tres.SecureChannel do
   defp maybe_cancel_timer(ref) do
     Process.cancel_timer(ref)
     :ok
+  end
+
+  @spec schedule_xactdb_ageout() :: reference()
+  defp schedule_xactdb_ageout do
+    Process.send_after(self(), :xactdb_ageout, 1_000)
   end
 
   defp handle_signal(
@@ -546,69 +595,53 @@ defmodule Tres.SecureChannel do
     close_connection({:handler_down, reason}, state_data)
   end
 
-  defp handle_signal({:EXIT, _pid, reason}, state_data) do
-    close_connection({:trap_detected, reason}, state_data)
-  end
-
   defp close_connection(:failed_version_negotiation, state_data) do
-    warn("[#{__MODULE__}] connection terminated: Version negotiation failed")
+    debug("connection terminated: Version negotiation failed")
     {:stop, :normal, %{state_data | socket: nil}}
   end
 
   defp close_connection(:hello_handshake_timeout, state_data) do
-    warn("[#{__MODULE__}] connection terminated: Hello handshake timed out")
+    debug("connection terminated: Hello handshake timed out")
     {:stop, :normal, %{state_data | socket: nil}}
   end
 
-  defp close_connection(:features_timeout, state_data) do
-    warn("[#{__MODULE__}] connection terminated: Features handshake timed out")
+  defp close_connection(:features_handshake_timeout, state_data) do
+    debug("connection terminated: Features handshake timed out")
     {:stop, :normal, %{state_data | socket: nil}}
   end
 
-  defp close_connection(:handler_error = disconnected_reason, state_data) do
-    warn("[#{__MODULE__}] connection terminated: Got handler error")
-    %State{handler_pid: handler_pid} = state_data
-    send(handler_pid, {:switch_disconnected, disconnected_reason})
+  defp close_connection(:handler_error, state_data) do
+    debug("connection terminated: Got handler error")
     {:stop, :normal, %{state_data | socket: nil}}
   end
 
-  defp close_connection(:ping_failed = disconnected_reason, state_data) do
-    warn("[#{__MODULE__}] connection terminated: Exceeded to max_ping_fail_count")
-    %State{handler_pid: handler_pid} = state_data
-    send(handler_pid, {:switch_disconnected, disconnected_reason})
+  defp close_connection(:ping_failed, state_data) do
+    debug("connection terminated: Exceeded to max_ping_fail_count")
+    _ = send(state_data.handler_pid, {:switch_disconnected, :ping_failed})
     {:stop, :normal, %{state_data | socket: nil}}
   end
 
-  defp close_connection({:main_closed = disconnected_reason, reason}, state_data) do
-    warn("[#{__MODULE__}] connection terminated: Main connection down by #{reason}")
-    %State{handler_pid: handler_pid} = state_data
-    send(handler_pid, {:switch_disconnected, disconnected_reason})
+  defp close_connection({:main_closed, reason}, state_data) do
+    debug("connection terminated: Main connection down by #{inspect(reason)}")
+    _ = send(state_data.handler_pid, {:switch_disconnected, :main_closed})
     {:stop, :normal, %{state_data | socket: nil}}
   end
 
-  defp close_connection({:handler_down = _disconnected_reason, reason}, state_data) do
-    warn("[#{__MODULE__}] connection terminated: Handler process down by #{reason}")
+  defp close_connection({:handler_down, reason}, state_data) do
+    debug("connection terminated: Handler process down by #{inspect(reason)}")
+    _ = send(state_data.handler_pid, {:switch_disconnected, :handler_error})
     {:stop, :normal, %{state_data | socket: nil}}
   end
 
-  defp close_connection({:trap_detected = disconnected_reason, reason}, state_data) do
-    warn("[#{__MODULE__}] connection terminated: Trapped by #{reason}")
-    %State{handler_pid: handler_pid} = state_data
-    send(handler_pid, {:switch_disconnected, disconnected_reason})
+  defp close_connection(:tcp_closed, state_data) do
+    debug("connection terminated: TCP Closed by peer")
+    _ = send(state_data.handler_pid, {:switch_disconnected, :tcp_closed})
     {:stop, :normal, %{state_data | socket: nil}}
   end
 
-  defp close_connection(:tcp_closed = disconnected_reason, state_data) do
-    warn("[#{__MODULE__}] connection terminated: TCP Closed by peer")
-    %State{handler_pid: handler_pid} = state_data
-    send(handler_pid, {:switch_disconnected, disconnected_reason})
-    {:stop, :normal, %{state_data | socket: nil}}
-  end
-
-  defp close_connection({:tcp_error, reason} = disconnected_reason, state_data) do
-    warn("[#{__MODULE__}] connection terminated: TCP Error occured: #{reason}")
-    %State{handler_pid: handler_pid} = state_data
-    send(handler_pid, {:switch_disconnected, disconnected_reason})
+  defp close_connection(close_reason, state_data) do
+    debug("connection terminated: reason: #{inspect(close_reason)}")
+    _ = send(state_data.handler_pid, {:switch_disconnected, close_reason})
     {:stop, :normal, %{state_data | socket: nil}}
   end
 end

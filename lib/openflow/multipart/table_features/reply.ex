@@ -12,22 +12,11 @@ defmodule Openflow.Multipart.TableFeatures.Reply do
   alias __MODULE__
   alias Openflow.Multipart.TableFeatures.Body
 
-  def ofp_type, do: 18
-
-  def new(tables \\ []) do
-    %Reply{tables: tables}
-  end
+  def ofp_type, do: 19
 
   def read(<<tables_bin::bytes>>) do
     tables = Body.read(tables_bin)
     %Reply{tables: tables}
-  end
-
-  def to_binary(msg) do
-    header_bin = Openflow.Multipart.Reply.header(msg)
-    %Reply{tables: tables} = msg
-    tables_bin = Openflow.Multipart.TableFeatures.Body.to_binary(tables)
-    <<header_bin::bytes, tables_bin::bytes>>
   end
 
   def append_body(%Reply{tables: tables} = message, %Reply{flags: [:more], tables: continue}) do

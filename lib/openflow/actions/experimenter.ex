@@ -3,6 +3,8 @@ defmodule Openflow.Action.Experimenter do
 
   alias __MODULE__
 
+  @type t :: %Experimenter{exp_id: 0..0xFFFFFFFF, data: binary()}
+
   @experimter_size 8
 
   def ofpat, do: 0xFFFF
@@ -14,6 +16,23 @@ defmodule Openflow.Action.Experimenter do
   def to_binary(%Experimenter{exp_id: exp_id, data: data}) do
     length = @experimter_size + byte_size(data)
     <<0xFFFF::16, length::16, exp_id::32, data::bytes>>
+  end
+
+  @spec pack_exp_header(binary()) :: binary()
+  def pack_exp_header(exp_body) do
+    pad_length =
+      exp_body
+      |> Kernel.byte_size()
+      |> Kernel.+(4)
+      |> Openflow.Utils.padding(8)
+
+    length =
+      exp_body
+      |> byte_size()
+      |> Kernel.+(4)
+      |> Kernel.+(pad_length)
+
+    <<0xFFFF::16, length::16, exp_body::bytes, 0::size(pad_length)-unit(8)>>
   end
 
   def read(<<0xFFFF::16, _length::16, exp_id::32, exp_type::16, data::bytes>>) do

@@ -1,4 +1,4 @@
-defmodule Openflow.Multipart.PortStats.Reply do
+defmodule Openflow.Multipart.Port.Reply do
   defstruct(
     version: 4,
     xid: 0,
@@ -12,10 +12,6 @@ defmodule Openflow.Multipart.PortStats.Reply do
   alias __MODULE__
 
   def ofp_type, do: 18
-
-  def new(ports \\ []) do
-    %Reply{ports: ports}
-  end
 
   def read(<<ports_bin::bytes>>) do
     ports = Openflow.Multipart.PortStats.read(ports_bin)

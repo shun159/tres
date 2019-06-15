@@ -4,16 +4,15 @@ defmodule Tres.Application do
   use Application
 
   alias Tres.SwitchRegistry
+  alias Tres.HandlerRegistry
 
   def start(_type, _args) do
     import Supervisor.Spec
 
-    {cb_mod, _cb_args} = Tres.Utils.get_callback_module()
-
     children = [
       worker(Registry, [[keys: :unique, name: SwitchRegistry]], id: SwitchRegistry),
-      supervisor(Tres.MessageHandlerSup, [cb_mod], id: MessageHandlerSup),
-      supervisor(OVSDB, [], id: OVSDB)
+      worker(Registry, [[keys: :unique, name: HandlerRegistry]], id: HandlerRegistry),
+      supervisor(Tres.MessageHandlerSup, [], id: MessageHandlerSup)
     ]
 
     opts = [strategy: :one_for_one, name: Tres.Supervisor]

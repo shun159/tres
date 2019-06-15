@@ -1,0 +1,34 @@
+sudo: true
+dist: xenial
+language: elixir
+elixir:
+  - "1.8.1"
+otp_release:
+  - "21.3.6"
+
+before_install:
+  - sudo apt-get install -y wget curl gdebi debhelper unbound
+  - sudo apt-get install build-essential fakeroot autoconf automake libssl-dev bzip2 openssl graphviz python-all procps python-qt4 python-zopeinterface python-twisted-conch libtool dh-autoreconf libunbound-dev
+  - wget https://github.com/openvswitch/ovs/archive/v2.11.0.tar.gz
+  - tar xvzf v2.11.0.tar.gz
+  - cd ovs-2.11.0/
+  - sudo DEB_BUILD_OPTIONS='parallel=8 nocheck' fakeroot debian/rules binary
+  - sudo dpkg -i ../python-openvswitch_2.11.0-1_all.deb
+  - sudo dpkg -i ../libopenvswitch_2.11.0-1_amd64.deb
+  - sudo dpkg -i ../libopenvswitch-dev_2.11.0-1_amd64.deb
+  - sudo dpkg -i ../openvswitch-common_2.11.0-1_amd64.deb
+  - sudo dpkg -i ../openvswitch-switch_2.11.0-1_amd64.deb
+  - sudo ovs-vsctl add-br br0
+  - sudo ovs-vsctl set bridge br0 datapath_type=netdev
+  - sudo ovs-vsctl set bridge br0 protocols=OpenFlow13
+  - sudo ovs-vsctl set bridge br0 other-config:datapath-id=0000000000000001
+  - sudo ovs-vsctl set-controller br0 tcp:127.0.0.1:6653
+  - sudo ovs-vsctl set-manager ptcp:6640
+  - sudo ovs-vsctl show
+  - cd -
+  
+script:
+  - MIX_ENV=test mix do compile, coveralls.json
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)

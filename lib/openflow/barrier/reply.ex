@@ -12,15 +12,9 @@ defmodule Openflow.Barrier.Reply do
 
   def ofp_type, do: 21
 
-  def new do
-    %Reply{}
-  end
+  def new(xid \\ 0), do: %Reply{xid: xid}
 
-  def read(_) do
-    %Reply{}
-  end
+  def read(_), do: %Reply{}
 
-  def to_binary(%Reply{}) do
-    <<>>
-  end
+  def to_binary(%Reply{}), do: <<>>
 end

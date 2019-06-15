@@ -14,12 +14,13 @@ defmodule Openflow.NxPacketIn2 do
     metadata: nil,
     userdata: nil,
     # continuation properties:
-    continuation_bridge: "",
-    continuation_stack: [],
-    continuation_conntracked: false,
+    continuation_bridge: nil,
+    continuation_stack: nil,
+    continuation_conntracked: nil,
+    continuation_mirrors: nil,
     continuation_table_id: nil,
     continuation_cookie: nil,
-    continuation_actions: [],
+    continuation_actions: nil,
     continuation_action_set: nil
   )
 

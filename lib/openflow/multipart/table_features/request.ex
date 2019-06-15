@@ -16,6 +16,7 @@ defmodule Openflow.Multipart.TableFeatures.Request do
 
   def new(options \\ []) do
     %Request{
+      flags: options[:flags] || [],
       xid: options[:xid] || 0,
       tables: options[:tables] || []
     }
@@ -31,18 +32,5 @@ defmodule Openflow.Multipart.TableFeatures.Request do
     %Request{tables: tables} = msg
     tables_bin = Openflow.Multipart.TableFeatures.Body.to_binary(tables)
     <<header_bin::bytes, tables_bin::bytes>>
-  end
-
-  def append_body(%Request{tables: tables} = message, %Request{flags: [:more], tables: continue}) do
-    %{message | tables: [continue | tables]}
-  end
-
-  def append_body(%Request{tables: tables} = message, %Request{flags: [], tables: continue}) do
-    new_tables =
-      [continue | tables]
-      |> Enum.reverse()
-      |> List.flatten()
-
-    %{message | tables: new_tables}
   end
 end

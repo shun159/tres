@@ -10,17 +10,22 @@ defmodule Openflow.Features.Request do
 
   alias __MODULE__
 
+  @type t :: %Request{
+          version: 4,
+          xid: 0..0xFFFFFFFF,
+          datapath_id: String.t() | nil,
+          aux_id: 0..0xFFFF | nil
+        }
+
+  @spec ofp_type :: 5
   def ofp_type, do: 5
 
-  def new(xid \\ 0) do
-    %Request{xid: xid}
-  end
+  @spec new(0..0xFFFF) :: t()
+  def new(xid \\ 0), do: %Request{xid: xid}
 
-  def read(_) do
-    %Request{}
-  end
+  @spec read(any()) :: t()
+  def read(_), do: %Request{}
 
-  def to_binary(%Request{}) do
-    <<>>
-  end
+  @spec to_binary(t()) :: <<>>
+  def to_binary(%Request{}), do: <<>>
 end

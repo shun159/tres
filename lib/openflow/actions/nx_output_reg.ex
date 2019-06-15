@@ -12,26 +12,47 @@ defmodule Openflow.Action.NxOutputReg do
   @nxast 15
 
   alias __MODULE__
+  alias Openflow.Action.Experimenter
 
+  @type max_len :: :no_buffer | :max | non_neg_integer()
+  @type t :: %NxOutputReg{
+          n_bits: pos_integer(),
+          offset: non_neg_integer(),
+          src_field: atom(),
+          max_len: max_len()
+        }
+
+  @spec new(
+          n_bits: pos_integer(),
+          offset: non_neg_integer(),
+          src_field: atom(),
+          max_len: max_len()
+        ) :: t()
   def new(options) do
-    src_field = Keyword.get(options, :src_field)
+    src_field = options[:src_field] || raise "src_field must be specified"
     default_n_bits = Openflow.Match.Field.n_bits_of(src_field)
-    n_bits = Keyword.get(options, :n_bits, default_n_bits)
-    ofs = Keyword.get(options, :offset, 0)
-    max_len = Keyword.get(options, :max_len, :no_buffer)
-    %NxOutputReg{n_bits: n_bits, offset: ofs, src_field: src_field, max_len: max_len}
+
+    %NxOutputReg{
+      n_bits: options[:n_bits] || default_n_bits,
+      offset: options[:offset] || 0,
+      src_field: src_field,
+      max_len: options[:max_len] || :no_buffer
+    }
   end
 
-  def to_binary(%NxOutputReg{n_bits: n_bits, offset: ofs, src_field: src_field, max_len: max_len}) do
-    src_field_bin = Openflow.Match.codec_header(src_field)
-    ofs_nbits = ofs <<< 6 ||| n_bits - 1
-    max_len = Openflow.Utils.get_enum(max_len, :controller_max_len)
-    body = <<ofs_nbits::16, src_field_bin::4-bytes, max_len::16, 0::size(6)-unit(8)>>
-    exp_body = <<@experimenter::32, @nxast::16, body::bytes>>
-    exp_body_size = byte_size(exp_body)
-    padding_length = Openflow.Utils.padding(4 + exp_body_size, 8)
-    length = 4 + exp_body_size + padding_length
-    <<0xFFFF::16, length::16, exp_body::bytes, 0::size(padding_length)-unit(8)>>
+  def to_binary(%NxOutputReg{} = output_reg) do
+    src_field_bin = Openflow.Match.codec_header(output_reg.src_field)
+    ofs_nbits = output_reg.offset <<< 6 ||| output_reg.n_bits - 1
+    max_len = Openflow.Utils.get_enum(output_reg.max_len, :controller_max_len)
+
+    Experimenter.pack_exp_header(<<
+      @experimenter::32,
+      @nxast::16,
+      ofs_nbits::16,
+      src_field_bin::4-bytes,
+      max_len::16,
+      0::size(6)-unit(8)
+    >>)
   end
 
   def read(<<@experimenter::32, @nxast::16, body::bytes>>) do

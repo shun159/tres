@@ -1,19 +1,31 @@
 defmodule Openflow.Instruction.WriteMetadata do
-  defstruct(metadata: 0, metadata_mask: 0xFFFFFFFFFFFFFFFF)
+  defstruct(value: 0, mask: 0xFFFFFFFFFFFFFFFF)
 
   alias __MODULE__
 
+  @type t :: %WriteMetadata{
+          value: 0..0xFFFFFFFFFFFFFFFF,
+          mask: 0..0xFFFFFFFFFFFFFFFF
+        }
+
+  @spec new(
+          value: 0..0xFFFFFFFFFFFFFFFF,
+          mask: 0..0xFFFFFFFFFFFFFFFF
+        ) :: t()
   def new(options) do
-    metadata = Keyword.get(options, :metadata, 0)
-    metadata_mask = Keyword.get(options, :metadata_mask, 0xFFFFFFFFFFFFFFFF)
-    %WriteMetadata{metadata: metadata, metadata_mask: metadata_mask}
+    %WriteMetadata{
+      value: options[:value] || 0,
+      mask: options[:mask] || 0xFFFFFFFFFFFFFFFF
+    }
   end
 
-  def to_binary(%WriteMetadata{metadata: metadata, metadata_mask: metadata_mask}) do
-    <<2::16, 24::16, 0::size(4)-unit(8), metadata::64, metadata_mask::64>>
+  @spec to_binary(t()) :: <<_::192>>
+  def to_binary(%WriteMetadata{value: value, mask: mask}) do
+    <<2::16, 24::16, 0::size(4)-unit(8), value::64, mask::64>>
   end
 
-  def read(<<2::16, 24::16, _::size(4)-unit(8), metadata::64, metadata_mask::64>>) do
-    %WriteMetadata{metadata: metadata, metadata_mask: metadata_mask}
+  @spec read(<<_::192>>) :: t()
+  def read(<<2::16, 24::16, _::size(4)-unit(8), value::64, mask::64>>) do
+    %WriteMetadata{value: value, mask: mask}
   end
 end
