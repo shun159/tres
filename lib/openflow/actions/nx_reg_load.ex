@@ -45,7 +45,7 @@ defmodule Openflow.Action.NxRegLoad do
   def new(options \\ []) do
     dst_field = options[:dst_field] || raise "dst_field must be specified"
     value = options[:value] || raise "value must be specified"
-    default_n_bits = Openflow.Match.Field.n_bits_of(dst_field)
+    default_n_bits = Openflow.Match.n_bits_of(dst_field)
 
     %NxRegLoad{
       n_bits: options[:n_bits] || default_n_bits,
@@ -61,7 +61,7 @@ defmodule Openflow.Action.NxRegLoad do
 
     value_int =
       load.value
-      |> Openflow.Match.Field.codec(load.dst_field)
+      |> Openflow.Match.encode_value(load.dst_field)
       |> :binary.decode_unsigned(:big)
 
     Experimenter.pack_exp_header(<<
@@ -76,7 +76,7 @@ defmodule Openflow.Action.NxRegLoad do
   def read(<<@experimenter::32, @nxast::16, body::bytes>>) do
     <<ofs::10, n_bits::6, dst_field_bin::4-bytes, value_bin::bytes>> = body
     dst_field = Openflow.Match.codec_header(dst_field_bin)
-    value = Openflow.Match.Field.codec(value_bin, dst_field)
+    value = Openflow.Match.decode_value(value_bin, dst_field)
     %NxRegLoad{n_bits: n_bits + 1, offset: ofs, dst_field: dst_field, value: value}
   end
 end

@@ -25,7 +25,9 @@ defmodule OfpTableFeaturesTest do
       "test/packet_data/4-56-ofp_table_features_reply.packet"
       |> File.read!()
       |> Openflow.read()
-      |> Kernel.elem(1)
+      |> Kernel.elem(0)
+      |> Kernel.==(:ok)
+      |> assert()
     end
   end
 end

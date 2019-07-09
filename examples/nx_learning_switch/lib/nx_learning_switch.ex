@@ -63,12 +63,12 @@ defmodule NxLearningSwitch do
           hard_timeout: 10,
           flow_specs: [
             NxFlowSpecMatch.new(
-              src: :nx_eth_src,
-              dst: :nx_eth_dst
+              src: :eth_src,
+              dst: :eth_dst
             ),
             NxFlowSpecMatch.new(
-              src: :nx_vlan_tci,
-              dst: :nx_vlan_tci,
+              src: :vlan_vid,
+              dst: :vlan_vid,
               offset: 0,
               n_bits: 12
             ),

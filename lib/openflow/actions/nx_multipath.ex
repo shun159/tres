@@ -21,7 +21,7 @@ defmodule Openflow.Action.NxMultipath do
   @spec new(Keyword.t()) :: %NxMultipath{}
   def new(options) do
     dst_field = options[:dst_field] || raise "dst_field must be specified"
-    default_n_bits = Openflow.Match.Field.n_bits_of(dst_field)
+    default_n_bits = Openflow.Match.n_bits_of(dst_field)
 
     %NxMultipath{
       hash_field: options[:hash_field] || :eth_src,

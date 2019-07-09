@@ -13,7 +13,7 @@ defmodule Openflow.Action.NxStackPush do
 
   def new(options) do
     field = options[:field] || raise "field must be specified"
-    default_n_bits = Openflow.Match.Field.n_bits_of(field)
+    default_n_bits = Openflow.Match.n_bits_of(field)
 
     %NxStackPush{
       n_bits: options[:n_bits] || default_n_bits,

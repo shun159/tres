@@ -53,7 +53,7 @@ defmodule Openflow.Action.NxBundleLoad do
         ) :: t()
   def new(options \\ []) do
     dst_field = options[:dst_field] || raise "dst_field must be specified"
-    default_n_bits = Openflow.Match.Field.n_bits_of(dst_field)
+    default_n_bits = Openflow.Match.n_bits_of(dst_field)
     slaves = options[:slaves] || []
 
     %NxBundleLoad{

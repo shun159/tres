@@ -5,8 +5,7 @@ defmodule SimpleRouter.Openflow.FlowTables do
 
   use Tres.Controller
 
-  alias Tres.IPv4Address
-  alias Tres.MacAddress
+  alias SimpleRouter.IPv4Address
 
   @classifier_table_id       0
   @arp_handler_table_id      1
@@ -219,7 +218,7 @@ defmodule SimpleRouter.Openflow.FlowTables do
   defp arp_packet(iface) do
     ether_header = <<
       0xffffffffffff::48, # destination ethernet address
-      (MacAddress.to_i(iface.mac_address))::48, # source ethernet address
+      iface.mac_address::48-bits, # source ethernet address
       0x0806::16 # ethernet type
     >>
 
@@ -230,7 +229,7 @@ defmodule SimpleRouter.Openflow.FlowTables do
       6::8, # hardware address length
       4::8, # protocol address length
       1::16, # ARPOP_REQUEST
-      (MacAddress.to_i(iface.mac_address))::48, # Source Hardware Address
+      iface.mac_address::48-bits, # Source Hardware Address
       (IPv4Address.to_int(iface.ip_address))::32, # Source Protocol Address
       0x000000000000::48 # Target Hardware Address
     >>

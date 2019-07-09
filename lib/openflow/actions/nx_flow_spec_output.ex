@@ -19,7 +19,7 @@ defmodule Openflow.Action.NxFlowSpecOutput do
   @spec new(src: atom(), n_bits: non_neg_integer(), src_offset: non_neg_integer()) :: t()
   def new(options \\ []) do
     src = options[:src] || raise ":src must be specified"
-    n_bits = options[:n_bits] || Openflow.Match.Field.n_bits_of(src)
+    n_bits = options[:n_bits] || Openflow.Match.n_bits_of(src)
     %NxFlowSpecOutput{n_bits: n_bits, src: src, src_offset: options[:src_offset] || 0}
   end
 

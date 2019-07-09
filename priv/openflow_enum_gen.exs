@@ -508,39 +508,13 @@ enums = [
     pbb_isid: 37,
     tunnel_id: 38,
     ipv6_exthdr: 39,
-
-    # Lagopus extended match fields
-    pbb_uca: 41,
-    packet_type: 42,
-    gre_flags: 43,
-    gre_ver: 44,
-    gre_protocol: 45,
-    gre_key: 46,
-    gre_seqnum: 47,
-    lisp_flags: 48,
-    lisp_nonce: 49,
-    lisp_id: 50,
-    vxlan_flags: 51,
-    vxlan_vni: 52,
-    mpls_data_first_nibble: 53,
-    mpls_ach_version: 54,
-    mpls_ach_channel: 55,
-    mpls_pw_metadata: 56,
-    mpls_cw_flags: 57,
-    mpls_cw_fragment: 58,
-    mpls_cw_len: 59,
-    mpls_cw_seq_num: 60,
-    gtpu_flags: 61,
-    gtpu_ver: 62,
-    gtpu_msg_type: 63,
-    gtpu_teid: 64,
-    gtpu_extn_hdr: 65,
-    gtpu_extn_udp_port: 66,
-    gtpu_extn_sci: 67
+    pbb_uca: 41
   ],
   vlan_id: [
-    present: 0x1000,
-    none: 0x0000
+    # Bit that indicate that a VLAN id is set.
+    vid_present: 0x1000,
+    # No VLAN id was set.
+    vid_none: 0x0000
   ],
   ipv6exthdr_flags: [
     nonext: 1 <<< 0,
@@ -563,6 +537,10 @@ enums = [
     ece: 1 <<< 6,
     cwr: 1 <<< 7,
     ns: 1 <<< 8
+  ],
+  tun_gbp_flags: [
+    policy_applied: 1 <<< 3,
+    dont_learn: 1 <<< 6
   ],
   ct_state_flags: [
     # Beginning of a new connection.
@@ -601,23 +579,8 @@ enums = [
     nsh_c1: 6,
     nsh_c2: 7,
     nsh_c3: 8,
-    nsh_c4: 9
-  ],
-  hp_ext_match: [
-    hp_udp_src_port_range: 0,
-    hp_udp_dst_port_range: 1,
-    hp_tcp_src_port_range: 2,
-    hp_tcp_dst_port_range: 3,
-    hp_tcp_flags: 4,
-    hp_custom_1: 5,
-    hp_custom_2: 6,
-    hp_custom_3: 7,
-    hp_custom_4: 8
-  ],
-  hp_custom_match_type: [
-    l2_start: 1,
-    l3_start: 2,
-    l4_start: 3
+    nsh_c4: 9,
+    nsh_ttl: 10
   ],
   onf_ext_match: [
     onf_tcp_flags: 42,

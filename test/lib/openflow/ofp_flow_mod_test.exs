@@ -36,7 +36,7 @@ defmodule OfpFlowModTest do
       assert fm.out_port == :any
       assert fm.out_group == :any
       assert fm.flags == []
-      assert fm.match == Openflow.Match.new(eth_dst: "f20ba47df8ea")
+      assert fm.match == Openflow.Match.new(eth_dst: <<0xF20BA47DF8EA::48>>)
 
       assert fm.instructions == [
                Openflow.Instruction.WriteActions.new([
@@ -60,7 +60,7 @@ defmodule OfpFlowModTest do
                  Openflow.Action.Output.new(6)
                ]),
                Openflow.Instruction.ApplyActions.new([
-                 Openflow.Action.SetField.new(eth_src: "010203040506"),
+                 Openflow.Action.SetField.new(eth_src: <<0x010203040506::48>>),
                  Openflow.Action.SetField.new(onf_pbb_uca: 1)
                ])
              ]
@@ -84,7 +84,7 @@ defmodule OfpFlowModTest do
       assert fm.out_port == :any
       assert fm.out_group == :any
       assert fm.flags == []
-      assert fm.match == Openflow.Match.new(in_port: 6, eth_src: "f20ba47df8ea")
+      assert fm.match == Openflow.Match.new(in_port: 6, eth_src: <<0xF20BA47DF8EA::48>>)
       assert fm.instructions == [Openflow.Instruction.GotoTable.new(1)]
       assert Openflow.to_binary(fm) == binary
     end
@@ -104,7 +104,7 @@ defmodule OfpFlowModTest do
       assert fm.out_port == :any
       assert fm.out_group == :any
       assert fm.flags == []
-      assert fm.match == Openflow.Match.new(eth_dst: "f20ba47df8ea")
+      assert fm.match == Openflow.Match.new(eth_dst: <<0xF20BA47DF8EA::48>>)
 
       assert fm.instructions == [
                Openflow.Instruction.Meter.new(1),
@@ -136,8 +136,8 @@ defmodule OfpFlowModTest do
                  in_phy_port: 16_909_060,
                  metadata: 283_686_952_306_183,
                  eth_type: 2054,
-                 eth_dst: "ffffffffffff",
-                 eth_src: "f20ba47df8ea",
+                 eth_dst: <<0xFFFFFFFFFFFF::48>>,
+                 eth_src: <<0xF20BA47DF8EA::48>>,
                  vlan_vid: 999,
                  ip_dscp: 9,
                  ip_ecn: 3,
@@ -155,16 +155,16 @@ defmodule OfpFlowModTest do
                  arp_op: 1,
                  arp_spa: {10, 0, 0, 1},
                  arp_tpa: {10, 0, 0, 3},
-                 arp_sha: "f20ba47df8ea",
-                 arp_tha: "000000000000",
+                 arp_sha: <<0xF20BA47DF8EA::48>>,
+                 arp_tha: <<0x000000000000::48>>,
                  ipv6_src: {65152, 0, 0, 0, 61451, 42239, 65096, 10405},
                  ipv6_dst: {65152, 0, 0, 0, 61451, 42239, 65029, 47068},
                  ipv6_flabel: 541_473,
                  icmpv6_type: 200,
                  icmpv6_code: 201,
                  ipv6_nd_target: {65152, 0, 0, 0, 2656, 28415, 65151, 29927},
-                 ipv6_nd_sll: "00000000029a",
-                 ipv6_nd_tll: "00000000022b",
+                 ipv6_nd_sll: <<0x00000000029A::48>>,
+                 ipv6_nd_tll: <<0x00000000022B::48>>,
                  mpls_label: 624_485,
                  mpls_tc: 5,
                  mpls_bos: 1,
@@ -199,7 +199,7 @@ defmodule OfpFlowModTest do
       assert fm.match ==
                Openflow.Match.new(
                  in_port: 43981,
-                 eth_dst: "aabbcc998877",
+                 eth_dst: <<0xAABBCC998877::48>>,
                  eth_type: 2048,
                  vlan_vid: 5095,
                  ipv4_dst: {192, 168, 2, 1},
@@ -223,7 +223,11 @@ defmodule OfpFlowModTest do
                        n_bits: 12
                      ),
                      Openflow.Action.NxFlowSpecMatch.new(src: :nx_eth_src, dst: :nx_eth_dst),
-                     Openflow.Action.NxFlowSpecLoad.new(src: 0, dst: :vlan_vid, n_bits: 12),
+                     Openflow.Action.NxFlowSpecLoad.new(
+                       src: 0,
+                       dst: :vlan_vid,
+                       n_bits: 12
+                     ),
                      Openflow.Action.NxFlowSpecLoad.new(src: :tun_id, dst: :tun_id),
                      Openflow.Action.NxFlowSpecOutput.new(src: :in_port)
                    ]
@@ -261,7 +265,7 @@ defmodule OfpFlowModTest do
       assert fm.match ==
                Openflow.Match.new(
                  in_port: 43981,
-                 eth_dst: "aabbcc998877",
+                 eth_dst: <<0xAABBCC998877::48>>,
                  eth_type: 2048,
                  vlan_vid: 5095,
                  ipv4_dst: {192, 168, 2, 1},

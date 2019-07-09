@@ -30,7 +30,7 @@ defmodule Openflow.Action.NxOutputReg2 do
         ) :: t()
   def new(options) do
     src_field = options[:src_field] || raise "src_field must be specified"
-    default_n_bits = Openflow.Match.Field.n_bits_of(src_field)
+    default_n_bits = Openflow.Match.n_bits_of(src_field)
 
     %NxOutputReg2{
       n_bits: options[:n_bits] || default_n_bits,
