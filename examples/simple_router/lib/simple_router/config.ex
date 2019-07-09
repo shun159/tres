@@ -1,7 +1,7 @@
 defmodule SimpleRouter.Config do
   @moduledoc false
 
-  alias Tres.IPv4Address
+  alias SimpleRouter.IPv4Address
 
   @spec interfaces() :: %{String.t() => map()}
   def interfaces do
@@ -24,7 +24,7 @@ defmodule SimpleRouter.Config do
 
     entry =
       %{
-        mac_address: String.replace(mac, ~r/:/, ""),
+        mac_address: mac_to_bin(mac),
         ip_address: ipaddr,
         subnet_mask: mask,
         network_address: IPv4Address.to_network({ipaddr, mask}),
@@ -48,6 +48,13 @@ defmodule SimpleRouter.Config do
       [_addr, cidr] ->
         String.to_integer(cidr)
     end
+  end
+
+  defp mac_to_bin(mac) do
+    mac
+    |> String.replace(~r/:/, "")
+    |> String.to_integer(16)
+    |> :binary.encode_unsigned(:big)
   end
 
   defp get_env(key, default),

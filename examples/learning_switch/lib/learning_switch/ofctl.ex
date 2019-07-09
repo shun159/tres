@@ -11,9 +11,9 @@ defmodule LearningSwitch.Ofctl do
 
   @aging_time 180
 
-  @mcast      {"010000000000", "110000000000"}
-  @bcast       "ffffffffffff"
-  @ipv6_mcast {"333300000000", "ffff00000000"}
+  @mcast      {<<0x010000000000::48>>, <<0x110000000000::48>>}
+  @bcast       <<0xffffffffffff::48>>
+  @ipv6_mcast {<<0x333300000000::48>>, <<0xffff00000000::48>>}
 
   defmodule State do
     defstruct [

@@ -18,13 +18,13 @@ defmodule OfpPacketInTest do
 
       assert pktin.match == [
                eth_type: 2054,
-               eth_dst: "ffffffffffff",
-               eth_src: "f20ba47df8ea",
+               eth_dst: <<0xFFFFFFFFFFFF::48>>,
+               eth_src: <<0xF20BA47DF8EA::48>>,
                arp_op: 1,
                arp_spa: {10, 0, 0, 1},
                arp_tpa: {10, 0, 0, 3},
-               arp_sha: "f20ba47df8ea",
-               arp_tha: "000000000000"
+               arp_sha: <<0xF20BA47DF8EA::48>>,
+               arp_tha: <<0x000000000000::48>>
              ]
     end
 
@@ -45,8 +45,8 @@ defmodule OfpPacketInTest do
                in_phy_port: 16_909_060,
                metadata: 283_686_952_306_183,
                eth_type: 2054,
-               eth_dst: "ffffffffffff",
-               eth_src: "f20ba47df8ea",
+               eth_dst: <<0xFFFFFFFFFFFF::48>>,
+               eth_src: <<0xF20BA47DF8EA::48>>,
                vlan_vid: 999,
                ip_dscp: 9,
                ip_ecn: 3,
@@ -64,16 +64,16 @@ defmodule OfpPacketInTest do
                arp_op: 1,
                arp_spa: {10, 0, 0, 1},
                arp_tpa: {10, 0, 0, 3},
-               arp_sha: "f20ba47df8ea",
-               arp_tha: "000000000000",
+               arp_sha: <<0xF20BA47DF8EA::48>>,
+               arp_tha: <<0x000000000000::48>>,
                ipv6_src: {65152, 0, 0, 0, 61451, 42239, 65096, 10405},
                ipv6_dst: {65152, 0, 0, 0, 61451, 42239, 65029, 47068},
                ipv6_flabel: 541_473,
                icmpv6_type: 200,
                icmpv6_code: 201,
                ipv6_nd_target: {65152, 0, 0, 0, 2656, 28415, 65151, 29927},
-               ipv6_nd_sll: "00000000029a",
-               ipv6_nd_tll: "00000000022b",
+               ipv6_nd_sll: <<0x00000000029A::48>>,
+               ipv6_nd_tll: <<0x00000000022B::48>>,
                mpls_label: 624_485,
                mpls_tc: 5,
                mpls_bos: 1,

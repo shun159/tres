@@ -31,7 +31,7 @@ defmodule Openflow.Action.NxFlowSpecMatch do
   def new(options \\ []) do
     dst = options[:dst] || raise ":dst must be specified"
     src = options[:src] || raise ":src must be specified"
-    n_bits = options[:n_bits] || Openflow.Match.Field.n_bits_of(dst)
+    n_bits = options[:n_bits] || Openflow.Match.n_bits_of(dst)
 
     %NxFlowSpecMatch{
       src: src,
@@ -92,7 +92,7 @@ defmodule Openflow.Action.NxFlowSpecMatch do
       binary
 
     dst = Openflow.Match.codec_header(dst_bin)
-    src = Openflow.Match.Field.codec(src_bin, dst)
+    src = Openflow.Match.decode_value(src_bin, dst)
     flow_spec = %NxFlowSpecMatch{src: src, dst: dst, n_bits: n_bits, dst_offset: dst_ofs}
     {flow_spec, rest}
   end
@@ -105,7 +105,7 @@ defmodule Openflow.Action.NxFlowSpecMatch do
   end
 
   defp codec_src(%NxFlowSpecMatch{src: src, dst: dst_field}) do
-    src_bin = Openflow.Match.Field.codec(src, dst_field)
+    src_bin = Openflow.Match.encode_value(src, dst_field)
     {@learn_src_immediate, src_bin}
   end
 end

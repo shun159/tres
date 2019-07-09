@@ -2725,176 +2725,20 @@ defmodule Openflow.Enums do
     _class, _reason -> :pbb_uca
   end
 
-  def to_int(:packet_type, :openflow_basic) do
-    openflow_basic_to_int(:packet_type)
-  catch
-    _class, _reason -> :packet_type
-  end
-
-  def to_int(:gre_flags, :openflow_basic) do
-    openflow_basic_to_int(:gre_flags)
-  catch
-    _class, _reason -> :gre_flags
-  end
-
-  def to_int(:gre_ver, :openflow_basic) do
-    openflow_basic_to_int(:gre_ver)
-  catch
-    _class, _reason -> :gre_ver
-  end
-
-  def to_int(:gre_protocol, :openflow_basic) do
-    openflow_basic_to_int(:gre_protocol)
-  catch
-    _class, _reason -> :gre_protocol
-  end
-
-  def to_int(:gre_key, :openflow_basic) do
-    openflow_basic_to_int(:gre_key)
-  catch
-    _class, _reason -> :gre_key
-  end
-
-  def to_int(:gre_seqnum, :openflow_basic) do
-    openflow_basic_to_int(:gre_seqnum)
-  catch
-    _class, _reason -> :gre_seqnum
-  end
-
-  def to_int(:lisp_flags, :openflow_basic) do
-    openflow_basic_to_int(:lisp_flags)
-  catch
-    _class, _reason -> :lisp_flags
-  end
-
-  def to_int(:lisp_nonce, :openflow_basic) do
-    openflow_basic_to_int(:lisp_nonce)
-  catch
-    _class, _reason -> :lisp_nonce
-  end
-
-  def to_int(:lisp_id, :openflow_basic) do
-    openflow_basic_to_int(:lisp_id)
-  catch
-    _class, _reason -> :lisp_id
-  end
-
-  def to_int(:vxlan_flags, :openflow_basic) do
-    openflow_basic_to_int(:vxlan_flags)
-  catch
-    _class, _reason -> :vxlan_flags
-  end
-
-  def to_int(:vxlan_vni, :openflow_basic) do
-    openflow_basic_to_int(:vxlan_vni)
-  catch
-    _class, _reason -> :vxlan_vni
-  end
-
-  def to_int(:mpls_data_first_nibble, :openflow_basic) do
-    openflow_basic_to_int(:mpls_data_first_nibble)
-  catch
-    _class, _reason -> :mpls_data_first_nibble
-  end
-
-  def to_int(:mpls_ach_version, :openflow_basic) do
-    openflow_basic_to_int(:mpls_ach_version)
-  catch
-    _class, _reason -> :mpls_ach_version
-  end
-
-  def to_int(:mpls_ach_channel, :openflow_basic) do
-    openflow_basic_to_int(:mpls_ach_channel)
-  catch
-    _class, _reason -> :mpls_ach_channel
-  end
-
-  def to_int(:mpls_pw_metadata, :openflow_basic) do
-    openflow_basic_to_int(:mpls_pw_metadata)
-  catch
-    _class, _reason -> :mpls_pw_metadata
-  end
-
-  def to_int(:mpls_cw_flags, :openflow_basic) do
-    openflow_basic_to_int(:mpls_cw_flags)
-  catch
-    _class, _reason -> :mpls_cw_flags
-  end
-
-  def to_int(:mpls_cw_fragment, :openflow_basic) do
-    openflow_basic_to_int(:mpls_cw_fragment)
-  catch
-    _class, _reason -> :mpls_cw_fragment
-  end
-
-  def to_int(:mpls_cw_len, :openflow_basic) do
-    openflow_basic_to_int(:mpls_cw_len)
-  catch
-    _class, _reason -> :mpls_cw_len
-  end
-
-  def to_int(:mpls_cw_seq_num, :openflow_basic) do
-    openflow_basic_to_int(:mpls_cw_seq_num)
-  catch
-    _class, _reason -> :mpls_cw_seq_num
-  end
-
-  def to_int(:gtpu_flags, :openflow_basic) do
-    openflow_basic_to_int(:gtpu_flags)
-  catch
-    _class, _reason -> :gtpu_flags
-  end
-
-  def to_int(:gtpu_ver, :openflow_basic) do
-    openflow_basic_to_int(:gtpu_ver)
-  catch
-    _class, _reason -> :gtpu_ver
-  end
-
-  def to_int(:gtpu_msg_type, :openflow_basic) do
-    openflow_basic_to_int(:gtpu_msg_type)
-  catch
-    _class, _reason -> :gtpu_msg_type
-  end
-
-  def to_int(:gtpu_teid, :openflow_basic) do
-    openflow_basic_to_int(:gtpu_teid)
-  catch
-    _class, _reason -> :gtpu_teid
-  end
-
-  def to_int(:gtpu_extn_hdr, :openflow_basic) do
-    openflow_basic_to_int(:gtpu_extn_hdr)
-  catch
-    _class, _reason -> :gtpu_extn_hdr
-  end
-
-  def to_int(:gtpu_extn_udp_port, :openflow_basic) do
-    openflow_basic_to_int(:gtpu_extn_udp_port)
-  catch
-    _class, _reason -> :gtpu_extn_udp_port
-  end
-
-  def to_int(:gtpu_extn_sci, :openflow_basic) do
-    openflow_basic_to_int(:gtpu_extn_sci)
-  catch
-    _class, _reason -> :gtpu_extn_sci
-  end
-
   def to_int(_int, :openflow_basic) do
     throw(:bad_enum)
   end
 
-  def to_int(:present, :vlan_id) do
-    vlan_id_to_int(:present)
+  def to_int(:vid_present, :vlan_id) do
+    vlan_id_to_int(:vid_present)
   catch
-    _class, _reason -> :present
+    _class, _reason -> :vid_present
   end
 
-  def to_int(:none, :vlan_id) do
-    vlan_id_to_int(:none)
+  def to_int(:vid_none, :vlan_id) do
+    vlan_id_to_int(:vid_none)
   catch
-    _class, _reason -> :none
+    _class, _reason -> :vid_none
   end
 
   def to_int(_int, :vlan_id) do
@@ -3014,6 +2858,22 @@ defmodule Openflow.Enums do
   end
 
   def to_int(_int, :tcp_flags) do
+    throw(:bad_enum)
+  end
+
+  def to_int(:policy_applied, :tun_gbp_flags) do
+    tun_gbp_flags_to_int(:policy_applied)
+  catch
+    _class, _reason -> :policy_applied
+  end
+
+  def to_int(:dont_learn, :tun_gbp_flags) do
+    tun_gbp_flags_to_int(:dont_learn)
+  catch
+    _class, _reason -> :dont_learn
+  end
+
+  def to_int(_int, :tun_gbp_flags) do
     throw(:bad_enum)
   end
 
@@ -3175,87 +3035,13 @@ defmodule Openflow.Enums do
     _class, _reason -> :nsh_c4
   end
 
+  def to_int(:nsh_ttl, :nicira_ext_match) do
+    nicira_ext_match_to_int(:nsh_ttl)
+  catch
+    _class, _reason -> :nsh_ttl
+  end
+
   def to_int(_int, :nicira_ext_match) do
-    throw(:bad_enum)
-  end
-
-  def to_int(:hp_udp_src_port_range, :hp_ext_match) do
-    hp_ext_match_to_int(:hp_udp_src_port_range)
-  catch
-    _class, _reason -> :hp_udp_src_port_range
-  end
-
-  def to_int(:hp_udp_dst_port_range, :hp_ext_match) do
-    hp_ext_match_to_int(:hp_udp_dst_port_range)
-  catch
-    _class, _reason -> :hp_udp_dst_port_range
-  end
-
-  def to_int(:hp_tcp_src_port_range, :hp_ext_match) do
-    hp_ext_match_to_int(:hp_tcp_src_port_range)
-  catch
-    _class, _reason -> :hp_tcp_src_port_range
-  end
-
-  def to_int(:hp_tcp_dst_port_range, :hp_ext_match) do
-    hp_ext_match_to_int(:hp_tcp_dst_port_range)
-  catch
-    _class, _reason -> :hp_tcp_dst_port_range
-  end
-
-  def to_int(:hp_tcp_flags, :hp_ext_match) do
-    hp_ext_match_to_int(:hp_tcp_flags)
-  catch
-    _class, _reason -> :hp_tcp_flags
-  end
-
-  def to_int(:hp_custom_1, :hp_ext_match) do
-    hp_ext_match_to_int(:hp_custom_1)
-  catch
-    _class, _reason -> :hp_custom_1
-  end
-
-  def to_int(:hp_custom_2, :hp_ext_match) do
-    hp_ext_match_to_int(:hp_custom_2)
-  catch
-    _class, _reason -> :hp_custom_2
-  end
-
-  def to_int(:hp_custom_3, :hp_ext_match) do
-    hp_ext_match_to_int(:hp_custom_3)
-  catch
-    _class, _reason -> :hp_custom_3
-  end
-
-  def to_int(:hp_custom_4, :hp_ext_match) do
-    hp_ext_match_to_int(:hp_custom_4)
-  catch
-    _class, _reason -> :hp_custom_4
-  end
-
-  def to_int(_int, :hp_ext_match) do
-    throw(:bad_enum)
-  end
-
-  def to_int(:l2_start, :hp_custom_match_type) do
-    hp_custom_match_type_to_int(:l2_start)
-  catch
-    _class, _reason -> :l2_start
-  end
-
-  def to_int(:l3_start, :hp_custom_match_type) do
-    hp_custom_match_type_to_int(:l3_start)
-  catch
-    _class, _reason -> :l3_start
-  end
-
-  def to_int(:l4_start, :hp_custom_match_type) do
-    hp_custom_match_type_to_int(:l4_start)
-  catch
-    _class, _reason -> :l4_start
-  end
-
-  def to_int(_int, :hp_custom_match_type) do
     throw(:bad_enum)
   end
 
@@ -8141,162 +7927,6 @@ defmodule Openflow.Enums do
     _class, _reason -> 41
   end
 
-  def to_atom(0x2A, :openflow_basic) do
-    openflow_basic_to_atom(0x2A)
-  catch
-    _class, _reason -> 42
-  end
-
-  def to_atom(0x2B, :openflow_basic) do
-    openflow_basic_to_atom(0x2B)
-  catch
-    _class, _reason -> 43
-  end
-
-  def to_atom(0x2C, :openflow_basic) do
-    openflow_basic_to_atom(0x2C)
-  catch
-    _class, _reason -> 44
-  end
-
-  def to_atom(0x2D, :openflow_basic) do
-    openflow_basic_to_atom(0x2D)
-  catch
-    _class, _reason -> 45
-  end
-
-  def to_atom(0x2E, :openflow_basic) do
-    openflow_basic_to_atom(0x2E)
-  catch
-    _class, _reason -> 46
-  end
-
-  def to_atom(0x2F, :openflow_basic) do
-    openflow_basic_to_atom(0x2F)
-  catch
-    _class, _reason -> 47
-  end
-
-  def to_atom(0x30, :openflow_basic) do
-    openflow_basic_to_atom(0x30)
-  catch
-    _class, _reason -> 48
-  end
-
-  def to_atom(0x31, :openflow_basic) do
-    openflow_basic_to_atom(0x31)
-  catch
-    _class, _reason -> 49
-  end
-
-  def to_atom(0x32, :openflow_basic) do
-    openflow_basic_to_atom(0x32)
-  catch
-    _class, _reason -> 50
-  end
-
-  def to_atom(0x33, :openflow_basic) do
-    openflow_basic_to_atom(0x33)
-  catch
-    _class, _reason -> 51
-  end
-
-  def to_atom(0x34, :openflow_basic) do
-    openflow_basic_to_atom(0x34)
-  catch
-    _class, _reason -> 52
-  end
-
-  def to_atom(0x35, :openflow_basic) do
-    openflow_basic_to_atom(0x35)
-  catch
-    _class, _reason -> 53
-  end
-
-  def to_atom(0x36, :openflow_basic) do
-    openflow_basic_to_atom(0x36)
-  catch
-    _class, _reason -> 54
-  end
-
-  def to_atom(0x37, :openflow_basic) do
-    openflow_basic_to_atom(0x37)
-  catch
-    _class, _reason -> 55
-  end
-
-  def to_atom(0x38, :openflow_basic) do
-    openflow_basic_to_atom(0x38)
-  catch
-    _class, _reason -> 56
-  end
-
-  def to_atom(0x39, :openflow_basic) do
-    openflow_basic_to_atom(0x39)
-  catch
-    _class, _reason -> 57
-  end
-
-  def to_atom(0x3A, :openflow_basic) do
-    openflow_basic_to_atom(0x3A)
-  catch
-    _class, _reason -> 58
-  end
-
-  def to_atom(0x3B, :openflow_basic) do
-    openflow_basic_to_atom(0x3B)
-  catch
-    _class, _reason -> 59
-  end
-
-  def to_atom(0x3C, :openflow_basic) do
-    openflow_basic_to_atom(0x3C)
-  catch
-    _class, _reason -> 60
-  end
-
-  def to_atom(0x3D, :openflow_basic) do
-    openflow_basic_to_atom(0x3D)
-  catch
-    _class, _reason -> 61
-  end
-
-  def to_atom(0x3E, :openflow_basic) do
-    openflow_basic_to_atom(0x3E)
-  catch
-    _class, _reason -> 62
-  end
-
-  def to_atom(0x3F, :openflow_basic) do
-    openflow_basic_to_atom(0x3F)
-  catch
-    _class, _reason -> 63
-  end
-
-  def to_atom(0x40, :openflow_basic) do
-    openflow_basic_to_atom(0x40)
-  catch
-    _class, _reason -> 64
-  end
-
-  def to_atom(0x41, :openflow_basic) do
-    openflow_basic_to_atom(0x41)
-  catch
-    _class, _reason -> 65
-  end
-
-  def to_atom(0x42, :openflow_basic) do
-    openflow_basic_to_atom(0x42)
-  catch
-    _class, _reason -> 66
-  end
-
-  def to_atom(0x43, :openflow_basic) do
-    openflow_basic_to_atom(0x43)
-  catch
-    _class, _reason -> 67
-  end
-
   def to_atom(_, :openflow_basic) do
     throw(:bad_enum)
   end
@@ -8430,6 +8060,22 @@ defmodule Openflow.Enums do
   end
 
   def to_atom(_, :tcp_flags) do
+    throw(:bad_enum)
+  end
+
+  def to_atom(0x8, :tun_gbp_flags) do
+    tun_gbp_flags_to_atom(0x8)
+  catch
+    _class, _reason -> 8
+  end
+
+  def to_atom(0x40, :tun_gbp_flags) do
+    tun_gbp_flags_to_atom(0x40)
+  catch
+    _class, _reason -> 64
+  end
+
+  def to_atom(_, :tun_gbp_flags) do
     throw(:bad_enum)
   end
 
@@ -8591,87 +8237,13 @@ defmodule Openflow.Enums do
     _class, _reason -> 9
   end
 
+  def to_atom(0xA, :nicira_ext_match) do
+    nicira_ext_match_to_atom(0xA)
+  catch
+    _class, _reason -> 10
+  end
+
   def to_atom(_, :nicira_ext_match) do
-    throw(:bad_enum)
-  end
-
-  def to_atom(0x0, :hp_ext_match) do
-    hp_ext_match_to_atom(0x0)
-  catch
-    _class, _reason -> 0
-  end
-
-  def to_atom(0x1, :hp_ext_match) do
-    hp_ext_match_to_atom(0x1)
-  catch
-    _class, _reason -> 1
-  end
-
-  def to_atom(0x2, :hp_ext_match) do
-    hp_ext_match_to_atom(0x2)
-  catch
-    _class, _reason -> 2
-  end
-
-  def to_atom(0x3, :hp_ext_match) do
-    hp_ext_match_to_atom(0x3)
-  catch
-    _class, _reason -> 3
-  end
-
-  def to_atom(0x4, :hp_ext_match) do
-    hp_ext_match_to_atom(0x4)
-  catch
-    _class, _reason -> 4
-  end
-
-  def to_atom(0x5, :hp_ext_match) do
-    hp_ext_match_to_atom(0x5)
-  catch
-    _class, _reason -> 5
-  end
-
-  def to_atom(0x6, :hp_ext_match) do
-    hp_ext_match_to_atom(0x6)
-  catch
-    _class, _reason -> 6
-  end
-
-  def to_atom(0x7, :hp_ext_match) do
-    hp_ext_match_to_atom(0x7)
-  catch
-    _class, _reason -> 7
-  end
-
-  def to_atom(0x8, :hp_ext_match) do
-    hp_ext_match_to_atom(0x8)
-  catch
-    _class, _reason -> 8
-  end
-
-  def to_atom(_, :hp_ext_match) do
-    throw(:bad_enum)
-  end
-
-  def to_atom(0x1, :hp_custom_match_type) do
-    hp_custom_match_type_to_atom(0x1)
-  catch
-    _class, _reason -> 1
-  end
-
-  def to_atom(0x2, :hp_custom_match_type) do
-    hp_custom_match_type_to_atom(0x2)
-  catch
-    _class, _reason -> 2
-  end
-
-  def to_atom(0x3, :hp_custom_match_type) do
-    hp_custom_match_type_to_atom(0x3)
-  catch
-    _class, _reason -> 3
-  end
-
-  def to_atom(_, :hp_custom_match_type) do
     throw(:bad_enum)
   end
 
@@ -11722,32 +11294,6 @@ defmodule Openflow.Enums do
   def openflow_basic_to_int(:tunnel_id), do: 0x26
   def openflow_basic_to_int(:ipv6_exthdr), do: 0x27
   def openflow_basic_to_int(:pbb_uca), do: 0x29
-  def openflow_basic_to_int(:packet_type), do: 0x2A
-  def openflow_basic_to_int(:gre_flags), do: 0x2B
-  def openflow_basic_to_int(:gre_ver), do: 0x2C
-  def openflow_basic_to_int(:gre_protocol), do: 0x2D
-  def openflow_basic_to_int(:gre_key), do: 0x2E
-  def openflow_basic_to_int(:gre_seqnum), do: 0x2F
-  def openflow_basic_to_int(:lisp_flags), do: 0x30
-  def openflow_basic_to_int(:lisp_nonce), do: 0x31
-  def openflow_basic_to_int(:lisp_id), do: 0x32
-  def openflow_basic_to_int(:vxlan_flags), do: 0x33
-  def openflow_basic_to_int(:vxlan_vni), do: 0x34
-  def openflow_basic_to_int(:mpls_data_first_nibble), do: 0x35
-  def openflow_basic_to_int(:mpls_ach_version), do: 0x36
-  def openflow_basic_to_int(:mpls_ach_channel), do: 0x37
-  def openflow_basic_to_int(:mpls_pw_metadata), do: 0x38
-  def openflow_basic_to_int(:mpls_cw_flags), do: 0x39
-  def openflow_basic_to_int(:mpls_cw_fragment), do: 0x3A
-  def openflow_basic_to_int(:mpls_cw_len), do: 0x3B
-  def openflow_basic_to_int(:mpls_cw_seq_num), do: 0x3C
-  def openflow_basic_to_int(:gtpu_flags), do: 0x3D
-  def openflow_basic_to_int(:gtpu_ver), do: 0x3E
-  def openflow_basic_to_int(:gtpu_msg_type), do: 0x3F
-  def openflow_basic_to_int(:gtpu_teid), do: 0x40
-  def openflow_basic_to_int(:gtpu_extn_hdr), do: 0x41
-  def openflow_basic_to_int(:gtpu_extn_udp_port), do: 0x42
-  def openflow_basic_to_int(:gtpu_extn_sci), do: 0x43
   def openflow_basic_to_int(_), do: throw(:bad_enum)
   def openflow_basic_to_atom(0x0), do: :in_port
   def openflow_basic_to_atom(0x1), do: :in_phy_port
@@ -11790,38 +11336,12 @@ defmodule Openflow.Enums do
   def openflow_basic_to_atom(0x26), do: :tunnel_id
   def openflow_basic_to_atom(0x27), do: :ipv6_exthdr
   def openflow_basic_to_atom(0x29), do: :pbb_uca
-  def openflow_basic_to_atom(0x2A), do: :packet_type
-  def openflow_basic_to_atom(0x2B), do: :gre_flags
-  def openflow_basic_to_atom(0x2C), do: :gre_ver
-  def openflow_basic_to_atom(0x2D), do: :gre_protocol
-  def openflow_basic_to_atom(0x2E), do: :gre_key
-  def openflow_basic_to_atom(0x2F), do: :gre_seqnum
-  def openflow_basic_to_atom(0x30), do: :lisp_flags
-  def openflow_basic_to_atom(0x31), do: :lisp_nonce
-  def openflow_basic_to_atom(0x32), do: :lisp_id
-  def openflow_basic_to_atom(0x33), do: :vxlan_flags
-  def openflow_basic_to_atom(0x34), do: :vxlan_vni
-  def openflow_basic_to_atom(0x35), do: :mpls_data_first_nibble
-  def openflow_basic_to_atom(0x36), do: :mpls_ach_version
-  def openflow_basic_to_atom(0x37), do: :mpls_ach_channel
-  def openflow_basic_to_atom(0x38), do: :mpls_pw_metadata
-  def openflow_basic_to_atom(0x39), do: :mpls_cw_flags
-  def openflow_basic_to_atom(0x3A), do: :mpls_cw_fragment
-  def openflow_basic_to_atom(0x3B), do: :mpls_cw_len
-  def openflow_basic_to_atom(0x3C), do: :mpls_cw_seq_num
-  def openflow_basic_to_atom(0x3D), do: :gtpu_flags
-  def openflow_basic_to_atom(0x3E), do: :gtpu_ver
-  def openflow_basic_to_atom(0x3F), do: :gtpu_msg_type
-  def openflow_basic_to_atom(0x40), do: :gtpu_teid
-  def openflow_basic_to_atom(0x41), do: :gtpu_extn_hdr
-  def openflow_basic_to_atom(0x42), do: :gtpu_extn_udp_port
-  def openflow_basic_to_atom(0x43), do: :gtpu_extn_sci
   def openflow_basic_to_atom(_), do: throw(:bad_enum)
-  def vlan_id_to_int(:present), do: 0x1000
-  def vlan_id_to_int(:none), do: 0x0
+  def vlan_id_to_int(:vid_present), do: 0x1000
+  def vlan_id_to_int(:vid_none), do: 0x0
   def vlan_id_to_int(_), do: throw(:bad_enum)
-  def vlan_id_to_atom(0x1000), do: :present
-  def vlan_id_to_atom(0x0), do: :none
+  def vlan_id_to_atom(0x1000), do: :vid_present
+  def vlan_id_to_atom(0x0), do: :vid_none
   def vlan_id_to_atom(_), do: throw(:bad_enum)
   def ipv6exthdr_flags_to_int(:nonext), do: 0x1
   def ipv6exthdr_flags_to_int(:esp), do: 0x2
@@ -11863,6 +11383,12 @@ defmodule Openflow.Enums do
   def tcp_flags_to_atom(0x80), do: :cwr
   def tcp_flags_to_atom(0x100), do: :ns
   def tcp_flags_to_atom(_), do: throw(:bad_enum)
+  def tun_gbp_flags_to_int(:policy_applied), do: 0x8
+  def tun_gbp_flags_to_int(:dont_learn), do: 0x40
+  def tun_gbp_flags_to_int(_), do: throw(:bad_enum)
+  def tun_gbp_flags_to_atom(0x8), do: :policy_applied
+  def tun_gbp_flags_to_atom(0x40), do: :dont_learn
+  def tun_gbp_flags_to_atom(_), do: throw(:bad_enum)
   def ct_state_flags_to_int(:new), do: 0x1
   def ct_state_flags_to_int(:est), do: 0x2
   def ct_state_flags_to_int(:rel), do: 0x4
@@ -11908,6 +11434,7 @@ defmodule Openflow.Enums do
   def nicira_ext_match_to_int(:nsh_c2), do: 0x7
   def nicira_ext_match_to_int(:nsh_c3), do: 0x8
   def nicira_ext_match_to_int(:nsh_c4), do: 0x9
+  def nicira_ext_match_to_int(:nsh_ttl), do: 0xA
   def nicira_ext_match_to_int(_), do: throw(:bad_enum)
   def nicira_ext_match_to_atom(0x1), do: :nsh_flags
   def nicira_ext_match_to_atom(0x2), do: :nsh_mdtype
@@ -11918,35 +11445,8 @@ defmodule Openflow.Enums do
   def nicira_ext_match_to_atom(0x7), do: :nsh_c2
   def nicira_ext_match_to_atom(0x8), do: :nsh_c3
   def nicira_ext_match_to_atom(0x9), do: :nsh_c4
+  def nicira_ext_match_to_atom(0xA), do: :nsh_ttl
   def nicira_ext_match_to_atom(_), do: throw(:bad_enum)
-  def hp_ext_match_to_int(:hp_udp_src_port_range), do: 0x0
-  def hp_ext_match_to_int(:hp_udp_dst_port_range), do: 0x1
-  def hp_ext_match_to_int(:hp_tcp_src_port_range), do: 0x2
-  def hp_ext_match_to_int(:hp_tcp_dst_port_range), do: 0x3
-  def hp_ext_match_to_int(:hp_tcp_flags), do: 0x4
-  def hp_ext_match_to_int(:hp_custom_1), do: 0x5
-  def hp_ext_match_to_int(:hp_custom_2), do: 0x6
-  def hp_ext_match_to_int(:hp_custom_3), do: 0x7
-  def hp_ext_match_to_int(:hp_custom_4), do: 0x8
-  def hp_ext_match_to_int(_), do: throw(:bad_enum)
-  def hp_ext_match_to_atom(0x0), do: :hp_udp_src_port_range
-  def hp_ext_match_to_atom(0x1), do: :hp_udp_dst_port_range
-  def hp_ext_match_to_atom(0x2), do: :hp_tcp_src_port_range
-  def hp_ext_match_to_atom(0x3), do: :hp_tcp_dst_port_range
-  def hp_ext_match_to_atom(0x4), do: :hp_tcp_flags
-  def hp_ext_match_to_atom(0x5), do: :hp_custom_1
-  def hp_ext_match_to_atom(0x6), do: :hp_custom_2
-  def hp_ext_match_to_atom(0x7), do: :hp_custom_3
-  def hp_ext_match_to_atom(0x8), do: :hp_custom_4
-  def hp_ext_match_to_atom(_), do: throw(:bad_enum)
-  def hp_custom_match_type_to_int(:l2_start), do: 0x1
-  def hp_custom_match_type_to_int(:l3_start), do: 0x2
-  def hp_custom_match_type_to_int(:l4_start), do: 0x3
-  def hp_custom_match_type_to_int(_), do: throw(:bad_enum)
-  def hp_custom_match_type_to_atom(0x1), do: :l2_start
-  def hp_custom_match_type_to_atom(0x2), do: :l3_start
-  def hp_custom_match_type_to_atom(0x3), do: :l4_start
-  def hp_custom_match_type_to_atom(_), do: throw(:bad_enum)
   def onf_ext_match_to_int(:onf_tcp_flags), do: 0x2A
   def onf_ext_match_to_int(:onf_actset_output), do: 0x2B
   def onf_ext_match_to_int(:onf_pbb_uca), do: 0xA00
@@ -12852,6 +12352,10 @@ defmodule Openflow.Enums do
     Openflow.Utils.int_to_flags([], int, enum_of(:tcp_flags))
   end
 
+  def int_to_flags(int, :tun_gbp_flags) do
+    Openflow.Utils.int_to_flags([], int, enum_of(:tun_gbp_flags))
+  end
+
   def int_to_flags(int, :ct_state_flags) do
     Openflow.Utils.int_to_flags([], int, enum_of(:ct_state_flags))
   end
@@ -12862,14 +12366,6 @@ defmodule Openflow.Enums do
 
   def int_to_flags(int, :nicira_ext_match) do
     Openflow.Utils.int_to_flags([], int, enum_of(:nicira_ext_match))
-  end
-
-  def int_to_flags(int, :hp_ext_match) do
-    Openflow.Utils.int_to_flags([], int, enum_of(:hp_ext_match))
-  end
-
-  def int_to_flags(int, :hp_custom_match_type) do
-    Openflow.Utils.int_to_flags([], int, enum_of(:hp_custom_match_type))
   end
 
   def int_to_flags(int, :onf_ext_match) do
@@ -13240,6 +12736,10 @@ defmodule Openflow.Enums do
     Openflow.Utils.flags_to_int(0, flags, enum_of(:tcp_flags))
   end
 
+  def flags_to_int(flags, :tun_gbp_flags) do
+    Openflow.Utils.flags_to_int(0, flags, enum_of(:tun_gbp_flags))
+  end
+
   def flags_to_int(flags, :ct_state_flags) do
     Openflow.Utils.flags_to_int(0, flags, enum_of(:ct_state_flags))
   end
@@ -13250,14 +12750,6 @@ defmodule Openflow.Enums do
 
   def flags_to_int(flags, :nicira_ext_match) do
     Openflow.Utils.flags_to_int(0, flags, enum_of(:nicira_ext_match))
-  end
-
-  def flags_to_int(flags, :hp_ext_match) do
-    Openflow.Utils.flags_to_int(0, flags, enum_of(:hp_ext_match))
-  end
-
-  def flags_to_int(flags, :hp_custom_match_type) do
-    Openflow.Utils.flags_to_int(0, flags, enum_of(:hp_custom_match_type))
   end
 
   def flags_to_int(flags, :onf_ext_match) do
@@ -13978,36 +13470,10 @@ defmodule Openflow.Enums do
       pbb_isid: 37,
       tunnel_id: 38,
       ipv6_exthdr: 39,
-      pbb_uca: 41,
-      packet_type: 42,
-      gre_flags: 43,
-      gre_ver: 44,
-      gre_protocol: 45,
-      gre_key: 46,
-      gre_seqnum: 47,
-      lisp_flags: 48,
-      lisp_nonce: 49,
-      lisp_id: 50,
-      vxlan_flags: 51,
-      vxlan_vni: 52,
-      mpls_data_first_nibble: 53,
-      mpls_ach_version: 54,
-      mpls_ach_channel: 55,
-      mpls_pw_metadata: 56,
-      mpls_cw_flags: 57,
-      mpls_cw_fragment: 58,
-      mpls_cw_len: 59,
-      mpls_cw_seq_num: 60,
-      gtpu_flags: 61,
-      gtpu_ver: 62,
-      gtpu_msg_type: 63,
-      gtpu_teid: 64,
-      gtpu_extn_hdr: 65,
-      gtpu_extn_udp_port: 66,
-      gtpu_extn_sci: 67
+      pbb_uca: 41
     ]
 
-  defp enum_of(:vlan_id), do: [present: 4096, none: 0]
+  defp enum_of(:vlan_id), do: [vid_present: 4096, vid_none: 0]
 
   defp enum_of(:ipv6exthdr_flags),
     do: [
@@ -14025,6 +13491,8 @@ defmodule Openflow.Enums do
   defp enum_of(:tcp_flags),
     do: [fin: 1, syn: 2, rst: 4, psh: 8, ack: 16, urg: 32, ece: 64, cwr: 128, ns: 256]
 
+  defp enum_of(:tun_gbp_flags), do: [policy_applied: 8, dont_learn: 64]
+
   defp enum_of(:ct_state_flags),
     do: [new: 1, est: 2, rel: 4, rep: 8, inv: 16, trk: 32, snat: 64, dnat: 128]
 
@@ -14041,23 +13509,10 @@ defmodule Openflow.Enums do
       nsh_c1: 6,
       nsh_c2: 7,
       nsh_c3: 8,
-      nsh_c4: 9
+      nsh_c4: 9,
+      nsh_ttl: 10
     ]
 
-  defp enum_of(:hp_ext_match),
-    do: [
-      hp_udp_src_port_range: 0,
-      hp_udp_dst_port_range: 1,
-      hp_tcp_src_port_range: 2,
-      hp_tcp_dst_port_range: 3,
-      hp_tcp_flags: 4,
-      hp_custom_1: 5,
-      hp_custom_2: 6,
-      hp_custom_3: 7,
-      hp_custom_4: 8
-    ]
-
-  defp enum_of(:hp_custom_match_type), do: [l2_start: 1, l3_start: 2, l4_start: 3]
   defp enum_of(:onf_ext_match), do: [onf_tcp_flags: 42, onf_actset_output: 43, onf_pbb_uca: 2560]
   defp enum_of(:buffer_id), do: [no_buffer: 4_294_967_295]
   defp enum_of(:port_config), do: [port_down: 1, no_receive: 4, no_forward: 32, no_packet_in: 64]

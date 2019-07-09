@@ -75,7 +75,7 @@ defmodule OfpFlowStatsTest do
             hard_timeout: 0,
             idle_timeout: 0,
             instructions: [%Openflow.Instruction.GotoTable{table_id: 1}],
-            match: [in_port: 6, eth_src: "f20ba47df8ea"],
+            match: [in_port: 6, eth_src: <<0xF20BA47DF8EA::48>>],
             packet_count: 3,
             priority: 123,
             table_id: 0
@@ -114,7 +114,7 @@ defmodule OfpFlowStatsTest do
               },
               %Openflow.Instruction.ApplyActions{
                 actions: [
-                  %Openflow.Action.SetField{field: [eth_src: "010203040506"]},
+                  %Openflow.Action.SetField{field: [eth_src: <<0x010203040506::48>>]},
                   %Openflow.Action.SetField{field: [onf_pbb_uca: 1]}
                 ]
               },

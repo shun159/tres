@@ -21,7 +21,7 @@ defmodule OfpFlowRemovedTest do
       assert flow_removed.hard_timeout == 0
       assert flow_removed.packet_count == 1
       assert flow_removed.byte_count == 86
-      assert flow_removed.match == [eth_dst: "f20ba47df8ea"]
+      assert flow_removed.match == [eth_dst: <<0xF20BA47DF8EA::48>>]
     end
 
     test "with OFP_FLOW_REMOVED packet(with match fields)" do
@@ -45,7 +45,7 @@ defmodule OfpFlowRemovedTest do
 
       assert flow_removed.match == [
                in_port: 43_981,
-               eth_dst: "aabbcc998877",
+               eth_dst: <<0xAABBCC998877::48>>,
                eth_type: 2048,
                vlan_vid: 5095,
                ipv4_dst: {192, 168, 2, 1},
