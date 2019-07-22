@@ -4417,6 +4417,12 @@ defmodule Openflow.Enums do
     _class, _reason -> Openflow.Action.NxDecap
   end
 
+  def to_int(Openflow.Action.NxCheckPktLarger, :nicira_ext_action) do
+    nicira_ext_action_to_int(Openflow.Action.NxCheckPktLarger)
+  catch
+    _class, _reason -> Openflow.Action.NxCheckPktLarger
+  end
+
   def to_int(Openflow.Action.NxDebugRecirc, :nicira_ext_action) do
     nicira_ext_action_to_int(Openflow.Action.NxDebugRecirc)
   catch
@@ -9619,6 +9625,12 @@ defmodule Openflow.Enums do
     _class, _reason -> 47
   end
 
+  def to_atom(0x31, :nicira_ext_action) do
+    nicira_ext_action_to_atom(0x31)
+  catch
+    _class, _reason -> 49
+  end
+
   def to_atom(0xFF, :nicira_ext_action) do
     nicira_ext_action_to_atom(0xFF)
   catch
@@ -11888,6 +11900,7 @@ defmodule Openflow.Enums do
   def nicira_ext_action_to_int(Openflow.Action.NxLearn2), do: 0x2D
   def nicira_ext_action_to_int(Openflow.Action.NxEncap), do: 0x2E
   def nicira_ext_action_to_int(Openflow.Action.NxDecap), do: 0x2F
+  def nicira_ext_action_to_int(Openflow.Action.NxCheckPktLarger), do: 0x31
   def nicira_ext_action_to_int(Openflow.Action.NxDebugRecirc), do: 0xFF
   def nicira_ext_action_to_int(_), do: throw(:bad_enum)
   def nicira_ext_action_to_atom(0x1), do: Openflow.Action.NxResubmit
@@ -11927,6 +11940,7 @@ defmodule Openflow.Enums do
   def nicira_ext_action_to_atom(0x2D), do: Openflow.Action.NxLearn2
   def nicira_ext_action_to_atom(0x2E), do: Openflow.Action.NxEncap
   def nicira_ext_action_to_atom(0x2F), do: Openflow.Action.NxDecap
+  def nicira_ext_action_to_atom(0x31), do: Openflow.Action.NxCheckPktLarger
   def nicira_ext_action_to_atom(0xFF), do: Openflow.Action.NxDebugRecirc
   def nicira_ext_action_to_atom(_), do: throw(:bad_enum)
   def nx_mp_algorithm_to_int(:modulo_n), do: 0x0
@@ -13742,6 +13756,7 @@ defmodule Openflow.Enums do
       {Openflow.Action.NxLearn2, 45},
       {Openflow.Action.NxEncap, 46},
       {Openflow.Action.NxDecap, 47},
+      {Openflow.Action.NxCheckPktLarger, 49},
       {Openflow.Action.NxDebugRecirc, 255}
     ]
 
