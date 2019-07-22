@@ -1017,6 +1017,37 @@ defmodule OfpActionTest do
     end
   end
 
+  describe "Openflow.Action.NxCheckPktLarger" do
+    test "with options: if the packet larger than 100 bytes, set mark to reg1" do
+      test_file = "test/packet_data/nx_check_pkt_larger.raw"
+      packet = File.read!(test_file)
+      actions = Openflow.Action.read(packet)
+
+      check_pkt_larger =
+        Openflow.Action.NxCheckPktLarger.new(
+          dst_field: :reg1,
+          offset: 0,
+          pkt_len: 100
+        )
+
+      actions_bin = Openflow.Action.to_binary(check_pkt_larger)
+      assert actions_bin == packet
+      assert actions == [check_pkt_larger]
+    end
+
+    test "with no dst_field option" do
+      assert_raise RuntimeError, "dst_field must be specified", fn ->
+        Openflow.Action.NxCheckPktLarger.new(pkt_len: 100)
+      end
+    end
+
+    test "with no pkt_len option" do
+      assert_raise RuntimeError, "pkt_len must be specified", fn ->
+        Openflow.Action.NxCheckPktLarger.new(dst_field: :reg1)
+      end
+    end
+  end
+
   describe "Openflow.Action.NxRegMove" do
     test "with options: move in_port value to vlan_tci field" do
       test_file = "test/packet_data/nx_reg_move.raw"

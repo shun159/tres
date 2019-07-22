@@ -117,6 +117,7 @@ defmodule Tres.Messages do
       alias Openflow.Action.NxEncap
       alias Openflow.Action.NxDecap
       alias Openflow.Action.NxDebugRecirc
+      alias Openflow.Action.NxCheckPktLarger
 
       alias Openflow.Action.NxFlowSpecMatch
       alias Openflow.Action.NxFlowSpecLoad

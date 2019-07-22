@@ -861,6 +861,7 @@ enums = [
     {Openflow.Action.NxLearn2, 45},
     {Openflow.Action.NxEncap, 46},
     {Openflow.Action.NxDecap, 47},
+    {Openflow.Action.NxCheckPktLarger, 49},
     {Openflow.Action.NxDebugRecirc, 0xFF}
   ],
   nx_mp_algorithm: [
