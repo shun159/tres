@@ -741,7 +741,7 @@ defmodule OfpActionTest do
           fin_idle_timeout: 2,
           fin_hard_timeout: 4,
           flow_specs: [
-            Openflow.Action.NxFlowSpecMatch.new(src: :nx_vlan_tci, dst: :nx_vlan_tci, n_bits: 12),
+            Openflow.Action.NxFlowSpecMatch.new(src: :nx_vlan_tci, n_bits: 12),
             Openflow.Action.NxFlowSpecMatch.new(src: :nx_eth_src, dst: :nx_eth_dst),
             Openflow.Action.NxFlowSpecOutput.new(src: :nx_in_port)
           ]
@@ -773,7 +773,7 @@ defmodule OfpActionTest do
           result_dst: :reg0,
           result_dst_offset: 8,
           flow_specs: [
-            Openflow.Action.NxFlowSpecMatch.new(src: :nx_vlan_tci, dst: :nx_vlan_tci, n_bits: 12),
+            Openflow.Action.NxFlowSpecMatch.new(src: :nx_vlan_tci, n_bits: 12),
             Openflow.Action.NxFlowSpecMatch.new(src: :nx_eth_src, dst: :nx_eth_dst),
             Openflow.Action.NxFlowSpecOutput.new(src: :nx_in_port)
           ]
@@ -846,14 +846,8 @@ defmodule OfpActionTest do
     end
 
     test "with no option" do
-      assert_raise RuntimeError, ":dst must be specified", fn ->
+      assert_raise RuntimeError, ":src must be specified", fn ->
         Openflow.Action.NxFlowSpecMatch.new()
-      end
-    end
-
-    test "with no dst option" do
-      assert_raise RuntimeError, ":dst must be specified", fn ->
-        Openflow.Action.NxFlowSpecMatch.new(src: :in_port)
       end
     end
 
@@ -861,6 +855,11 @@ defmodule OfpActionTest do
       assert_raise RuntimeError, ":src must be specified", fn ->
         Openflow.Action.NxFlowSpecMatch.new(dst: :reg0)
       end
+    end
+
+    test "with no dst option" do
+      learn = Openflow.Action.NxFlowSpecMatch.new(src: :in_port)
+      assert learn.dst == :in_port
     end
   end
 

@@ -29,8 +29,8 @@ defmodule Openflow.Action.NxFlowSpecMatch do
           dst_offset: non_neg_integer()
         ) :: t()
   def new(options \\ []) do
-    dst = options[:dst] || raise ":dst must be specified"
     src = options[:src] || raise ":src must be specified"
+    dst = options[:dst] || src
     n_bits = options[:n_bits] || Openflow.Match.n_bits_of(dst)
 
     %NxFlowSpecMatch{
