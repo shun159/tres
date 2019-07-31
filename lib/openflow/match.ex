@@ -63,8 +63,8 @@ defmodule Openflow.Match do
       {oxm_class_int, vendor_int} ->
         oxm_class = Openflow.Enums.oxm_class_to_atom(oxm_class_int)
         oxm_field_int = Openflow.Enums.to_int(oxm_field, oxm_class)
-        oxm_length = div(n_bits_of(oxm_field) + 6, 8)
-        <<oxm_class_int::16, 0::7, has_mask::1, oxm_length::8, vendor_int::32, oxm_field_int::16>>
+        oxm_length = div(n_bits_of(oxm_field) + 4, 8)
+        <<oxm_class_int::16, oxm_field_int::7, has_mask::1, oxm_length::8, vendor_int::32>>
 
       oxm_class_int ->
         oxm_class = Openflow.Enums.oxm_class_to_atom(oxm_class_int)
@@ -141,15 +141,15 @@ defmodule Openflow.Match do
          acc,
          <<
            0xFFFF::16,
-           _::7,
+           field_int::7,
            has_mask::1,
            length::8,
            body_bin::size(length)-bytes,
            rest::bytes
          >>
        ) do
-    value_len = length - 6
-    <<exp_int::32, field_int::16, value_bin::size(value_len)-bytes>> = body_bin
+    value_len = length - 4
+    <<exp_int::32, value_bin::size(value_len)-bytes>> = body_bin
     oxm_field = match_field({0xFFFF, exp_int}, field_int)
     field = decode_field(has_mask, oxm_field, value_bin)
     decode_fields([field | acc], rest)
@@ -545,7 +545,7 @@ defmodule Openflow.Match do
             ],
        do: 0x0001
 
-  # Nicira Ext
+  # Nicira NSH Ext
   defp match_class(f)
        when f in [
               :nsh_flags,
@@ -558,6 +558,17 @@ defmodule Openflow.Match do
               :nsh_c3,
               :nsh_c4,
               :nsh_ttl
+            ],
+       do: {0xFFFF, 0x005AD650}
+
+  # Nicira Ext
+  defp match_class(f)
+       when f in [
+              :nxoxm_dp_hash,
+              :tun_erspan_idx,
+              :tun_erspan_ver,
+              :tun_erspan_dir,
+              :tun_erspan_hwid
             ],
        do: {0xFFFF, 0x00002320}
 
@@ -693,7 +704,10 @@ defmodule Openflow.Match do
               :nsh_si,
               :nsh_ttl,
               :pbb_uca,
-              :onf_pbb_uca
+              :onf_pbb_uca,
+              :tun_erspan_ver,
+              :tun_erspan_dir,
+              :tun_erspan_hwid
             ],
        do: :u8
 
@@ -752,6 +766,7 @@ defmodule Openflow.Match do
               :nx_ipv6_flabel,
               :pkt_mark,
               :dp_hash,
+              :nxoxm_dp_hash,
               :recirc_id,
               :conj_id,
               :ct_mark,
@@ -760,7 +775,8 @@ defmodule Openflow.Match do
               :nsh_c2,
               :nsh_c3,
               :nsh_c4,
-              :packet_type
+              :packet_type,
+              :tun_erspan_idx
             ],
        do: :u32
 
@@ -864,7 +880,7 @@ defmodule Openflow.Match do
        do: :arbitrary
 
   defp oxm_header__({class, exp}, field, has_mask, length),
-    do: <<class::16, 0::7, has_mask::1, length + 6::8, exp::32, field::16>>
+    do: <<class::16, field::7, has_mask::1, length + 4::8, exp::32>>
 
   defp oxm_header__(class, field, has_mask, length),
     do: <<class::16, field::7, has_mask::1, length::8>>

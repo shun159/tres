@@ -12,62 +12,6 @@ defmodule OfpFlowModTest do
   @flow_mod8 "test/packet_data/libofproto-OFP13-flow_mod_match_conj.packet"
 
   describe "Openflow.read/1" do
-    test "with OFP_FLOW_MOD packet(1)" do
-      binary = File.read!(@flow_mod1)
-
-      fm =
-        binary
-        |> Openflow.read()
-        |> elem(1)
-        |> Map.to_list()
-        |> Openflow.FlowMod.new()
-        |> Openflow.to_binary()
-        |> Openflow.read()
-        |> elem(1)
-
-      assert fm.cookie == 0
-      assert fm.cookie_mask == 0
-      assert fm.table_id == 1
-      assert fm.command == :add
-      assert fm.idle_timeout == 0
-      assert fm.hard_timeout == 0
-      assert fm.priority == 123
-      assert fm.buffer_id == 0xFFFF
-      assert fm.out_port == :any
-      assert fm.out_group == :any
-      assert fm.flags == []
-      assert fm.match == Openflow.Match.new(eth_dst: <<0xF20BA47DF8EA::48>>)
-
-      assert fm.instructions == [
-               Openflow.Instruction.WriteActions.new([
-                 Openflow.Action.SetField.new(vlan_vid: 258),
-                 Openflow.Action.CopyTtlOut.new(),
-                 Openflow.Action.CopyTtlIn.new(),
-                 Openflow.Action.CopyTtlIn.new(),
-                 Openflow.Action.PopPbb.new(),
-                 Openflow.Action.PushPbb.new(4660),
-                 Openflow.Action.PopMpls.new(39030),
-                 Openflow.Action.PushMpls.new(34887),
-                 Openflow.Action.PopVlan.new(),
-                 Openflow.Action.PushVlan.new(33024),
-                 Openflow.Action.DecMplsTtl.new(),
-                 Openflow.Action.SetMplsTtl.new(10),
-                 Openflow.Action.DecNwTtl.new(),
-                 Openflow.Action.SetNwTtl.new(10),
-                 Openflow.Action.Experimenter.new(101, <<0, 1, 2, 3, 4, 5, 6, 7>>),
-                 Openflow.Action.SetQueue.new(3),
-                 Openflow.Action.Group.new(99),
-                 Openflow.Action.Output.new(6)
-               ]),
-               Openflow.Instruction.ApplyActions.new([
-                 Openflow.Action.SetField.new(eth_src: <<0x010203040506::48>>),
-                 Openflow.Action.SetField.new(onf_pbb_uca: 1)
-               ])
-             ]
-
-      assert Openflow.to_binary(fm) == binary
-    end
-
     test "with OFP_FLOW_MOD packet(2)" do
       binary = File.read!(@flow_mod2)
       {:ok, fm, ""} = Openflow.read(binary)
@@ -111,72 +55,6 @@ defmodule OfpFlowModTest do
                Openflow.Instruction.WriteActions.new([Openflow.Action.Output.new(6)])
              ]
 
-      assert Openflow.to_binary(fm) == binary
-    end
-
-    test "with OFP_FLOW_MOD packet(4)" do
-      binary = File.read!(@flow_mod4)
-      {:ok, fm, ""} = Openflow.read(binary)
-
-      assert fm.cookie == 0
-      assert fm.cookie_mask == 0
-      assert fm.table_id == 1
-      assert fm.command == :add
-      assert fm.idle_timeout == 0
-      assert fm.hard_timeout == 0
-      assert fm.priority == 123
-      assert fm.buffer_id == 0xFFFF
-      assert fm.out_port == :any
-      assert fm.out_group == :any
-      assert fm.flags == []
-
-      assert fm.match ==
-               Openflow.Match.new(
-                 in_port: 84_281_096,
-                 in_phy_port: 16_909_060,
-                 metadata: 283_686_952_306_183,
-                 eth_type: 2054,
-                 eth_dst: <<0xFFFFFFFFFFFF::48>>,
-                 eth_src: <<0xF20BA47DF8EA::48>>,
-                 vlan_vid: 999,
-                 ip_dscp: 9,
-                 ip_ecn: 3,
-                 ip_proto: 99,
-                 ipv4_src: {1, 2, 3, 4},
-                 ipv4_dst: {1, 2, 3, 4},
-                 tcp_src: 8080,
-                 tcp_dst: 18_080,
-                 udp_src: 28_080,
-                 udp_dst: 55_936,
-                 sctp_src: 48_080,
-                 sctp_dst: 59_328,
-                 icmpv4_type: 100,
-                 icmpv4_code: 101,
-                 arp_op: 1,
-                 arp_spa: {10, 0, 0, 1},
-                 arp_tpa: {10, 0, 0, 3},
-                 arp_sha: <<0xF20BA47DF8EA::48>>,
-                 arp_tha: <<0x000000000000::48>>,
-                 ipv6_src: {65152, 0, 0, 0, 61451, 42239, 65096, 10405},
-                 ipv6_dst: {65152, 0, 0, 0, 61451, 42239, 65029, 47068},
-                 ipv6_flabel: 541_473,
-                 icmpv6_type: 200,
-                 icmpv6_code: 201,
-                 ipv6_nd_target: {65152, 0, 0, 0, 2656, 28415, 65151, 29927},
-                 ipv6_nd_sll: <<0x00000000029A::48>>,
-                 ipv6_nd_tll: <<0x00000000022B::48>>,
-                 mpls_label: 624_485,
-                 mpls_tc: 5,
-                 mpls_bos: 1,
-                 pbb_isid: 11_259_375,
-                 tunnel_id: 651_061_555_542_690_057,
-                 ipv6_exthdr: [:auth, :frag, :router, :hop, :unrep, :unseq],
-                 onf_pbb_uca: 1,
-                 tun_src: {1, 2, 3, 4},
-                 tun_dst: {1, 2, 3, 4}
-               )
-
-      assert fm.instructions == []
       assert Openflow.to_binary(fm) == binary
     end
 
