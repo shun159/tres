@@ -1535,10 +1535,16 @@ defmodule Openflow.Enums do
     throw(:bad_enum)
   end
 
-  def to_int(:nicira_ext_match, :experimenter_oxm_vendors) do
-    experimenter_oxm_vendors_to_int(:nicira_ext_match)
+  def to_int(:nxoxm_nsh_match, :experimenter_oxm_vendors) do
+    experimenter_oxm_vendors_to_int(:nxoxm_nsh_match)
   catch
-    _class, _reason -> :nicira_ext_match
+    _class, _reason -> :nxoxm_nsh_match
+  end
+
+  def to_int(:nxoxm_match, :experimenter_oxm_vendors) do
+    experimenter_oxm_vendors_to_int(:nxoxm_match)
+  catch
+    _class, _reason -> :nxoxm_match
   end
 
   def to_int(:hp_ext_match, :experimenter_oxm_vendors) do
@@ -2725,6 +2731,12 @@ defmodule Openflow.Enums do
     _class, _reason -> :pbb_uca
   end
 
+  def to_int(:packet_type, :openflow_basic) do
+    openflow_basic_to_int(:packet_type)
+  catch
+    _class, _reason -> :packet_type
+  end
+
   def to_int(_int, :openflow_basic) do
     throw(:bad_enum)
   end
@@ -2981,67 +2993,67 @@ defmodule Openflow.Enums do
     throw(:bad_enum)
   end
 
-  def to_int(:nsh_flags, :nicira_ext_match) do
-    nicira_ext_match_to_int(:nsh_flags)
+  def to_int(:nsh_flags, :nxoxm_nsh_match) do
+    nxoxm_nsh_match_to_int(:nsh_flags)
   catch
     _class, _reason -> :nsh_flags
   end
 
-  def to_int(:nsh_mdtype, :nicira_ext_match) do
-    nicira_ext_match_to_int(:nsh_mdtype)
+  def to_int(:nsh_mdtype, :nxoxm_nsh_match) do
+    nxoxm_nsh_match_to_int(:nsh_mdtype)
   catch
     _class, _reason -> :nsh_mdtype
   end
 
-  def to_int(:nsh_np, :nicira_ext_match) do
-    nicira_ext_match_to_int(:nsh_np)
+  def to_int(:nsh_np, :nxoxm_nsh_match) do
+    nxoxm_nsh_match_to_int(:nsh_np)
   catch
     _class, _reason -> :nsh_np
   end
 
-  def to_int(:nsh_spi, :nicira_ext_match) do
-    nicira_ext_match_to_int(:nsh_spi)
+  def to_int(:nsh_spi, :nxoxm_nsh_match) do
+    nxoxm_nsh_match_to_int(:nsh_spi)
   catch
     _class, _reason -> :nsh_spi
   end
 
-  def to_int(:nsh_si, :nicira_ext_match) do
-    nicira_ext_match_to_int(:nsh_si)
+  def to_int(:nsh_si, :nxoxm_nsh_match) do
+    nxoxm_nsh_match_to_int(:nsh_si)
   catch
     _class, _reason -> :nsh_si
   end
 
-  def to_int(:nsh_c1, :nicira_ext_match) do
-    nicira_ext_match_to_int(:nsh_c1)
+  def to_int(:nsh_c1, :nxoxm_nsh_match) do
+    nxoxm_nsh_match_to_int(:nsh_c1)
   catch
     _class, _reason -> :nsh_c1
   end
 
-  def to_int(:nsh_c2, :nicira_ext_match) do
-    nicira_ext_match_to_int(:nsh_c2)
+  def to_int(:nsh_c2, :nxoxm_nsh_match) do
+    nxoxm_nsh_match_to_int(:nsh_c2)
   catch
     _class, _reason -> :nsh_c2
   end
 
-  def to_int(:nsh_c3, :nicira_ext_match) do
-    nicira_ext_match_to_int(:nsh_c3)
+  def to_int(:nsh_c3, :nxoxm_nsh_match) do
+    nxoxm_nsh_match_to_int(:nsh_c3)
   catch
     _class, _reason -> :nsh_c3
   end
 
-  def to_int(:nsh_c4, :nicira_ext_match) do
-    nicira_ext_match_to_int(:nsh_c4)
+  def to_int(:nsh_c4, :nxoxm_nsh_match) do
+    nxoxm_nsh_match_to_int(:nsh_c4)
   catch
     _class, _reason -> :nsh_c4
   end
 
-  def to_int(:nsh_ttl, :nicira_ext_match) do
-    nicira_ext_match_to_int(:nsh_ttl)
+  def to_int(:nsh_ttl, :nxoxm_nsh_match) do
+    nxoxm_nsh_match_to_int(:nsh_ttl)
   catch
     _class, _reason -> :nsh_ttl
   end
 
-  def to_int(_int, :nicira_ext_match) do
+  def to_int(_int, :nxoxm_nsh_match) do
     throw(:bad_enum)
   end
 
@@ -3064,6 +3076,40 @@ defmodule Openflow.Enums do
   end
 
   def to_int(_int, :onf_ext_match) do
+    throw(:bad_enum)
+  end
+
+  def to_int(:nxoxm_dp_hash, :nxoxm_match) do
+    nxoxm_match_to_int(:nxoxm_dp_hash)
+  catch
+    _class, _reason -> :nxoxm_dp_hash
+  end
+
+  def to_int(:tun_erspan_idx, :nxoxm_match) do
+    nxoxm_match_to_int(:tun_erspan_idx)
+  catch
+    _class, _reason -> :tun_erspan_idx
+  end
+
+  def to_int(:tun_erspan_ver, :nxoxm_match) do
+    nxoxm_match_to_int(:tun_erspan_ver)
+  catch
+    _class, _reason -> :tun_erspan_ver
+  end
+
+  def to_int(:tun_erspan_dir, :nxoxm_match) do
+    nxoxm_match_to_int(:tun_erspan_dir)
+  catch
+    _class, _reason -> :tun_erspan_dir
+  end
+
+  def to_int(:tun_erspan_hwid, :nxoxm_match) do
+    nxoxm_match_to_int(:tun_erspan_hwid)
+  catch
+    _class, _reason -> :tun_erspan_hwid
+  end
+
+  def to_int(_int, :nxoxm_match) do
     throw(:bad_enum)
   end
 
@@ -4415,6 +4461,12 @@ defmodule Openflow.Enums do
     nicira_ext_action_to_int(Openflow.Action.NxDecap)
   catch
     _class, _reason -> Openflow.Action.NxDecap
+  end
+
+  def to_int(Openflow.Action.NxCheckPktLarger, :nicira_ext_action) do
+    nicira_ext_action_to_int(Openflow.Action.NxCheckPktLarger)
+  catch
+    _class, _reason -> Openflow.Action.NxCheckPktLarger
   end
 
   def to_int(Openflow.Action.NxDebugRecirc, :nicira_ext_action) do
@@ -6737,6 +6789,12 @@ defmodule Openflow.Enums do
     throw(:bad_enum)
   end
 
+  def to_atom(0x5AD650, :experimenter_oxm_vendors) do
+    experimenter_oxm_vendors_to_atom(0x5AD650)
+  catch
+    _class, _reason -> 5_953_104
+  end
+
   def to_atom(0x2320, :experimenter_oxm_vendors) do
     experimenter_oxm_vendors_to_atom(0x2320)
   catch
@@ -7927,6 +7985,12 @@ defmodule Openflow.Enums do
     _class, _reason -> 41
   end
 
+  def to_atom(0x2C, :openflow_basic) do
+    openflow_basic_to_atom(0x2C)
+  catch
+    _class, _reason -> 44
+  end
+
   def to_atom(_, :openflow_basic) do
     throw(:bad_enum)
   end
@@ -8183,67 +8247,67 @@ defmodule Openflow.Enums do
     throw(:bad_enum)
   end
 
-  def to_atom(0x1, :nicira_ext_match) do
-    nicira_ext_match_to_atom(0x1)
+  def to_atom(0x1, :nxoxm_nsh_match) do
+    nxoxm_nsh_match_to_atom(0x1)
   catch
     _class, _reason -> 1
   end
 
-  def to_atom(0x2, :nicira_ext_match) do
-    nicira_ext_match_to_atom(0x2)
+  def to_atom(0x2, :nxoxm_nsh_match) do
+    nxoxm_nsh_match_to_atom(0x2)
   catch
     _class, _reason -> 2
   end
 
-  def to_atom(0x3, :nicira_ext_match) do
-    nicira_ext_match_to_atom(0x3)
+  def to_atom(0x3, :nxoxm_nsh_match) do
+    nxoxm_nsh_match_to_atom(0x3)
   catch
     _class, _reason -> 3
   end
 
-  def to_atom(0x4, :nicira_ext_match) do
-    nicira_ext_match_to_atom(0x4)
+  def to_atom(0x4, :nxoxm_nsh_match) do
+    nxoxm_nsh_match_to_atom(0x4)
   catch
     _class, _reason -> 4
   end
 
-  def to_atom(0x5, :nicira_ext_match) do
-    nicira_ext_match_to_atom(0x5)
+  def to_atom(0x5, :nxoxm_nsh_match) do
+    nxoxm_nsh_match_to_atom(0x5)
   catch
     _class, _reason -> 5
   end
 
-  def to_atom(0x6, :nicira_ext_match) do
-    nicira_ext_match_to_atom(0x6)
+  def to_atom(0x6, :nxoxm_nsh_match) do
+    nxoxm_nsh_match_to_atom(0x6)
   catch
     _class, _reason -> 6
   end
 
-  def to_atom(0x7, :nicira_ext_match) do
-    nicira_ext_match_to_atom(0x7)
+  def to_atom(0x7, :nxoxm_nsh_match) do
+    nxoxm_nsh_match_to_atom(0x7)
   catch
     _class, _reason -> 7
   end
 
-  def to_atom(0x8, :nicira_ext_match) do
-    nicira_ext_match_to_atom(0x8)
+  def to_atom(0x8, :nxoxm_nsh_match) do
+    nxoxm_nsh_match_to_atom(0x8)
   catch
     _class, _reason -> 8
   end
 
-  def to_atom(0x9, :nicira_ext_match) do
-    nicira_ext_match_to_atom(0x9)
+  def to_atom(0x9, :nxoxm_nsh_match) do
+    nxoxm_nsh_match_to_atom(0x9)
   catch
     _class, _reason -> 9
   end
 
-  def to_atom(0xA, :nicira_ext_match) do
-    nicira_ext_match_to_atom(0xA)
+  def to_atom(0xA, :nxoxm_nsh_match) do
+    nxoxm_nsh_match_to_atom(0xA)
   catch
     _class, _reason -> 10
   end
 
-  def to_atom(_, :nicira_ext_match) do
+  def to_atom(_, :nxoxm_nsh_match) do
     throw(:bad_enum)
   end
 
@@ -8266,6 +8330,40 @@ defmodule Openflow.Enums do
   end
 
   def to_atom(_, :onf_ext_match) do
+    throw(:bad_enum)
+  end
+
+  def to_atom(0x0, :nxoxm_match) do
+    nxoxm_match_to_atom(0x0)
+  catch
+    _class, _reason -> 0
+  end
+
+  def to_atom(0xB, :nxoxm_match) do
+    nxoxm_match_to_atom(0xB)
+  catch
+    _class, _reason -> 11
+  end
+
+  def to_atom(0xC, :nxoxm_match) do
+    nxoxm_match_to_atom(0xC)
+  catch
+    _class, _reason -> 12
+  end
+
+  def to_atom(0xD, :nxoxm_match) do
+    nxoxm_match_to_atom(0xD)
+  catch
+    _class, _reason -> 13
+  end
+
+  def to_atom(0xE, :nxoxm_match) do
+    nxoxm_match_to_atom(0xE)
+  catch
+    _class, _reason -> 14
+  end
+
+  def to_atom(_, :nxoxm_match) do
     throw(:bad_enum)
   end
 
@@ -9619,6 +9717,12 @@ defmodule Openflow.Enums do
     _class, _reason -> 47
   end
 
+  def to_atom(0x31, :nicira_ext_action) do
+    nicira_ext_action_to_atom(0x31)
+  catch
+    _class, _reason -> 49
+  end
+
   def to_atom(0xFF, :nicira_ext_action) do
     nicira_ext_action_to_atom(0xFF)
   catch
@@ -10935,11 +11039,13 @@ defmodule Openflow.Enums do
   def controller_max_len_to_atom(0xFFE5), do: :max
   def controller_max_len_to_atom(0xFFFF), do: :no_buffer
   def controller_max_len_to_atom(_), do: throw(:bad_enum)
-  def experimenter_oxm_vendors_to_int(:nicira_ext_match), do: 0x2320
+  def experimenter_oxm_vendors_to_int(:nxoxm_nsh_match), do: 0x5AD650
+  def experimenter_oxm_vendors_to_int(:nxoxm_match), do: 0x2320
   def experimenter_oxm_vendors_to_int(:hp_ext_match), do: 0x2428
   def experimenter_oxm_vendors_to_int(:onf_ext_match), do: 0x4F4E4600
   def experimenter_oxm_vendors_to_int(_), do: throw(:bad_enum)
-  def experimenter_oxm_vendors_to_atom(0x2320), do: :nicira_ext_match
+  def experimenter_oxm_vendors_to_atom(0x5AD650), do: :nxoxm_nsh_match
+  def experimenter_oxm_vendors_to_atom(0x2320), do: :nxoxm_match
   def experimenter_oxm_vendors_to_atom(0x2428), do: :hp_ext_match
   def experimenter_oxm_vendors_to_atom(0x4F4E4600), do: :onf_ext_match
   def experimenter_oxm_vendors_to_atom(_), do: throw(:bad_enum)
@@ -11294,6 +11400,7 @@ defmodule Openflow.Enums do
   def openflow_basic_to_int(:tunnel_id), do: 0x26
   def openflow_basic_to_int(:ipv6_exthdr), do: 0x27
   def openflow_basic_to_int(:pbb_uca), do: 0x29
+  def openflow_basic_to_int(:packet_type), do: 0x2C
   def openflow_basic_to_int(_), do: throw(:bad_enum)
   def openflow_basic_to_atom(0x0), do: :in_port
   def openflow_basic_to_atom(0x1), do: :in_phy_port
@@ -11336,6 +11443,7 @@ defmodule Openflow.Enums do
   def openflow_basic_to_atom(0x26), do: :tunnel_id
   def openflow_basic_to_atom(0x27), do: :ipv6_exthdr
   def openflow_basic_to_atom(0x29), do: :pbb_uca
+  def openflow_basic_to_atom(0x2C), do: :packet_type
   def openflow_basic_to_atom(_), do: throw(:bad_enum)
   def vlan_id_to_int(:vid_present), do: 0x1000
   def vlan_id_to_int(:vid_none), do: 0x0
@@ -11425,28 +11533,28 @@ defmodule Openflow.Enums do
   def packet_register_to_atom(0x6), do: :xreg6
   def packet_register_to_atom(0x7), do: :xreg7
   def packet_register_to_atom(_), do: throw(:bad_enum)
-  def nicira_ext_match_to_int(:nsh_flags), do: 0x1
-  def nicira_ext_match_to_int(:nsh_mdtype), do: 0x2
-  def nicira_ext_match_to_int(:nsh_np), do: 0x3
-  def nicira_ext_match_to_int(:nsh_spi), do: 0x4
-  def nicira_ext_match_to_int(:nsh_si), do: 0x5
-  def nicira_ext_match_to_int(:nsh_c1), do: 0x6
-  def nicira_ext_match_to_int(:nsh_c2), do: 0x7
-  def nicira_ext_match_to_int(:nsh_c3), do: 0x8
-  def nicira_ext_match_to_int(:nsh_c4), do: 0x9
-  def nicira_ext_match_to_int(:nsh_ttl), do: 0xA
-  def nicira_ext_match_to_int(_), do: throw(:bad_enum)
-  def nicira_ext_match_to_atom(0x1), do: :nsh_flags
-  def nicira_ext_match_to_atom(0x2), do: :nsh_mdtype
-  def nicira_ext_match_to_atom(0x3), do: :nsh_np
-  def nicira_ext_match_to_atom(0x4), do: :nsh_spi
-  def nicira_ext_match_to_atom(0x5), do: :nsh_si
-  def nicira_ext_match_to_atom(0x6), do: :nsh_c1
-  def nicira_ext_match_to_atom(0x7), do: :nsh_c2
-  def nicira_ext_match_to_atom(0x8), do: :nsh_c3
-  def nicira_ext_match_to_atom(0x9), do: :nsh_c4
-  def nicira_ext_match_to_atom(0xA), do: :nsh_ttl
-  def nicira_ext_match_to_atom(_), do: throw(:bad_enum)
+  def nxoxm_nsh_match_to_int(:nsh_flags), do: 0x1
+  def nxoxm_nsh_match_to_int(:nsh_mdtype), do: 0x2
+  def nxoxm_nsh_match_to_int(:nsh_np), do: 0x3
+  def nxoxm_nsh_match_to_int(:nsh_spi), do: 0x4
+  def nxoxm_nsh_match_to_int(:nsh_si), do: 0x5
+  def nxoxm_nsh_match_to_int(:nsh_c1), do: 0x6
+  def nxoxm_nsh_match_to_int(:nsh_c2), do: 0x7
+  def nxoxm_nsh_match_to_int(:nsh_c3), do: 0x8
+  def nxoxm_nsh_match_to_int(:nsh_c4), do: 0x9
+  def nxoxm_nsh_match_to_int(:nsh_ttl), do: 0xA
+  def nxoxm_nsh_match_to_int(_), do: throw(:bad_enum)
+  def nxoxm_nsh_match_to_atom(0x1), do: :nsh_flags
+  def nxoxm_nsh_match_to_atom(0x2), do: :nsh_mdtype
+  def nxoxm_nsh_match_to_atom(0x3), do: :nsh_np
+  def nxoxm_nsh_match_to_atom(0x4), do: :nsh_spi
+  def nxoxm_nsh_match_to_atom(0x5), do: :nsh_si
+  def nxoxm_nsh_match_to_atom(0x6), do: :nsh_c1
+  def nxoxm_nsh_match_to_atom(0x7), do: :nsh_c2
+  def nxoxm_nsh_match_to_atom(0x8), do: :nsh_c3
+  def nxoxm_nsh_match_to_atom(0x9), do: :nsh_c4
+  def nxoxm_nsh_match_to_atom(0xA), do: :nsh_ttl
+  def nxoxm_nsh_match_to_atom(_), do: throw(:bad_enum)
   def onf_ext_match_to_int(:onf_tcp_flags), do: 0x2A
   def onf_ext_match_to_int(:onf_actset_output), do: 0x2B
   def onf_ext_match_to_int(:onf_pbb_uca), do: 0xA00
@@ -11455,6 +11563,18 @@ defmodule Openflow.Enums do
   def onf_ext_match_to_atom(0x2B), do: :onf_actset_output
   def onf_ext_match_to_atom(0xA00), do: :onf_pbb_uca
   def onf_ext_match_to_atom(_), do: throw(:bad_enum)
+  def nxoxm_match_to_int(:nxoxm_dp_hash), do: 0x0
+  def nxoxm_match_to_int(:tun_erspan_idx), do: 0xB
+  def nxoxm_match_to_int(:tun_erspan_ver), do: 0xC
+  def nxoxm_match_to_int(:tun_erspan_dir), do: 0xD
+  def nxoxm_match_to_int(:tun_erspan_hwid), do: 0xE
+  def nxoxm_match_to_int(_), do: throw(:bad_enum)
+  def nxoxm_match_to_atom(0x0), do: :nxoxm_dp_hash
+  def nxoxm_match_to_atom(0xB), do: :tun_erspan_idx
+  def nxoxm_match_to_atom(0xC), do: :tun_erspan_ver
+  def nxoxm_match_to_atom(0xD), do: :tun_erspan_dir
+  def nxoxm_match_to_atom(0xE), do: :tun_erspan_hwid
+  def nxoxm_match_to_atom(_), do: throw(:bad_enum)
   def buffer_id_to_int(:no_buffer), do: 0xFFFFFFFF
   def buffer_id_to_int(_), do: throw(:bad_enum)
   def buffer_id_to_atom(0xFFFFFFFF), do: :no_buffer
@@ -11888,6 +12008,7 @@ defmodule Openflow.Enums do
   def nicira_ext_action_to_int(Openflow.Action.NxLearn2), do: 0x2D
   def nicira_ext_action_to_int(Openflow.Action.NxEncap), do: 0x2E
   def nicira_ext_action_to_int(Openflow.Action.NxDecap), do: 0x2F
+  def nicira_ext_action_to_int(Openflow.Action.NxCheckPktLarger), do: 0x31
   def nicira_ext_action_to_int(Openflow.Action.NxDebugRecirc), do: 0xFF
   def nicira_ext_action_to_int(_), do: throw(:bad_enum)
   def nicira_ext_action_to_atom(0x1), do: Openflow.Action.NxResubmit
@@ -11927,6 +12048,7 @@ defmodule Openflow.Enums do
   def nicira_ext_action_to_atom(0x2D), do: Openflow.Action.NxLearn2
   def nicira_ext_action_to_atom(0x2E), do: Openflow.Action.NxEncap
   def nicira_ext_action_to_atom(0x2F), do: Openflow.Action.NxDecap
+  def nicira_ext_action_to_atom(0x31), do: Openflow.Action.NxCheckPktLarger
   def nicira_ext_action_to_atom(0xFF), do: Openflow.Action.NxDebugRecirc
   def nicira_ext_action_to_atom(_), do: throw(:bad_enum)
   def nx_mp_algorithm_to_int(:modulo_n), do: 0x0
@@ -12364,12 +12486,16 @@ defmodule Openflow.Enums do
     Openflow.Utils.int_to_flags([], int, enum_of(:packet_register))
   end
 
-  def int_to_flags(int, :nicira_ext_match) do
-    Openflow.Utils.int_to_flags([], int, enum_of(:nicira_ext_match))
+  def int_to_flags(int, :nxoxm_nsh_match) do
+    Openflow.Utils.int_to_flags([], int, enum_of(:nxoxm_nsh_match))
   end
 
   def int_to_flags(int, :onf_ext_match) do
     Openflow.Utils.int_to_flags([], int, enum_of(:onf_ext_match))
+  end
+
+  def int_to_flags(int, :nxoxm_match) do
+    Openflow.Utils.int_to_flags([], int, enum_of(:nxoxm_match))
   end
 
   def int_to_flags(int, :buffer_id) do
@@ -12748,12 +12874,16 @@ defmodule Openflow.Enums do
     Openflow.Utils.flags_to_int(0, flags, enum_of(:packet_register))
   end
 
-  def flags_to_int(flags, :nicira_ext_match) do
-    Openflow.Utils.flags_to_int(0, flags, enum_of(:nicira_ext_match))
+  def flags_to_int(flags, :nxoxm_nsh_match) do
+    Openflow.Utils.flags_to_int(0, flags, enum_of(:nxoxm_nsh_match))
   end
 
   def flags_to_int(flags, :onf_ext_match) do
     Openflow.Utils.flags_to_int(0, flags, enum_of(:onf_ext_match))
+  end
+
+  def flags_to_int(flags, :nxoxm_match) do
+    Openflow.Utils.flags_to_int(0, flags, enum_of(:nxoxm_match))
   end
 
   def flags_to_int(flags, :buffer_id) do
@@ -13263,7 +13393,12 @@ defmodule Openflow.Enums do
   defp enum_of(:controller_max_len), do: [max: 65509, no_buffer: 65535]
 
   defp enum_of(:experimenter_oxm_vendors),
-    do: [nicira_ext_match: 8992, hp_ext_match: 9256, onf_ext_match: 1_330_529_792]
+    do: [
+      nxoxm_nsh_match: 5_953_104,
+      nxoxm_match: 8992,
+      hp_ext_match: 9256,
+      onf_ext_match: 1_330_529_792
+    ]
 
   defp enum_of(:match_type), do: [standard: 0, oxm: 1]
 
@@ -13470,7 +13605,8 @@ defmodule Openflow.Enums do
       pbb_isid: 37,
       tunnel_id: 38,
       ipv6_exthdr: 39,
-      pbb_uca: 41
+      pbb_uca: 41,
+      packet_type: 44
     ]
 
   defp enum_of(:vlan_id), do: [vid_present: 4096, vid_none: 0]
@@ -13499,7 +13635,7 @@ defmodule Openflow.Enums do
   defp enum_of(:packet_register),
     do: [xreg0: 0, xreg1: 1, xreg2: 2, xreg3: 3, xreg4: 4, xreg5: 5, xreg6: 6, xreg7: 7]
 
-  defp enum_of(:nicira_ext_match),
+  defp enum_of(:nxoxm_nsh_match),
     do: [
       nsh_flags: 1,
       nsh_mdtype: 2,
@@ -13514,6 +13650,16 @@ defmodule Openflow.Enums do
     ]
 
   defp enum_of(:onf_ext_match), do: [onf_tcp_flags: 42, onf_actset_output: 43, onf_pbb_uca: 2560]
+
+  defp enum_of(:nxoxm_match),
+    do: [
+      nxoxm_dp_hash: 0,
+      tun_erspan_idx: 11,
+      tun_erspan_ver: 12,
+      tun_erspan_dir: 13,
+      tun_erspan_hwid: 14
+    ]
+
   defp enum_of(:buffer_id), do: [no_buffer: 4_294_967_295]
   defp enum_of(:port_config), do: [port_down: 1, no_receive: 4, no_forward: 32, no_packet_in: 64]
   defp enum_of(:port_state), do: [link_down: 1, blocked: 2, live: 4]
@@ -13742,6 +13888,7 @@ defmodule Openflow.Enums do
       {Openflow.Action.NxLearn2, 45},
       {Openflow.Action.NxEncap, 46},
       {Openflow.Action.NxDecap, 47},
+      {Openflow.Action.NxCheckPktLarger, 49},
       {Openflow.Action.NxDebugRecirc, 255}
     ]
 

@@ -304,7 +304,8 @@ enums = [
     no_buffer: 0xFFFF
   ],
   experimenter_oxm_vendors: [
-    nicira_ext_match: 0x00002320,
+    nxoxm_nsh_match: 0x005AD650,
+    nxoxm_match: 0x00002320,
     hp_ext_match: 0x00002428,
     onf_ext_match: 0x4F4E4600
   ],
@@ -508,7 +509,8 @@ enums = [
     pbb_isid: 37,
     tunnel_id: 38,
     ipv6_exthdr: 39,
-    pbb_uca: 41
+    pbb_uca: 41,
+    packet_type: 44
   ],
   vlan_id: [
     # Bit that indicate that a VLAN id is set.
@@ -570,7 +572,7 @@ enums = [
     xreg6: 6,
     xreg7: 7
   ],
-  nicira_ext_match: [
+  nxoxm_nsh_match: [
     nsh_flags: 1,
     nsh_mdtype: 2,
     nsh_np: 3,
@@ -586,6 +588,13 @@ enums = [
     onf_tcp_flags: 42,
     onf_actset_output: 43,
     onf_pbb_uca: 2560
+  ],
+  nxoxm_match: [
+    nxoxm_dp_hash: 0,
+    tun_erspan_idx: 11,
+    tun_erspan_ver: 12,
+    tun_erspan_dir: 13,
+    tun_erspan_hwid: 14
   ],
   buffer_id: [
     no_buffer: 0xFFFFFFFF
@@ -861,6 +870,7 @@ enums = [
     {Openflow.Action.NxLearn2, 45},
     {Openflow.Action.NxEncap, 46},
     {Openflow.Action.NxDecap, 47},
+    {Openflow.Action.NxCheckPktLarger, 49},
     {Openflow.Action.NxDebugRecirc, 0xFF}
   ],
   nx_mp_algorithm: [

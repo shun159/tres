@@ -741,7 +741,7 @@ defmodule OfpActionTest do
           fin_idle_timeout: 2,
           fin_hard_timeout: 4,
           flow_specs: [
-            Openflow.Action.NxFlowSpecMatch.new(src: :nx_vlan_tci, dst: :nx_vlan_tci, n_bits: 12),
+            Openflow.Action.NxFlowSpecMatch.new(src: :nx_vlan_tci, n_bits: 12),
             Openflow.Action.NxFlowSpecMatch.new(src: :nx_eth_src, dst: :nx_eth_dst),
             Openflow.Action.NxFlowSpecOutput.new(src: :nx_in_port)
           ]
@@ -773,7 +773,7 @@ defmodule OfpActionTest do
           result_dst: :reg0,
           result_dst_offset: 8,
           flow_specs: [
-            Openflow.Action.NxFlowSpecMatch.new(src: :nx_vlan_tci, dst: :nx_vlan_tci, n_bits: 12),
+            Openflow.Action.NxFlowSpecMatch.new(src: :nx_vlan_tci, n_bits: 12),
             Openflow.Action.NxFlowSpecMatch.new(src: :nx_eth_src, dst: :nx_eth_dst),
             Openflow.Action.NxFlowSpecOutput.new(src: :nx_in_port)
           ]
@@ -846,14 +846,8 @@ defmodule OfpActionTest do
     end
 
     test "with no option" do
-      assert_raise RuntimeError, ":dst must be specified", fn ->
+      assert_raise RuntimeError, ":src must be specified", fn ->
         Openflow.Action.NxFlowSpecMatch.new()
-      end
-    end
-
-    test "with no dst option" do
-      assert_raise RuntimeError, ":dst must be specified", fn ->
-        Openflow.Action.NxFlowSpecMatch.new(src: :in_port)
       end
     end
 
@@ -861,6 +855,11 @@ defmodule OfpActionTest do
       assert_raise RuntimeError, ":src must be specified", fn ->
         Openflow.Action.NxFlowSpecMatch.new(dst: :reg0)
       end
+    end
+
+    test "with no dst option" do
+      learn = Openflow.Action.NxFlowSpecMatch.new(src: :in_port)
+      assert learn.dst == :in_port
     end
   end
 
@@ -1013,6 +1012,37 @@ defmodule OfpActionTest do
     test "with no options" do
       assert_raise RuntimeError, "dst_field must be specified", fn ->
         Openflow.Action.NxRegLoad.new()
+      end
+    end
+  end
+
+  describe "Openflow.Action.NxCheckPktLarger" do
+    test "with options: if the packet larger than 100 bytes, set mark to reg1" do
+      test_file = "test/packet_data/nx_check_pkt_larger.raw"
+      packet = File.read!(test_file)
+      actions = Openflow.Action.read(packet)
+
+      check_pkt_larger =
+        Openflow.Action.NxCheckPktLarger.new(
+          dst_field: :reg1,
+          offset: 0,
+          pkt_len: 100
+        )
+
+      actions_bin = Openflow.Action.to_binary(check_pkt_larger)
+      assert actions_bin == packet
+      assert actions == [check_pkt_larger]
+    end
+
+    test "with no dst_field option" do
+      assert_raise RuntimeError, "dst_field must be specified", fn ->
+        Openflow.Action.NxCheckPktLarger.new(pkt_len: 100)
+      end
+    end
+
+    test "with no pkt_len option" do
+      assert_raise RuntimeError, "pkt_len must be specified", fn ->
+        Openflow.Action.NxCheckPktLarger.new(dst_field: :reg1)
       end
     end
   end
