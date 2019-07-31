@@ -2725,6 +2725,12 @@ defmodule Openflow.Enums do
     _class, _reason -> :pbb_uca
   end
 
+  def to_int(:packet_type, :openflow_basic) do
+    openflow_basic_to_int(:packet_type)
+  catch
+    _class, _reason -> :packet_type
+  end
+
   def to_int(_int, :openflow_basic) do
     throw(:bad_enum)
   end
@@ -7933,6 +7939,12 @@ defmodule Openflow.Enums do
     _class, _reason -> 41
   end
 
+  def to_atom(0x2C, :openflow_basic) do
+    openflow_basic_to_atom(0x2C)
+  catch
+    _class, _reason -> 44
+  end
+
   def to_atom(_, :openflow_basic) do
     throw(:bad_enum)
   end
@@ -11306,6 +11318,7 @@ defmodule Openflow.Enums do
   def openflow_basic_to_int(:tunnel_id), do: 0x26
   def openflow_basic_to_int(:ipv6_exthdr), do: 0x27
   def openflow_basic_to_int(:pbb_uca), do: 0x29
+  def openflow_basic_to_int(:packet_type), do: 0x2C
   def openflow_basic_to_int(_), do: throw(:bad_enum)
   def openflow_basic_to_atom(0x0), do: :in_port
   def openflow_basic_to_atom(0x1), do: :in_phy_port
@@ -11348,6 +11361,7 @@ defmodule Openflow.Enums do
   def openflow_basic_to_atom(0x26), do: :tunnel_id
   def openflow_basic_to_atom(0x27), do: :ipv6_exthdr
   def openflow_basic_to_atom(0x29), do: :pbb_uca
+  def openflow_basic_to_atom(0x2C), do: :packet_type
   def openflow_basic_to_atom(_), do: throw(:bad_enum)
   def vlan_id_to_int(:vid_present), do: 0x1000
   def vlan_id_to_int(:vid_none), do: 0x0
@@ -13484,7 +13498,8 @@ defmodule Openflow.Enums do
       pbb_isid: 37,
       tunnel_id: 38,
       ipv6_exthdr: 39,
-      pbb_uca: 41
+      pbb_uca: 41,
+      packet_type: 44
     ]
 
   defp enum_of(:vlan_id), do: [vid_present: 4096, vid_none: 0]

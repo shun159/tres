@@ -370,7 +370,8 @@ defmodule Openflow.Match do
               :pbb_isid,
               :tunnel_id,
               :ipv6_exthdr,
-              :pbb_uca
+              :pbb_uca,
+              :packet_type
             ],
        do: 0x8000
 
@@ -758,7 +759,8 @@ defmodule Openflow.Match do
               :nsh_c1,
               :nsh_c2,
               :nsh_c3,
-              :nsh_c4
+              :nsh_c4,
+              :packet_type
             ],
        do: :u32
 

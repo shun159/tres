@@ -508,7 +508,8 @@ enums = [
     pbb_isid: 37,
     tunnel_id: 38,
     ipv6_exthdr: 39,
-    pbb_uca: 41
+    pbb_uca: 41,
+    packet_type: 44
   ],
   vlan_id: [
     # Bit that indicate that a VLAN id is set.
