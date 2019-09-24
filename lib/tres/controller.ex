@@ -10,7 +10,9 @@ defmodule Tres.Controller do
           get_current_xid: 1
         ]
 
+      use Tres.Actions
       use Tres.Messages
+      use Tres.Instructions
       use Tres.MessageHelper
 
       def handler_spec(dpid) do
